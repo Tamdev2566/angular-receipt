@@ -1,0 +1,24 @@
+<div class="alert-banner" *ngIf="visible" [ngClass]="type">
+  <div class="icon-box">
+    <i class="fa-solid fa-circle-check" *ngIf="type === 'success'"></i>
+    <i class="fa-solid fa-circle-xmark" *ngIf="type === 'error'"></i>
+    <i class="fa-solid fa-triangle-exclamation" *ngIf="type === 'warning'"></i>
+  </div>
+  <div class="content-box">
+    <h4>{{ title }}</h4>
+    <p>{{ message }}</p>
+  </div>
+  <button type="button" class="close-action" (click)="dismiss()">
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+    >
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </button>
+</div>

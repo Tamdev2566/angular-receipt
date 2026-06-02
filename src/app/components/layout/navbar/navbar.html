@@ -1,0 +1,72 @@
+<header
+  class="navbar navbar-expand-lg px-4 justify-content-between bg-transparent premium-nav-matrix position-relative"
+>
+  <div class="d-flex align-items-center">
+    <button
+      class="btn btn-link text-white p-0 border-0 d-lg-none shadow-none me-3"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#mobileSidebarDrawer"
+      aria-controls="mobileSidebarDrawer"
+    >
+      <i class="fa-solid fa-bars fs-3 text-white"></i>
+    </button>
+
+    <div class="d-none d-lg-flex flex-column align-items-start breadcrumb-container">
+      <div
+        class="input-group input-group-alternative search-box-wrapper shadow-none border-0 bg-white"
+      >
+        <span class="input-group-text bg-transparent border-0 pe-1 ps-3 d-flex align-items-center">
+          <i class="fa-solid fa-magnifying-glass search-icon-style"></i>
+        </span>
+        <input
+          type="text"
+          class="form-control border-0 bg-transparent text-dark shadow-none search-input-field"
+          placeholder="Search here..."
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center dynamic-action-gap">
+    <div class="d-flex align-items-center control-button-cluster gap-3">
+      <button
+        class="btn btn-link nav-utility-btn p-1 text-white shadow-none border-0 d-flex align-items-center"
+        type="button"
+        (click)="onHomeClick()"
+      >
+        <i class="fa-solid fa-house tray-interactive-icon fs-5"></i>
+      </button>
+      <button
+        class="btn btn-link nav-utility-btn p-1 text-white shadow-none border-0 d-flex align-items-center"
+        type="button"
+        (click)="onNotificationClick()"
+      >
+        <i class="fa-solid fa-bell tray-interactive-icon fs-5"></i>
+      </button>
+      <div class="vr text-white opacity-25 mx-1" style="height: 20px"></div>
+      <div
+        class="d-flex align-items-center cursor-pointer text-white"
+        (click)="toggleAccountCard()"
+        title="Account Settings"
+      >
+        <i class="fa-solid fa-user-gear fs-4 tray-interactive-icon"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="custom-action-card shadow border-0" *ngIf="isCardOpen">
+    <div class="card-body p-2">
+      <button class="card-item-btn" (click)="onAccountSettings(); isCardOpen = false">
+        <i class="fa-regular fa-circle-user"></i><span>Account Settings</span>
+      </button>
+      <button class="card-item-btn" (click)="onChangePassword(); isCardOpen = false">
+        <i class="fa-regular fa-eye"></i><span>Change Password</span>
+      </button>
+      <hr class="my-1 opacity-10" />
+      <button class="card-item-btn text-danger" (click)="onLogout(); isCardOpen = false">
+        <i class="fa-solid fa-right-from-bracket"></i><span>Log out</span>
+      </button>
+    </div>
+  </div>
+</header>

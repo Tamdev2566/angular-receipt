@@ -1,0 +1,66 @@
+<aside class="d-flex flex-column h-100 bg-white exact-floating-sidebar user-select-none">
+  <div class="d-flex align-items-center px-4 brand-header-space">
+    <div class="d-flex align-items-center gap-2.5">
+      <div class="brand-logo-box d-flex align-items-center justify-content-center">
+        <i class="fa-solid fa-square-poll-vertical" style="color: #32325d; font-size: 1rem"></i>
+      </div>
+      <span class="brand-title-text text-gradient-dark">Argon Dashboard 2</span>
+    </div>
+  </div>
+
+  <hr class="horizontal dark mt-0 mb-3 mx-3 opacity-2" />
+
+  <div class="overflow-y-auto flex-grow-1 px-3 custom-argon-menu-scroller">
+    <div class="menu-section-label">Pages / Examples</div>
+
+    <ul class="list-unstyled m-0 p-0 d-flex flex-column gap-1.5">
+      <li *ngFor="let menu of appMenus" class="w-100">
+        <div
+          (click)="toggleSubmenu(menu)"
+          class="d-flex align-items-center justify-content-between px-3 py-2.5 exact-curvy-tab transition-all"
+          [class.custom-tab-active]="menu.isExpanded"
+          style="cursor: pointer"
+        >
+          <div class="d-flex align-items-center gap-3">
+            <div
+              class="icon-shape-container rounded-3 d-flex align-items-center justify-content-center"
+              [class.active-icon-bg]="menu.isExpanded"
+            >
+              <i
+                [class]="menu.icon"
+                class="sidebar-icon-element"
+                [style.color]="menu.isExpanded ? '#ffffff' : '#8898aa'"
+              ></i>
+            </div>
+
+            <span class="sidebar-menu-title" [class.active-text-dark]="menu.isExpanded">
+              {{ menu.title }}
+            </span>
+          </div>
+
+          <span
+            *ngIf="menu.hasSubmenu"
+            class="chevron-indicator-wrapper"
+            [class.rotated]="menu.isExpanded"
+          >
+            <i class="fa-solid fa-chevron-right"></i>
+          </span>
+        </div>
+
+        <div class="animated-submenu-wrapper" [class.show-submenu]="menu.isExpanded">
+          <ul class="list-unstyled m-0 p-0 submenu-inner-list">
+            <li *ngFor="let sub of menu.submodules">
+              <a
+                [routerLink]="sub.link"
+                routerLinkActive="active-sub-item fw-bold"
+                class="d-block text-decoration-none sub-link-item-row"
+              >
+                {{ sub.title }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</aside>

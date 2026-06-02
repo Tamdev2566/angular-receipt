@@ -1,0 +1,149 @@
+.premium-nav-matrix {
+  height: 78px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  position: relative;
+
+  .breadcrumb-container {
+    .breadcrumb-item {
+      font-size: 0.75rem !important;
+      &::before {
+        color: #ffffff !important;
+        opacity: 0.6;
+      }
+    }
+    .page-display-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.025rem;
+      margin-top: 2px;
+    }
+  }
+
+  .dynamic-action-gap {
+    gap: 1.25rem;
+  }
+
+  .search-box-wrapper {
+    width: 250px;
+    height: 40px;
+    border-radius: 0.5rem !important;
+    border: 1px solid #e2e8f0;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+    display: flex;
+    align-items: center;
+
+    // 🚨 CHANGED: Search focus ஆகும்போது Light Orange பார்டர் மற்றும் க்ளோ வரும்
+    &:focus-within {
+      border-color: #ff7a45;
+      box-shadow: 0 4px 20px rgba(255, 122, 69, 0.15) !important;
+      transform: translateY(-2px);
+    }
+  }
+
+  .search-icon-style {
+    font-size: 0.8rem;
+    color: #8898aa;
+  }
+
+  .search-input-field {
+    font-size: 0.85rem;
+    color: #32325d !important;
+    font-weight: 400;
+    padding-left: 0.5rem;
+
+    &::placeholder {
+      color: #adb5bd;
+      opacity: 1;
+    }
+  }
+
+  .custom-action-card {
+    position: absolute;
+    top: 70px;
+    right: 24px;
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    min-width: 220px;
+    z-index: 1050;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06) !important;
+
+    .card-item-btn {
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      font-size: 0.95rem;
+      color: #525f7f;
+      font-weight: 500;
+      text-align: left;
+      border-radius: 0.5rem;
+      transition: all 0.15s ease;
+
+      i {
+        width: 24px;
+        font-size: 1.1rem;
+        margin-right: 8px;
+        transition: color 0.15s ease;
+      }
+
+      // 🚨 CHANGED: கார்டு ஐட்டம்ஸ் ஹோவர் பண்ணும்போது சாஃப்ட் லைட் ஆரஞ்சு கலர் மாறும்
+      &:hover {
+        color: #ff7a45;
+        background-color: rgba(255, 122, 69, 0.06);
+
+        i {
+          color: #ff7a45 !important;
+        }
+      }
+    }
+  }
+}
+
+.control-button-cluster {
+  .utility-icon-tray {
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    padding-left: 1rem;
+
+    .tray-interactive-icon {
+      font-size: 0.85rem;
+      cursor: pointer;
+      opacity: 0.85;
+      transition:
+        transform 0.15s ease,
+        color 0.15s ease,
+        opacity 0.15s ease;
+
+      // 🚨 CHANGED: ஹெடர் ஐகான்ஸ் மேல மவுஸ் வைக்கும்போது Light Orange-ஆக மாறும்
+      &:hover {
+        opacity: 1;
+        color: #ff7a45 !important;
+        transform: scale(1.05);
+      }
+    }
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.avatar-circle {
+  width: 36px;
+  height: 36px;
+  background-color: #b0b0b0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-transform: lowercase;
+  user-select: none;
+}

@@ -1,0 +1,26 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fe;
+}
+
+.dashboard-wrapper {
+  height: 100vh;
+  overflow: hidden;
+
+  @media (max-width: 991.98px) {
+    height: auto;
+    overflow: visible;
+  }
+}
+
+main {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.exact-argon-banner {
+  background: linear-gradient(135deg, #65c98d 0%, #82dba6 100%) !important;
+}

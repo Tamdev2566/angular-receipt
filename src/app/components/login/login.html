@@ -1,0 +1,147 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <div class="left-panel">
+      <div class="form-wrapper">
+        <div class="system-header">
+          <div class="company-logo">
+            <img src="asset/images/logo.png" alt="Samudera Logo" />
+          </div>
+          <div class="company-details">
+            <h1>SAMUDERA SHIPPING LINE LTD</h1>
+            <h2>Receipt System - SG</h2>
+          </div>
+        </div>
+
+        <div class="form-container">
+          <form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)" autocomplete="off">
+            <div
+              class="custom-input"
+              [class.input-error]="userId.invalid && (userId.touched || formSubmitted)"
+            >
+              <label>User ID</label>
+              <div class="input-wrapper">
+                <input
+                  type="text"
+                  name="username"
+                  [(ngModel)]="username"
+                  #userId="ngModel"
+                  placeholder="Enter User ID"
+                  required
+                  minlength="3"
+                  autocomplete="new-password"
+                />
+                <i class="fa-regular fa-user"></i>
+              </div>
+              <div class="error-text" *ngIf="userId.invalid && (userId.touched || formSubmitted)">
+                <span *ngIf="userId.errors?.['required']"> User ID is required </span>
+                <span *ngIf="userId.errors?.['minlength']"> Minimum 3 characters required </span>
+              </div>
+            </div>
+
+            <div
+              class="custom-input"
+              [class.input-error]="
+                passwordField.invalid && (passwordField.touched || formSubmitted)
+              "
+            >
+              <label>Password</label>
+              <div class="input-wrapper">
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  name="password"
+                  [(ngModel)]="password"
+                  #passwordField="ngModel"
+                  placeholder="Enter Password"
+                  required
+                  minlength="6"
+                  autocomplete="new-password"
+                />
+                <button type="button" class="eye-btn" (click)="togglePassword()">
+                  <svg
+                    *ngIf="!showPassword"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <svg
+                    *ngIf="showPassword"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a21.8 21.8 0 0 1 5.06-6.94"
+                    ></path>
+                    <path
+                      d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.8 21.8 0 0 1-3.17 4.62"
+                    ></path>
+                    <path d="M1 1l22 22"></path>
+                    <path d="M9.88 9.88A3 3 0 1 0 14.12 14.12"></path>
+                  </svg>
+                </button>
+              </div>
+              <div
+                class="error-text"
+                *ngIf="passwordField.invalid && (passwordField.touched || formSubmitted)"
+              >
+                <span *ngIf="passwordField.errors?.['required']"> Password is required </span>
+                <span *ngIf="passwordField.errors?.['minlength']">
+                  Minimum 6 characters required
+                </span>
+              </div>
+            </div>
+
+            <div class="password-actions-row">
+              <a href="#" class="action-link" (click)="openForgotModal($event, 'forgot')"
+                >Forgot Password?</a
+              >
+              <span class="divider-dot">•</span>
+              <a
+                href="#"
+                class="action-link highlight-action"
+                (click)="openForgotModal($event, 'change')"
+                >Change Password?</a
+              >
+            </div>
+
+            <div class="button-group">
+              <button type="submit" class="primary-btn" [disabled]="isLoading">
+                <ng-container *ngIf="!isLoading && !isSuccess"> LogIn </ng-container>
+                <ng-container *ngIf="isLoading">
+                  <i class="fa-solid fa-circle-notch fa-spin me-2"></i> Connecting...
+                </ng-container>
+                <ng-container *ngIf="isSuccess">
+                  <i class="fa-solid fa-check me-2"></i> Access Granted
+                </ng-container>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <footer class="footer-links">
+        <a href="#"> Privacy Policy </a>
+        <span>•</span>
+        <a href="#"> Terms of Service </a>
+      </footer>
+    </div>
+
+    <div class="right-panel">
+      <div class="overlay-dark"></div>
+      <div class="overlay-blue"></div>
+      <img src="asset/images/login-bg.jpg" alt="Sea Shipping Cargo Container Vessel" />
+    </div>
+  </div>
+</div>
+
+<app-password-mgmt *ngIf="showForgotModal" [mode]="modalMode" (close)="showForgotModal = false">
+</app-password-mgmt>
