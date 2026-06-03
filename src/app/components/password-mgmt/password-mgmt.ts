@@ -32,18 +32,18 @@ export class PasswordMgmt implements OnInit {
     this.formSubmitted = true;
 
     console.log('=== [CLMS DEBUG START] ===');
-    console.log('1. Click Triggered Successfully!');
-    console.log('2. Current Step Mode:', this.currentStep);
-    console.log('3. Angular NgForm Object:', form);
+    console.log('Click Triggered Successfully!');
+    console.log('Current Step Mode:', this.currentStep);
+    console.log('Angular NgForm Object:', form);
 
     if (form) {
-      console.log('4. Form Valid State:', form.valid);
-      console.log('5. Form HTML Controls Status:', form.controls);
+      console.log('Form Valid State:', form.valid);
+      console.log('Form HTML Controls Status:', form.controls);
     } else {
-      console.log('4. ⚠️ NgForm object is UNDEFINED or NULL!');
+      console.log('NgForm object is UNDEFINED or NULL!');
     }
 
-    console.log('6. Field Values ->', {
+    console.log('Field Values ->', {
       token: this.token,
       oldPassword: this.oldPassword,
       newPassword: this.newPassword,
@@ -52,7 +52,7 @@ export class PasswordMgmt implements OnInit {
     console.log('=== [CLMS DEBUG END] ===');
 
     if (form && form.invalid) {
-      console.log('⛔ Stopping execution: Form validation failed internally.');
+      console.log('Stopping execution: Form validation failed internally.');
       Object.keys(form.controls).forEach((key) => {
         form.controls[key].markAsTouched();
       });

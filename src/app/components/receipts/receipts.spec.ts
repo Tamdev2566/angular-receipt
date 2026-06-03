@@ -1,19 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
 
-import { MainLayout } from './main-layout';
+import { Receipts } from './receipts';
 
-describe('MainLayout', () => {
-  let component: MainLayout;
-  let fixture: ComponentFixture<MainLayout>;
+describe('Receipts', () => {
+  let component: Receipts;
+  let fixture: ComponentFixture<Receipts>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MainLayout],
-      providers: [provideRouter([])],
+      imports: [Receipts],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MainLayout);
+    fixture = TestBed.createComponent(Receipts);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

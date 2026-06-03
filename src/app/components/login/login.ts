@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { PasswordMgmt } from '../password-mgmt/password-mgmt';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, PasswordMgmt],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule, PasswordMgmt],
 })
 export class LoginPage {
   username = '';
@@ -42,6 +43,8 @@ export class LoginPage {
   onSubmit(form: any): void {
     this.formSubmitted = true;
 
+    console.log('Form Invalid Status:', form.invalid);
+
     if (form.invalid) {
       form.control.markAllAsTouched();
       return;
@@ -52,6 +55,10 @@ export class LoginPage {
     setTimeout(() => {
       this.isLoading = false;
       this.isSuccess = true;
+
+      localStorage.setItem('angular_token', 'dummy_token_v1');
+      localStorage.setItem('user', JSON.stringify({ name: this.username }));
+
       this.router.navigate(['/home']);
     }, 1500);
   }

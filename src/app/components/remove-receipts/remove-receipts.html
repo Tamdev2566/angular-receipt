@@ -1,0 +1,203 @@
+<div
+  class="modal fade show d-block"
+  tabindex="-1"
+  style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px)"
+>
+  <div class="modal-dialog modal-dialog-scrollable modal-xl">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-light border-bottom px-4 py-3">
+        <h5
+          class="modal-title fw-bold text-dark d-flex align-items-center gap-2"
+          style="font-size: 0.85rem"
+        >
+          <svg
+            class="text-danger"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            ></path>
+          </svg>
+          REMOVE INVOICE RECORD
+        </h5>
+        <button type="button" class="btn-close" (click)="onClose()"></button>
+      </div>
+
+      <div class="modal-body p-4 bg-white">
+        <div class="d-flex flex-column gap-4">
+          <fieldset class="border rounded-3 p-4 position-relative">
+            <legend
+              class="float-none w-auto px-2 fs-6 fw-bold text-dark position-absolute top-0 start-0 translate-middle-y ms-4 bg-white"
+              style="font-size: 0.65rem !important"
+            >
+              RETRIEVE BY
+            </legend>
+            <div class="mx-auto style-container py-2" style="max-w: 600px">
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 text-sm-end fw-bold text-muted" style="font-size: 0.75rem"
+                  >Customer Name :</label
+                >
+                <div class="col-sm-8">
+                  <input
+                    type="text"
+                    [(ngModel)]="inputCustomer"
+                    class="form-control form-control-sm bg-light"
+                  />
+                </div>
+              </div>
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 text-sm-end fw-bold text-muted" style="font-size: 0.75rem"
+                  >Vessel Name :</label
+                >
+                <div class="col-sm-8">
+                  <input
+                    type="text"
+                    [(ngModel)]="inputVessel"
+                    class="form-control form-control-sm bg-light"
+                  />
+                </div>
+              </div>
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 text-sm-end fw-bold text-muted" style="font-size: 0.75rem"
+                  >Voyage Number :</label
+                >
+                <div class="col-sm-8">
+                  <input
+                    type="text"
+                    [(ngModel)]="inputVoyage"
+                    class="form-control form-control-sm bg-light"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-8">
+                  <button
+                    type="button"
+                    (click)="retrieveRemoveModalData()"
+                    class="btn btn-dark btn-sm fw-bold uppercase"
+                    style="font-size: 0.65rem"
+                  >
+                    Retrieve Matches
+                  </button>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="border rounded-3 p-4 position-relative">
+            <legend
+              class="float-none w-auto px-2 fs-6 fw-bold text-dark position-absolute top-0 start-0 translate-middle-y ms-4 bg-white"
+              style="font-size: 0.65rem !important"
+            >
+              INVOICE DETAILS
+            </legend>
+            <div class="table-responsive border rounded-2 mt-2" style="min-height: 120px">
+              <table class="table table-hover align-middle mb-0" style="font-size: 0.75rem">
+                <thead class="table-light">
+                  <tr>
+                    <th class="text-muted uppercase py-2" style="width: 60px">Select</th>
+                    <th class="text-muted uppercase py-2">Invoice No</th>
+                    <th class="text-muted uppercase py-2">Vessel Name</th>
+                    <th class="text-muted uppercase py-2">Voyage No</th>
+                    <th class="text-muted uppercase py-2">BL No</th>
+                    <th class="text-muted uppercase py-2 text-end">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let rec of matches">
+                    <td>
+                      <input
+                        type="checkbox"
+                        [checked]="isSelected(rec.id)"
+                        (change)="toggleSelection(rec.id)"
+                        class="form-check-input"
+                      />
+                    </td>
+                    <td class="fw-bold text-primary">{{ rec.invoiceNo }}</td>
+                    <td class="fw-bold text-dark">{{ rec.vesselName }}</td>
+                    <td class="font-monospace text-secondary">{{ rec.voyageNo }}</td>
+                    <td class="font-monospace text-muted">{{ rec.blNo }}</td>
+                    <td class="text-end fw-bold text-dark">${{ rec.amount | number: '1.2-2' }}</td>
+                  </tr>
+                  <tr *ngIf="matches.length === 0">
+                    <td colspan="6" class="text-center text-muted py-4 id-italic">
+                      No matching records found.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </fieldset>
+
+          <fieldset class="border rounded-3 p-4 position-relative">
+            <legend
+              class="float-none w-auto px-2 fs-6 fw-bold text-dark position-absolute top-0 start-0 translate-middle-y ms-4 bg-white"
+              style="font-size: 0.65rem !important"
+            >
+              REMARK DETAILS
+            </legend>
+            <div
+              class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 mt-2"
+            >
+              <div
+                class="d-flex align-items-center gap-2 flex-grow-1 w-100"
+                style="max-width: 550px"
+              >
+                <span class="fw-bold text-muted text-nowrap" style="font-size: 0.75rem"
+                  >Removal Reason :</span
+                >
+                <input
+                  type="text"
+                  [(ngModel)]="removalRemark"
+                  placeholder="Describe the reason for invoice removal"
+                  class="form-control form-control-sm"
+                />
+              </div>
+              <div class="d-flex gap-2 w-100 w-sm-auto justify-content-end">
+                <button
+                  type="button"
+                  (click)="commitRemove()"
+                  class="btn btn-primary d-flex align-items-center justify-content-center gap-2 fw-bold uppercase"
+                  style="font-size: 0.75rem; background-color: #ff1493; border-color: #ff1493"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    ></path>
+                  </svg>
+                  Remove Invoice
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary fw-bold uppercase"
+                  style="font-size: 0.75rem"
+                  (click)="onClose()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -10,7 +10,6 @@ import { AlertService } from '../../services/alertService/alert';
   styleUrls: ['./alert.scss'],
 })
 export class AlertMessage {
-  // 2. Fix the type here from AlertMessage to AlertService
   constructor(public alertService: AlertService) {}
 
   get visible() {

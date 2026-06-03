@@ -31,11 +31,11 @@ export class Sidebar {
       hasSubmenu: true,
       isExpanded: true,
       submodules: [
-        { title: 'Glossys & Docsys', link: '/receipt-glossys' },
-        { title: 'Undo Receipt', link: '/undo-receipt' },
-        { title: 'Remove Receipt', link: '/remove-receipt' },
-        { title: 'Update Cheque', link: '/update-cheque' },
-        { title: 'Update TT Ref', link: '/update-ttref' },
+        { title: 'Glossys & Docsys', link: '/home/receipt-glossys' },
+        { title: 'Undo Receipt', link: '/home/undo-receipt' },
+        { title: 'Remove Receipt', link: '/home/remove-receipt' },
+        { title: 'Update Cheque', link: '/home/update-cheque' },
+        { title: 'Update TT Ref', link: '/home/update-ttref' },
       ],
     },
     // {
@@ -54,5 +54,9 @@ export class Sidebar {
     if (menu.hasSubmenu) {
       menu.isExpanded = !menu.isExpanded;
     }
+  }
+
+  trackBySubmoduleId(index: number, sub: any): number {
+    return sub.id; // Directly targets your unique id column reference key!
   }
 }

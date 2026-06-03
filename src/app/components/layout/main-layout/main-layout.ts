@@ -6,7 +6,7 @@ import { Sidebar } from '../sidebar/sidebar';
 import { AlertMessage } from '../../../shared/alert/alert';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-main-layout',
   standalone: true,
   imports: [RouterOutlet, LoaderComponent, AlertMessage, Navbar, Sidebar],
   templateUrl: './main-layout.html',

@@ -1,19 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
 
-import { MainLayout } from './main-layout';
+import { UndoReceipts } from './undo-receipts';
 
-describe('MainLayout', () => {
-  let component: MainLayout;
-  let fixture: ComponentFixture<MainLayout>;
+describe('UndoReceipts', () => {
+  let component: UndoReceipts;
+  let fixture: ComponentFixture<UndoReceipts>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MainLayout],
-      providers: [provideRouter([])],
+      imports: [UndoReceipts],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MainLayout);
+    fixture = TestBed.createComponent(UndoReceipts);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

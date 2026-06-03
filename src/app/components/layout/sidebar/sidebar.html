@@ -1,14 +1,14 @@
-<aside class="d-flex flex-column h-100 bg-white exact-floating-sidebar user-select-none">
+<aside class="d-flex flex-column h-100 exact-floating-sidebar user-select-none">
   <div class="d-flex align-items-center px-4 brand-header-space">
     <div class="d-flex align-items-center gap-2.5">
       <div class="brand-logo-box d-flex align-items-center justify-content-center">
-        <i class="fa-solid fa-square-poll-vertical" style="color: #32325d; font-size: 1rem"></i>
+        <i class="fa-solid fa-square-poll-vertical" style="color: #ffffff; font-size: 1rem"></i>
       </div>
       <span class="brand-title-text text-gradient-dark">Argon Dashboard 2</span>
     </div>
   </div>
 
-  <hr class="horizontal dark mt-0 mb-3 mx-3 opacity-2" />
+  <hr class="horizontal dark mt-0 mb-3 mx-3 opacity-3" />
 
   <div class="overflow-y-auto flex-grow-1 px-3 custom-argon-menu-scroller">
     <div class="menu-section-label">Pages / Examples</div>
@@ -29,7 +29,7 @@
               <i
                 [class]="menu.icon"
                 class="sidebar-icon-element"
-                [style.color]="menu.isExpanded ? '#ffffff' : '#8898aa'"
+                [style.color]="menu.isExpanded ? '#ffffff' : 'rgba(255, 255, 255, 0.7)'"
               ></i>
             </div>
 
@@ -49,7 +49,7 @@
 
         <div class="animated-submenu-wrapper" [class.show-submenu]="menu.isExpanded">
           <ul class="list-unstyled m-0 p-0 submenu-inner-list">
-            <li *ngFor="let sub of menu.submodules">
+            <li *ngFor="let sub of menu.submodules; trackBy: trackBySubmoduleId">
               <a
                 [routerLink]="sub.link"
                 routerLinkActive="active-sub-item fw-bold"

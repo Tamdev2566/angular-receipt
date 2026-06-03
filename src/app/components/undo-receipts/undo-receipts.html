@@ -1,0 +1,241 @@
+<div
+  class="modal fade show d-block"
+  tabindex="-1"
+  style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px)"
+>
+  <div class="modal-dialog modal-dialog-scrollable modal-xl">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-light border-bottom px-4 py-3">
+        <h5
+          class="modal-title fw-bold text-dark d-flex align-items-center gap-2"
+          style="font-size: 0.85rem; letter-spacing: 0.05em"
+        >
+          <svg
+            class="text-danger"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+            ></path>
+          </svg>
+          UNDO PAYMENT VERIFICATION SCREEN
+        </h5>
+        <button type="button" class="btn-close" (click)="onClose()"></button>
+      </div>
+
+      <div class="modal-body p-4 bg-white">
+        <div class="d-flex flex-column gap-4">
+          <fieldset class="border rounded-3 p-4 position-relative">
+            <legend
+              class="float-none w-auto px-2 fs-6 fw-bold text-dark position-absolute top-0 start-0 translate-middle-y ms-4 bg-white"
+              style="font-size: 0.65rem !important; tracking: 0.1em"
+            >
+              RETRIEVE BY
+            </legend>
+            <div class="row g-3 align-items-end mt-1">
+              <div class="col-md-3">
+                <label class="form-label text-muted fw-bold uppercase" style="font-size: 0.65rem"
+                  >Invoice Number :</label
+                >
+                <input
+                  type="text"
+                  [(ngModel)]="searchInvoice"
+                  class="form-control form-control-sm bg-light"
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label text-muted fw-bold uppercase" style="font-size: 0.65rem"
+                  >BL Number :</label
+                >
+                <input
+                  type="text"
+                  [(ngModel)]="searchBl"
+                  class="form-control form-control-sm bg-light"
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label text-muted fw-bold uppercase" style="font-size: 0.65rem"
+                  >Cheque Number :</label
+                >
+                <input
+                  type="text"
+                  [(ngModel)]="searchCheque"
+                  class="form-control form-control-sm bg-light"
+                />
+              </div>
+              <div class="col-md-3">
+                <button
+                  type="button"
+                  (click)="retrieveReplicaData()"
+                  class="btn btn-dark btn-sm w-100 fw-bold uppercase"
+                  style="font-size: 0.65rem; height: 38px"
+                >
+                  Retrieve Matches
+                </button>
+              </div>
+            </div>
+
+            <div class="row g-3 mt-3 pt-3 border-t">
+              <div class="col-md-3">
+                <label class="form-label text-muted fw-bold uppercase" style="font-size: 0.65rem"
+                  >BL Number :</label
+                >
+                <input
+                  type="text"
+                  [value]="record?.blNo"
+                  readonly
+                  class="form-control form-control-sm bg-light text-secondary font-weight-bold"
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label text-muted fw-bold uppercase" style="font-size: 0.65rem"
+                  >Vessel Name :</label
+                >
+                <input
+                  type="text"
+                  [value]="record?.vesselName"
+                  readonly
+                  class="form-control form-control-sm bg-light text-secondary font-weight-bold"
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label text-muted fw-bold uppercase" style="font-size: 0.65rem"
+                  >Voyage Number :</label
+                >
+                <input
+                  type="text"
+                  [value]="record?.voyageNo"
+                  readonly
+                  class="form-control form-control-sm bg-light text-secondary font-weight-bold"
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label text-muted fw-bold uppercase" style="font-size: 0.65rem"
+                  >Customer Name :</label
+                >
+                <input
+                  type="text"
+                  [value]="record?.customerName"
+                  readonly
+                  class="form-control form-control-sm bg-light text-secondary font-weight-bold"
+                />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="border rounded-3 p-4 position-relative" *ngIf="record">
+            <legend
+              class="float-none w-auto px-2 fs-6 fw-bold text-dark position-absolute top-0 start-0 translate-middle-y ms-4 bg-white"
+              style="font-size: 0.65rem !important"
+            >
+              RECEIPT DETAILS
+            </legend>
+            <div class="table-responsive border rounded-2 mt-2">
+              <table class="table table-hover align-middle mb-0" style="font-size: 0.75rem">
+                <thead class="table-light">
+                  <tr>
+                    <th class="text-muted uppercase py-2">Receipt No</th>
+                    <th class="text-muted uppercase py-2">Receipt Date</th>
+                    <th class="text-muted uppercase py-2">Mode of Pay</th>
+                    <th class="text-muted uppercase py-2">Cheque No</th>
+                    <th class="text-muted uppercase py-2 text-end">Amount Received</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="fw-bold">{{ record.id }}</td>
+                    <td class="text-secondary">{{ record.date }}</td>
+                    <td>
+                      <span class="badge bg-light text-dark border uppercase">{{
+                        record.payMode
+                      }}</span>
+                    </td>
+                    <td class="text-secondary font-monospace">{{ record.chequeNo }}</td>
+                    <td class="text-end fw-bold">${{ record.amount | number: '1.2-2' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </fieldset>
+
+          <fieldset class="border rounded-3 p-4 position-relative" *ngIf="record">
+            <legend
+              class="float-none w-auto px-2 fs-6 fw-bold text-dark position-absolute top-0 start-0 translate-middle-y ms-4 bg-white"
+              style="font-size: 0.65rem !important"
+            >
+              INVOICE DETAILS
+            </legend>
+            <div class="table-responsive border rounded-2 mt-2">
+              <table class="table table-hover align-middle mb-0" style="font-size: 0.75rem">
+                <thead class="table-light">
+                  <tr>
+                    <th class="text-muted uppercase py-2">Invoice No</th>
+                    <th class="text-muted uppercase py-2">Invoice Date</th>
+                    <th class="text-muted uppercase py-2">Currency</th>
+                    <th class="text-muted uppercase py-2 text-end">Invoice Amount</th>
+                    <th class="text-muted uppercase py-2 text-end">Received Amount</th>
+                    <th class="text-muted uppercase py-2 text-end">Adjust Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="fw-bold text-primary">{{ record.invoiceNo }}</td>
+                    <td class="text-secondary">{{ record.date }}</td>
+                    <td class="fw-bold text-muted">{{ record.currency }}</td>
+                    <td class="text-end text-dark fw-bold">
+                      ${{ record.amount | number: '1.2-2' }}
+                    </td>
+                    <td class="text-end text-success fw-bold">
+                      ${{ record.amount | number: '1.2-2' }}
+                    </td>
+                    <td class="text-end text-warning fw-bold">$0.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+
+      <div class="modal-footer bg-light px-4 py-3">
+        <button
+          type="button"
+          (click)="commitUndo()"
+          class="btn btn-primary d-flex align-items-center gap-2 fw-bold uppercase shadow-sm"
+          style="font-size: 0.75rem; background-color: #ff1493; border-color: #ff1493"
+        >
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+            ></path>
+          </svg>
+          Undo Payment
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-secondary fw-bold uppercase"
+          style="font-size: 0.75rem"
+          (click)="onClose()"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
