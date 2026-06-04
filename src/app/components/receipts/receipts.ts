@@ -16,80 +16,7 @@ import { NewReceiptComponent } from '../new-receipts/new-receipts';
     NewReceiptComponent,
   ],
   templateUrl: './receipts.html',
-  styles: [
-    `
-      .tracking-tight {
-        letter-spacing: -0.025em;
-      }
-      .border-slate {
-        border-color: #dee2e6 !important;
-      }
-      .form-control:focus,
-      .form-select:focus {
-        border-color: #5e72e4 !important;
-        box-shadow:
-          0 3px 9px rgba(50, 50, 93, 0.05),
-          0 1px 3px rgba(0, 0, 0, 0.08);
-      }
-      .transition-card {
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      .transition-card:hover {
-        transform: translateY(-4px);
-        box-shadow:
-          0 7px 14px rgba(50, 50, 93, 0.1),
-          0 3px 6px rgba(0, 0, 0, 0.08) !important;
-      }
-      .page-link {
-        color: #525f7f;
-        background-color: #fff;
-        border: 1px solid #dee2e6;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-        gap: 2px;
-      }
-      .page-link.active-page {
-        background-color: #2dce89 !important;
-        border-color: #2dce89 !important;
-        color: white !important;
-        box-shadow:
-          0 4px 6px rgba(50, 50, 93, 0.11),
-          0 1px 3px rgba(0, 0, 0, 0.08) !important;
-      }
-      .page-link:hover:not(.active-page) {
-        background-color: #f6f9fc !important;
-        border-color: #cbd5e1 !important;
-      }
-      .max-w-160 {
-        max-width: 160px;
-      }
-      .border-dashed {
-        border-style: dashed !important;
-      }
-      .animate-toast {
-        animation: slideUp 0.3s ease-out;
-      }
-      @keyframes slideUp {
-        from {
-          transform: translateY(20px);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-
-      .modal-open-active aside,
-      .modal-open-active .sidebar,
-      .modal-open-active [class*='sidebar'] {
-        filter: blur(8px) !important;
-        transition: filter 0.25s ease-in-out;
-      }
-    `,
-  ],
+  styleUrls: ['./receipts.scss'] 
 })
 export class ReceiptComponent implements OnInit {
   Math = Math;
@@ -98,72 +25,72 @@ export class ReceiptComponent implements OnInit {
     {
       id: 'REC-101',
       invoiceNo: 'DI23003580',
-      customerName: 'CUSTOMER ENTITY NAME LTD',
-      blNo: 'BL-SNG-4451',
+      customerName: 'PIL SHIPPING AGENCY',
+      blNo: 'BL-00210',
+      chequeNo: 'CHQ.8821',
+      vesselName: 'KOTA RAJA',
+      voyageNo: 'V.202X',
+      date: '2026-06-01',
+      amount: 4250.00,
+      currency: 'SGD',
+      payMode: 'Cheque / TT',
+      status: 'Verified',
+    },
+    {
+      id: 'REC-102',
+      invoiceNo: 'DI23004192',
+      customerName: 'MAERSK LINE SG',
+      blNo: 'BL-11045',
       chequeNo: 'CASH',
-      vesselName: 'SINAR AMBON',
-      voyageNo: 'TESTVGM2',
-      date: '2026-05-15',
-      amount: 2166.35,
+      vesselName: 'MAERSK MC-KINNEY',
+      voyageNo: 'V.405L',
+      date: '2026-05-02',
+      amount: 1850.00,
       currency: 'SGD',
       payMode: 'Cash',
       status: 'Unverified',
     },
     {
-      id: 'REC-102',
-      invoiceNo: 'DI23004491',
-      customerName: 'GLO-BRIDGE CARRIERS PTE',
-      blNo: 'BL-NOL-8891',
-      chequeNo: 'CHQ-DB-29930',
-      vesselName: 'MAERSK MC-KINNEY MOLLER',
-      voyageNo: 'V-2619N',
-      date: '2026-05-12',
-      amount: 8450.0,
+      id: 'REC-103',
+      invoiceNo: 'DI23005501',
+      customerName: 'COSCO SHIPPING CO',
+      blNo: 'BL-77431',
+      chequeNo: 'TT 99412',
+      vesselName: 'COSCO NEBULA',
+      voyageNo: 'V.102N',
+      date: '2026-06-28',
+      amount: 9400.00,
       currency: 'USD',
       payMode: 'Cheque / TT',
       status: 'Verified',
     },
     {
-      id: 'REC-103',
-      invoiceNo: 'DI23009982',
-      customerName: 'PACIFIC HARBOR FREIGHTERS',
-      blNo: 'BL-APL-1290',
-      chequeNo: 'CHQ-CITI-44512',
-      vesselName: 'APL VANGUARD',
-      voyageNo: 'V-002E',
-      date: '2026-05-16',
-      amount: 14200.0,
-      currency: 'SGD',
-      payMode: 'Cheque / TT',
-      status: 'Unverified',
-    },
-    {
       id: 'REC-104',
-      invoiceNo: 'DI23001229',
-      customerName: 'TRIDENT FREIGHT SERVICES',
-      blNo: 'BL-COSCO-5512',
+      invoiceNo: 'DI23005511',
+      customerName: 'ONE NETWORK EXPRESS',
+      blNo: 'BL-59328',
       chequeNo: 'CASH',
-      vesselName: 'COSCO ENGLAND',
-      voyageNo: 'V-5511',
-      date: '2026-05-18',
-      amount: 980.0,
+      vesselName: 'ONE APUS',
+      voyageNo: 'V.089W',
+      date: '2026-06-03',
+      amount: 520.00,
       currency: 'SGD',
       payMode: 'Cash',
       status: 'Verified',
     },
     {
       id: 'REC-105',
-      invoiceNo: 'DI23005510',
-      customerName: 'OCEANIC ALLIANCE CO',
-      blNo: 'BL-SNG-4462',
-      chequeNo: 'CASH',
-      vesselName: 'SINAR AMBON',
-      voyageNo: 'TESTVGM2',
-      date: '2026-05-14',
-      amount: 5120.0,
+      invoiceNo: 'DI23003112',
+      customerName: 'CMA CGM AGENCIES',
+      blNo: 'BL-55412',
+      chequeNo: 'CHQ 3471',
+      vesselName: 'CMA CGM MARCO POLO',
+      voyageNo: 'V.881S',
+      date: '2026-05-15',
+      amount: 12450.00,
       currency: 'SGD',
-      payMode: 'Cash',
-      status: 'Verified',
+      payMode: 'Cheque / TT',
+      status: 'Unverified',
     },
   ];
 
@@ -171,20 +98,29 @@ export class ReceiptComponent implements OnInit {
   paginatedRecords: any[] = [];
 
   filterFromDate = '2026-05-01';
-  filterToDate = '2026-05-20';
+  filterToDate = '2026-06-30'; 
   filterInvoice = '';
-
+  searchQuery = ''; 
   currentPage = 1;
   pageSize = 6;
   totalPages = 1;
+  totalReceiptsCount = 0;
+  todaysReceiptsCount = 0;
+  pendingChequesCount = 0;
+  totalCollectionAmount = 0;
 
-  showUndoModal = false;
-  showRemoveModal = false;
-  showNewModal = false;
+  activeModal: 'new' | 'undo' | 'remove' | null = null;
   selectedRecord: any = null;
+  selectedIdsToRemove: string[] = [];
+  toastMessage: string | null = null;
 
   toastVisible = false;
   toastText = '';
+  showNewModal = false;
+  showRemoveModal = false;
+  showUndoModal = false;
+
+  totalPagesCount= 0
 
   ngOnInit() {
     this.applyFilters();
@@ -194,21 +130,43 @@ export class ReceiptComponent implements OnInit {
     this.filteredRecords = this.ledgerData.filter((item) => {
       let mFrom = this.filterFromDate ? new Date(item.date) >= new Date(this.filterFromDate) : true;
       let mTo = this.filterToDate ? new Date(item.date) <= new Date(this.filterToDate) : true;
+      
+      let searchKey = this.searchQuery ? this.searchQuery.toLowerCase().trim() : '';
+      let mSearch = searchKey
+        ? item.invoiceNo.toLowerCase().includes(searchKey) ||
+          item.customerName.toLowerCase().includes(searchKey) ||
+          item.vesselName.toLowerCase().includes(searchKey) ||
+          item.id.toLowerCase().includes(searchKey)
+        : true;
+
       let mInv = this.filterInvoice
         ? item.invoiceNo.toLowerCase().includes(this.filterInvoice.toLowerCase().trim())
         : true;
-      return mFrom && mTo && mInv;
+
+      return mFrom && mTo && mInv && mSearch;
     });
 
     this.currentPage = 1;
+    this.updateMetricsCounters();
     this.calculatePagination();
-    // this.triggerToast('Ledger query filters applied.');
+  }
+
+  updateMetricsCounters() {
+    this.totalReceiptsCount = this.ledgerData.length;
+    
+    this.todaysReceiptsCount = this.ledgerData.filter(item => item.date === '2026-06-01').length;
+    this.pendingChequesCount = this.ledgerData.filter(item => item.status === 'Unverified').length;
+    
+    this.totalCollectionAmount = this.ledgerData
+      .filter(item => item.currency === 'SGD')
+      .reduce((sum, item) => sum + item.amount, 0);
   }
 
   resetFilters() {
-    this.filterFromDate = '2026-05-01';
-    this.filterToDate = '2026-05-20';
+    this.filterFromDate = '2026-06-01';
+    this.filterToDate = '2026-06-30';
     this.filterInvoice = '';
+    this.searchQuery = '';
     this.applyFilters();
   }
 
@@ -218,6 +176,14 @@ export class ReceiptComponent implements OnInit {
     this.paginatedRecords = this.filteredRecords.slice(start, start + this.pageSize);
   }
 
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  goToPage(page: number) {
+    this.changePage(page);
+  }
+
   changePage(page: number) {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
@@ -225,40 +191,83 @@ export class ReceiptComponent implements OnInit {
     }
   }
 
+  toggleSelectAllRows(event: any) {
+    if (event.target.checked) {
+      this.selectedIdsToRemove = this.paginatedRecords.map(r => r.id);
+    } else {
+      this.selectedIdsToRemove = [];
+    }
+  }
+
+  isAllRowsSelected(): boolean {
+    if (this.paginatedRecords.length === 0) return false;
+    return this.paginatedRecords.every(r => this.selectedIdsToRemove.includes(r.id));
+  }
+
+  toggleRemoveSelection(id: string) {
+    if (this.selectedIdsToRemove.includes(id)) {
+      this.selectedIdsToRemove = this.selectedIdsToRemove.filter(item => item !== id);
+    } else {
+      this.selectedIdsToRemove.push(id);
+    }
+  }
+
+  openModal(type: 'new' | 'undo' | 'remove') {
+    this.activeModal = type;
+    if (type === 'new') this.showNewModal = true;
+    if (type === 'undo') this.showUndoModal = true;
+    if (type === 'remove') this.showRemoveModal = true;
+  }
+
   openUndoModal(item: any) {
     this.selectedRecord = item;
-    this.showUndoModal = true;
+    this.openModal('undo');
   }
 
   openRemoveModal(item: any) {
     this.selectedRecord = item;
-    this.showRemoveModal = true;
+    this.openModal('remove');
   }
 
   openNewReceiptModal() {
-    this.showNewModal = true;
-    // this.triggerToast('Create Outward Cargo form initialization triggered.');
+    this.openModal('new');
+  }
+
+  closeModal() {
+    this.activeModal = null;
+    this.showNewModal = false;
+    this.showUndoModal = false;
+    this.showRemoveModal = false;
+    this.selectedRecord = null;
   }
 
   handleSaveNewReceipt(newEntry: any) {
     this.ledgerData.unshift(newEntry);
     this.applyFilters();
-    // this.triggerToast(`New Invoice Registry created successfully: ${newEntry.id}`);
+    this.closeModal();
+    this.triggerToast(`Successfully committed invoice trail record: ${newEntry.id}`);
   }
 
   handleToastNotification(msg: string) {
-    // this.triggerToast(msg);
+    this.triggerToast(msg);
   }
 
   handleRemoval(event: { msg: string; ids: string[] }) {
     this.ledgerData = this.ledgerData.filter((item) => !event.ids.includes(item.id));
     this.applyFilters();
-    // this.triggerToast(event.msg);
+    this.closeModal();
+    this.triggerToast(event.msg);
   }
 
-  // triggerToast(msg: string) {
-  //   this.toastText = msg;
-  //   this.toastVisible = true;
-  //   setTimeout(() => (this.toastVisible = false), 4000);
-  // }
+  triggerToast(msg: string) {
+    this.toastMessage = msg;
+    this.toastText = msg;
+    this.toastVisible = true;
+    setTimeout(() => {
+      this.toastMessage = null;
+      this.toastVisible = false;
+    }, 4000);
+  }
+
+  
 }

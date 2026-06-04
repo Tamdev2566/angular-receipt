@@ -3,13 +3,14 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PasswordMgmt } from '../password-mgmt/password-mgmt';
 import { Router, RouterModule } from '@angular/router';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, PasswordMgmt],
+  imports: [CommonModule, FormsModule, RouterModule, PasswordMgmt,LoaderComponent],
 })
 export class LoginPage {
   username = '';
@@ -22,6 +23,8 @@ export class LoginPage {
   formSubmitted = false;
   showForgotModal: boolean = false;
   modalMode: 'forgot' | 'change' = 'forgot';
+
+   isGlobalLoading: boolean = false;
 
   constructor(private router: Router) {}
 
@@ -42,6 +45,8 @@ export class LoginPage {
 
   onSubmit(form: any): void {
     this.formSubmitted = true;
+    this.isGlobalLoading = true;
+
 
     console.log('Form Invalid Status:', form.invalid);
 
@@ -50,16 +55,16 @@ export class LoginPage {
       return;
     }
 
-    this.isLoading = true;
+    // this.isLoading = true;
 
     setTimeout(() => {
-      this.isLoading = false;
+      // this.isLoading = false;
       this.isSuccess = true;
 
       localStorage.setItem('angular_token', 'dummy_token_v1');
       localStorage.setItem('user', JSON.stringify({ name: this.username }));
-
+      this.isGlobalLoading = false;
       this.router.navigate(['/home']);
-    }, 1500);
+    }, 5000);
   }
 }

@@ -4,9 +4,11 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(13, 25, 44, 0.45);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  
+  background: rgba(15, 23, 42, 0.35) !important; 
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,22 +26,22 @@
 }
 
 .pl__ring--a {
-  stroke: #000000;
+  stroke: #48bb78 !important;
 }
 
 .pl__ring--b {
   animation-name: ringB;
-  stroke: #7e7e7e;
+  stroke: rgba(255, 255, 255, 0.9) !important; 
 }
 
 .pl__ring--c {
   animation-name: ringC;
-  stroke: #686868;
+  stroke: #38a169 !important; 
 }
 
 .pl__ring--d {
   animation-name: ringD;
-  stroke: #000000;
+  stroke: rgba(255, 255, 255, 0.4) !important; 
 }
 
 @keyframes ringA {

@@ -7,40 +7,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './new-receipts.html',
-  styles: [
-    `
-      .border-slate {
-        border-color: #dee2e6 !important;
-      }
-      .custom-argon-check:checked {
-        background-color: #2dce89 !important;
-        border-color: #2dce89 !important;
-      }
-      .custom-argon-radio:checked {
-        background-color: #f5365c !important;
-        border-color: #f5365c !important;
-      }
-      .cursor-pointer {
-        cursor: pointer;
-      }
-      .animate-fade {
-        animation: fadeIn 0.25s ease-out;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-      @media (min-width: 768px) {
-        .w-md-auto {
-          width: auto !important;
-        }
-      }
-    `,
-  ],
+  styleUrls: ['./new-receipts.scss'],
 })
 export class NewReceiptComponent {
   @Output() close = new EventEmitter<void>();

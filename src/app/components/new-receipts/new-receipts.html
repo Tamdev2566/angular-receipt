@@ -1,7 +1,7 @@
 <div
   class="modal fade show d-block animate-fade"
   tabindex="-1"
-  style="background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(8px); z-index: 1060 !important"
+  style="background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(8px); position: fixed; top:0; left:0; width:100vw; height:100vh; z-index: 999999 !important;"
 >
   <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 90%; width: 1140px">
     <div
@@ -20,7 +20,7 @@
             style="color: #2dce89 !important; line-height: 1"
             >+</span
           >
-          CREATE OUTWARD CARGO RECEIPT (GLOSSYS FORM)
+          CREATE RECEIPT (GLOSSYS FORM)
         </h5>
         <button
           type="button"
@@ -53,7 +53,7 @@
 
           <label
             class="d-flex align-items-center gap-2 cursor-pointer m-0 fw-bold"
-            style="color: #f5365c"
+            style="color: #525f7f"
           >
             <input
               type="checkbox"
@@ -66,14 +66,14 @@
         </div>
       </div>
 
-      <div class="modal-body p-4 bg-light" style="font-size: 0.75rem">
-        <div class="d-flex flex-column gap-4">
+      <div class="modal-body p-2 bg-light" style="font-size: 0.75rem">
+        <div class="d-flex flex-column gap-2">
           <div class="bg-white border-0 rounded-3 p-4 shadow-sm">
             <h6
-              class="text-uppercase fw-bold pb-2 mb-3 border-bottom"
+              class="text-uppercase fw-bold pb-2 mb-2 border-bottom"
               style="
                 font-size: 0.7rem;
-                color: #f5365c !important;
+                color: #32325d !important;
                 letter-spacing: 0.05em;
                 border-color: #f8f9fa !important;
               "
@@ -134,8 +134,8 @@
                       name="currency"
                       value="SGD"
                       [(ngModel)]="newRecord.currency"
-                      class="form-check-input custom-argon-radio m-0"
-                      style="width: 15px; height: 15px"
+                      class="form-check-input custom-argon-radio m-1"
+                      style="width: 13px; height: 13px"
                     />
                     SGD
                   </label>
@@ -147,7 +147,7 @@
                       name="currency"
                       value="USD"
                       [(ngModel)]="newRecord.currency"
-                      class="form-check-input custom-argon-radio m-0"
+                      class="form-check-input custom-argon-radio m-1"
                       style="width: 15px; height: 15px"
                     />
                     USD
@@ -181,17 +181,17 @@
 
           <div class="bg-white border-0 rounded-3 p-4 shadow-sm">
             <h6
-              class="text-uppercase fw-bold pb-2 mb-3 border-bottom"
+              class="text-uppercase fw-bold pb-2 mb-2 border-bottom"
               style="
                 font-size: 0.7rem;
-                color: #f5365c !important;
+                color: #32325d !important;
                 letter-spacing: 0.05em;
                 border-color: #f8f9fa !important;
               "
             >
               Search By Reference
             </h6>
-            <div class="row g-3 mb-3">
+            <div class="row g-3 mb-2">
               <div class="col-sm-6 col-md-3">
                 <label
                   class="form-label text-muted fw-bold text-uppercase m-0 mb-1"
@@ -334,7 +334,7 @@
                       style="font-size: 0.6rem"
                       >SEQ: 1</span
                     >
-                    <span class="fw-bold fs-6" style="color: #f5365c">{{
+                    <span class="fw-bold fs-6" style="color: #32325d">{{
                       newRecord.invoiceNo || 'N/A'
                     }}</span>
                   </div>
@@ -405,7 +405,7 @@
 
           <div
             class="border rounded-3 p-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-4 mb-2"
-            style="background-color: #fff5f7; border-color: #fbcfe8 !important"
+            style="background-color: #f5fffa; border-color: #cffbe1 !important"
           >
             <div
               class="d-flex flex-column gap-2 w-100"
@@ -433,10 +433,10 @@
                 class="d-flex justify-content-between align-items-center pt-2 border-top"
                 style="border-color: #fbcfe8 !important"
               >
-                <span class="fw-bold" style="color: #f5365c">Current Balance :</span>
+                <span class="fw-bold" style="color: #0b371d">Current Balance :</span>
                 <div
                   class="bg-white border rounded text-end fw-bold px-3 py-1 font-monospace"
-                  style="width: 100px; border-color: #fbcfe8 !important; color: #f5365c"
+                  style="width: 100px; border-color: #cffbe0 !important; color: #0b371d"
                 >
                   0.00
                 </div>
@@ -479,7 +479,7 @@
                 style="
                   font-size: 0.7rem;
                   height: 38px;
-                  background-color: #ec2570;
+                  background-color: #2dce89;
                   border-radius: 0.375rem;
                 "
               >

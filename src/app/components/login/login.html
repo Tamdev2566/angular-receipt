@@ -145,3 +145,4 @@
 
 <app-password-mgmt *ngIf="showForgotModal" [mode]="modalMode" (close)="showForgotModal = false">
 </app-password-mgmt>
+<app-loader [isLoading]="isGlobalLoading" style="position: relative; z-index: 999999"></app-loader>
