@@ -14,7 +14,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #f8f9fe; /* Changed: Matching dashboard-wrapper primary gray */
+  background: #f8f9fe;
   font-family: 'Inter', sans-serif;
 }
 
@@ -25,22 +25,20 @@ app-root {
   overflow: hidden;
 }
 
-/* MAIN LAYOUT */
 .login-wrapper {
   width: 100vw;
   height: 100vh;
-  background: #f8f9fe; /* Changed */
+  background: #f8f9fe; 
 }
 
 .login-card {
   width: 100%;
   height: 100%;
   display: flex;
-  background: #f8f9fe; /* Changed */
+  background: #f8f9fe; 
   position: relative;
 }
 
-/* LEFT PANEL  */
 .left-panel {
   width: 45%;
   height: 100%;
@@ -60,7 +58,6 @@ app-root {
   z-index: 12;
 }
 
-/* HEADER */
 .system-header {
   display: flex;
   align-items: center;
@@ -76,17 +73,17 @@ app-root {
 
 .company-details h1 {
   margin: 0;
-  color: #32325d; /* Changed: Dark text variant from original dashboard layout font styles */
+  color: #32325d;
   font-size: 28px;
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: 0.5px;
-  text-shadow: none; /* Changed: Clean contrast clear flat-design layout look */
+  text-shadow: none; 
 }
 
 .company-details h2 {
   margin: 6px 0 0;
-  color: #2e7d32; /* Changed: Dashboard layout premium green indicator color */
+  color: #2e7d32;
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -96,10 +93,9 @@ app-root {
   width: 100%;
 }
 
-/* INPUT BOX CONTAINER */
 .custom-input {
-  background: #ffffff; /* Changed: Crisp card white base alignment */
-  border: 1px solid #e2e8f0; /* Changed: Subtle border from original light panels profile */
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 14px;
   padding: 12px 18px;
   margin-bottom: 20px;
@@ -112,28 +108,27 @@ app-root {
 
 .custom-input:hover {
   background: #ffffff;
-  border-color: rgba(46, 125, 50, 0.4); /* Changed: Light green border tint */
+  border-color: rgba(46, 125, 50, 0.4); 
 }
 
 .custom-input:focus-within {
   background: #ffffff;
-  border-color: #2e7d32; /* Changed: Active corporate theme core green focus */
+  border-color: #2e7d32;
   box-shadow:
     0 0 0 1px #2e7d32,
-    0 4px 20px rgba(46, 125, 50, 0.1) !important; /* Changed */
+    0 4px 20px rgba(46, 125, 50, 0.1) !important; 
 }
 
 .custom-input label {
   display: block;
   margin-bottom: 6px;
-  color: #8898aa; /* Changed: Neutral muted slate layout labeling */
+  color: #8898aa; 
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.8px;
   text-transform: uppercase;
 }
 
-/* INPUT WRAPPER */
 .input-wrapper {
   display: flex;
   align-items: center;
@@ -149,7 +144,7 @@ app-root {
   border: none;
   outline: none;
   background: transparent !important;
-  color: #525f7f !important; /* Changed: Readable dark slate character sets */
+  color: #525f7f !important; 
   font-size: 15px;
   font-weight: 500;
   padding: 4px 0;
@@ -159,32 +154,31 @@ app-root {
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus,
   &:-webkit-autofill:active {
-    -webkit-text-fill-color: #525f7f !important; /* Changed */
+    -webkit-text-fill-color: #525f7f !important; 
     transition: background-color 5000s ease-in-out 0s;
     box-shadow: inset 0 0 0 20px transparent !important;
   }
 }
 
 .input-wrapper input::placeholder {
-  color: #adb5bd; /* Changed */
+  color: #adb5bd; 
 }
 
 .input-wrapper i {
-  color: #8898aa; /* Changed */
+  color: #8898aa; 
   font-size: 14px;
   opacity: 0.8;
   display: flex;
   align-items: center;
 }
 
-/* EYE BUTTON */
 .eye-btn {
   background: transparent;
   border: none;
   outline: none;
   cursor: pointer;
   padding: 0;
-  color: #8898aa; /* Changed */
+  color: #8898aa; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -195,25 +189,23 @@ app-root {
 }
 
 .eye-btn:hover {
-  color: #2e7d32; /* Changed */
+  color: #2e7d32; 
   opacity: 1;
 }
 
-/* VALIDATION */
 .input-error {
-  border-color: #dc3545 !important; /* Changed: Bootstrap text-danger fallback compliance */
-  background: rgba(220, 53, 69, 0.03) !important; /* Changed */
-  box-shadow: 0 0 0 1px rgba(220, 53, 69, 0.2) !important; /* Changed */
+  border-color: #dc3545 !important; 
+  background: rgba(220, 53, 69, 0.03) !important; 
+  box-shadow: 0 0 0 1px rgba(220, 53, 69, 0.2) !important; 
 }
 
 .error-text {
   margin-top: 6px;
-  color: #dc3545; /* Changed */
+  color: #dc3545; 
   font-size: 11px;
   font-weight: 500;
 }
 
-/* FORGOT PASSWORD */
 .forgot-password {
   display: flex;
   justify-content: flex-end;
@@ -221,7 +213,7 @@ app-root {
 }
 
 .forgot-password a {
-  color: #525f7f; /* Changed */
+  color: #525f7f; 
   font-size: 13px;
   font-weight: 500;
   text-decoration: none;
@@ -229,10 +221,9 @@ app-root {
 }
 
 .forgot-password a:hover {
-  color: #2e7d32; /* Changed */
+  color: #2e7d32; 
 }
 
-/* LOG IN BUTTON */
 .button-group {
   margin-top: 24px;
 }
@@ -246,18 +237,18 @@ app-root {
     135deg,
     #6fd39c 0%,
     #8be4b4 100%
-  ); /* Changed: Exact layout emerald mint banner setup matching */
+  );
   color: #ffffff;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(111, 211, 156, 0.35); /* Changed */
+  box-shadow: 0 4px 15px rgba(111, 211, 156, 0.35); 
   transition: all 0.2s ease;
 }
 
 .primary-btn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(111, 211, 156, 0.5); /* Changed */
+  box-shadow: 0 6px 20px rgba(111, 211, 156, 0.5); 
 }
 
 .primary-btn:disabled {
@@ -265,7 +256,6 @@ app-root {
   cursor: not-allowed;
 }
 
-/* FOOTER */
 .footer-links {
   position: absolute;
   left: 60px;
@@ -278,13 +268,13 @@ app-root {
 
 .footer-links a,
 .footer-links span {
-  color: #8898aa; /* Changed */
+  color: #8898aa; 
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .footer-links a:hover {
-  color: #2e7d32; /* Changed */
+  color: #2e7d32; 
 }
 
 .right-panel {
@@ -301,11 +291,10 @@ app-root {
   background: linear-gradient(
     to right,
     #f8f9fe 0%,
-    /* Changed: Clean transitions blending inside background panels color template */ #f8f9fe 30%,
-    /* Changed */ rgba(248, 249, 254, 0.95) 42%,
-    /* Changed */ rgba(248, 249, 254, 0.75) 55%,
-    /* Changed */ rgba(248, 249, 254, 0.2) 78%,
-    /* Changed */ transparent 100%
+     rgba(248, 249, 254, 0.95) 42%,
+     rgba(248, 249, 254, 0.75) 55%,
+     rgba(248, 249, 254, 0.2) 78%,
+     transparent 100%
   );
   z-index: 2;
 }
@@ -317,7 +306,7 @@ app-root {
     circle at 15% 50%,
     rgba(111, 211, 156, 0.15) 0%,
     transparent 50%
-  ); /* Changed: Soft glow overlay matching brand greens colors context */
+  ); 
   z-index: 3;
 }
 
@@ -328,11 +317,10 @@ app-root {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.9) grayscale(15%); /* Changed: Bright tracking for standard clean minimal theme setups style visibility */
+  filter: brightness(0.9) grayscale(15%); 
   z-index: 1;
 }
 
-/* RESPONSIVE LAYOUT */
 @media (max-width: 992px) {
   .left-panel {
     width: 100%;
@@ -341,7 +329,7 @@ app-root {
     padding: 40px 24px;
   }
   .overlay-dark {
-    background: linear-gradient(to bottom, #f8f9fe 0%, rgba(248, 249, 254, 0.7) 100%); /* Changed */
+    background: linear-gradient(to bottom, #f8f9fe 0%, rgba(248, 249, 254, 0.7) 100%); 
   }
   .footer-links {
     position: relative;
@@ -360,26 +348,87 @@ app-root {
   margin-bottom: 20px;
 
   .action-link {
-    color: #525f7f; /* Changed */
+    color: #525f7f; 
     font-size: 13px;
     font-weight: 500;
     text-decoration: none;
     transition: color 0.2s ease;
 
     &:hover {
-      color: #2e7d32; /* Changed */
+      color: #2e7d32; 
     }
   }
 
   .highlight-action {
-    color: #2e7d32; /* Changed */
+    color: #2e7d32; 
     &:hover {
-      color: #32325d; /* Changed */
+      color: #32325d; 
     }
   }
 
   .divider-dot {
-    color: rgba(0, 0, 0, 0.1); /* Changed */
+    color: rgba(0, 0, 0, 0.1);
     font-size: 12px;
+  }
+}
+
+@media (max-width: 992px) {
+  html, body, app-root, .login-wrapper, .login-card {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 100vw !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .left-panel {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    padding: 30px 16px !important;
+    background: #f8f9fe !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .form-wrapper, 
+  .form-container, 
+  form, 
+  .custom-input, 
+  .input-wrapper, 
+  .password-actions-row, 
+  .button-group, 
+  .primary-btn {
+    width: 100% !important; 
+    max-width: 100% !important; 
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .right-panel {
+    display: none !important;
+    width: 0 !important;
+    max-width: 0 !important;
+    flex: 0 !important;
+  }
+
+  .system-header {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    
+    .company-logo img {
+      width: 65px !important;
+      height: auto !important;
+    }
+  }
+
+  .company-details h1 {
+    font-size: 18px !important; 
+    white-space: normal !important; 
   }
 }

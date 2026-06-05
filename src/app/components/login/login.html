@@ -14,10 +14,7 @@
 
         <div class="form-container">
           <form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)" autocomplete="off">
-            <div
-              class="custom-input"
-              [class.input-error]="userId.invalid && (userId.touched || formSubmitted)"
-            >
+            <div class="custom-input" [class.input-error]="userId.invalid && (userId.touched || formSubmitted)">
               <label>User ID</label>
               <div class="input-wrapper">
                 <input
@@ -38,12 +35,7 @@
               </div>
             </div>
 
-            <div
-              class="custom-input"
-              [class.input-error]="
-                passwordField.invalid && (passwordField.touched || formSubmitted)
-              "
-            >
+            <div class="custom-input" [class.input-error]="passwordField.invalid && (passwordField.touched || formSubmitted)">
               <label>Password</label>
               <div class="input-wrapper">
                 <input
@@ -78,39 +70,23 @@
                     stroke="currentColor"
                     stroke-width="2"
                   >
-                    <path
-                      d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a21.8 21.8 0 0 1 5.06-6.94"
-                    ></path>
-                    <path
-                      d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.8 21.8 0 0 1-3.17 4.62"
-                    ></path>
+                    <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a21.8 21.8 0 0 1 5.06-6.94"></path>
+                    <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.8 21.8 0 0 1-3.17 4.62"></path>
                     <path d="M1 1l22 22"></path>
                     <path d="M9.88 9.88A3 3 0 1 0 14.12 14.12"></path>
                   </svg>
                 </button>
               </div>
-              <div
-                class="error-text"
-                *ngIf="passwordField.invalid && (passwordField.touched || formSubmitted)"
-              >
+              <div class="error-text" *ngIf="passwordField.invalid && (passwordField.touched || formSubmitted)">
                 <span *ngIf="passwordField.errors?.['required']"> Password is required </span>
-                <span *ngIf="passwordField.errors?.['minlength']">
-                  Minimum 6 characters required
-                </span>
+                <span *ngIf="passwordField.errors?.['minlength']"> Minimum 6 characters required </span>
               </div>
             </div>
 
             <div class="password-actions-row">
-              <a href="#" class="action-link" (click)="openForgotModal($event, 'forgot')"
-                >Forgot Password?</a
-              >
+              <a href="#" class="action-link" (click)="openForgotModal($event, 'forgot')">Forgot Password?</a>
               <span class="divider-dot">•</span>
-              <a
-                href="#"
-                class="action-link highlight-action"
-                (click)="openForgotModal($event, 'change')"
-                >Change Password?</a
-              >
+              <a href="#" class="action-link highlight-action" (click)="openForgotModal($event, 'change')">Change Password?</a>
             </div>
 
             <div class="button-group">
@@ -143,6 +119,5 @@
   </div>
 </div>
 
-<app-password-mgmt *ngIf="showForgotModal" [mode]="modalMode" (close)="showForgotModal = false">
-</app-password-mgmt>
+<app-password-mgmt *ngIf="showForgotModal" [mode]="modalMode" (close)="showForgotModal = false"></app-password-mgmt>
 <app-loader [isLoading]="isGlobalLoading" style="position: relative; z-index: 999999"></app-loader>

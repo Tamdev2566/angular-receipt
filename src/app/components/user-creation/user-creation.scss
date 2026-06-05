@@ -37,28 +37,13 @@ $border-white: rgba(255, 255, 255, 0.2);
   }
 }
 
-.filter-glass-bar {
-  background: rgba(255, 255, 255, 0.12) !important; 
-  backdrop-filter: blur(20px) !important;            
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15) !important;
-  border-radius: 0.75rem;
-
-  .table-search-box {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    
-    &::placeholder {
-      color: rgba(255, 255, 255, 0.4) !important;
-    }
-    &:focus {
-      background: rgba(255, 255, 255, 0.18) !important;
-      border-color: $primary-mint !important;
-    }
-  }
+.avatar-circle-ui {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2dce89 0%, #21854d 100%);
+  font-size: 14px;
 }
-
 
 .card.metric-glass-card {
   background: rgba(255, 255, 255, 0.45) !important; 
@@ -90,31 +75,6 @@ $border-white: rgba(255, 255, 255, 0.2);
   text-shadow: none !important; 
 }
 
-.font-amount-title {
-  font-weight: 700 !important;
-  font-size: 1.25rem;
-  color: #172b4d !important; 
-  text-shadow: none !important;
-}
-
-.core-action-card-btn {
-  border-color: #525f7f !important;
-  color: #525f7f !important;
-  margin-right: 0px !important;
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  height: 32px;
-  background: transparent !important;
-  transition: all 0.2s;
-
-  &:hover {
-    background: #525f7f !important;
-    color: #ffffff !important;
-    border-color: #525f7f !important;
-  }
-}
-
 .core-action-card-btn-danger {
   background-color: rgba(245, 54, 92, 0.9) !important;
   border: none !important;
@@ -131,51 +91,78 @@ $border-white: rgba(255, 255, 255, 0.2);
   }
 }
 
-.text-white-50 { 
-  color: #525f7f !important;
-}
-
-.text-white { 
-  color: #2b385c !important; 
-  font-weight: 500 !important;
-}
-.text-header { 
-  color: #ffffff !important; 
-  font-weight: 500 !important;
-}
-
-.text-white-70 { 
-  color: #4a5568 !important; 
-}
-
-.border-white-10 { 
-  border-color: rgba(0, 0, 0, 0.08) !important; 
-}
-
-.code-light {
-  background: rgba(0, 0, 0, 0.05) !important;
-  color: #b83280 !important; 
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: 600;
-}
-
-
-.text-success-bright { color: #2dce89 !important; }
-.text-warning-bright { color: #fb6340 !important; }
-.bg-success-light { background-color: rgba(45, 206, 137, 0.18) !important; }
-.bg-warning-light { background-color: rgba(251, 99, 64, 0.18) !important; }
+.text-white-50 { color: #525f7f !important; }
+.text-white { color: #2b385c !important; font-weight: 500 !important; }
+.text-header { color: #ffffff !important; font-weight: 500 !important; }
+.border-white-10 { border-color: rgba(0, 0, 0, 0.08) !important; }
 .mint-text { color: #21854d !important; font-weight: 600; } 
-
-.pag-btn {
-  background: transparent !important;
-  color: #525f7f !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+.bg-success-light { background-color: rgba(45, 206, 137, 0.18) !important; }
+.text-success-bright { color: #2dce89 !important; }
+.no-records-glass {
+  background: rgba(255, 255, 255, 0.15) !important; 
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2) !important;
   
-  &:hover { background: rgba(0, 0, 0, 0.05) !important; color: #172b4d !important; }
-  &.active-p { background: #48bb78 !important; border-color: #48bb78 !important; color: #ffffff !important; font-weight: 700; }
+  h6 {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important; // Gives solid text pop look
+    letter-spacing: 0.5px !important;
+  }
+
+  .text-warning {
+    color: #fcc013 !important; 
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+  }
 }
 
+.custom-modal-backdrop-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: rgba(0, 0, 0, 0.45) !important; 
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 999999 !important;
+}
+
+.custom-modal-dialog-card {
+  width: 100%;
+  max-width: 540px; 
+  background-color: #ffffff !important;
+  box-shadow: 0 15px 35px rgba(50, 50, 93, 0.2), 0 5px 15px rgba(0, 0, 0, 0.17) !important;
+  animation: modalSlideInEffect 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  @media (max-width: 575.98px) {
+    width: 92% !important;
+    padding: 20px 16px !important;
+  }
+}
+
+.custom-input-field {
+  height: 34px !important;
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 4px !important;
+  font-size: 13px !important;
+  color: #525f7f !important;
+
+  &:focus {
+    border-color: #2dce89 !important;
+    box-shadow: none !important;
+  }
+}
+
+@keyframes modalSlideInEffect {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
 
 @media (max-width: 991.98px) {
   .row {
@@ -226,24 +213,6 @@ $border-white: rgba(255, 255, 255, 0.2);
       max-width: 70% !important; 
     }
   }
-
-  .card-body .row.g-2 {
-    display: flex !important;
-    flex-direction: row !important; 
-    width: 100% !important;
-    margin: 0 !important;
-
-    .col-6 {
-      flex: 1 !important;
-      padding: 0 4px !important;
-    }
-    
-    .core-action-card-btn,
-    .core-action-card-btn-danger {
-      width: 100% !important;
-      height: 36px !important;
-    }
-  }
 }
 
 @media (max-width: 480px) {
@@ -257,16 +226,6 @@ $border-white: rgba(255, 255, 255, 0.2);
       width: 100% !important;
       display: flex !important;
       justify-content: center !important;
-    }
-  }
-
-  .card-body .row.g-2 {
-    flex-direction: column !important;
-    gap: 8px !important;
-    
-    .col-6 {
-      width: 100% !important;
-      padding: 0 !important;
     }
   }
 }

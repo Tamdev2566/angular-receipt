@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 
-.exact-floating-sidebar {
+.floating-sidebar {
   font-family: 'Open Sans', sans-serif;
   border-radius: 1rem !important;
 
@@ -43,7 +43,7 @@
   }
 }
 
-.custom-argon-menu-scroller {
+.custom-menu-scroller {
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;

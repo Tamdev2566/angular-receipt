@@ -42,11 +42,31 @@ export class LoginPage {
     this.modalMode = modeType;
     this.showForgotModal = true;
   }
+  
+// onSubmit(form: any): void {
+//   this.formSubmitted = true; 
+
+//   console.log('Form Invalid Status:', form.invalid);
+
+//   if (form.invalid) {
+//     form.control.markAllAsTouched();
+//     return;
+//   }
+
+//   this.isGlobalLoading = true;
+
+//   setTimeout(() => {
+//     this.isSuccess = true;
+
+//     localStorage.setItem('angular_token', 'dummy_token_v1');
+//     localStorage.setItem('user', JSON.stringify({ name: this.username }));
+//     this.isGlobalLoading = false;
+//     this.router.navigate(['/home']);
+//   }, 5000);
+// }
 
   onSubmit(form: any): void {
     this.formSubmitted = true;
-    this.isGlobalLoading = true;
-
 
     console.log('Form Invalid Status:', form.invalid);
 
@@ -55,16 +75,32 @@ export class LoginPage {
       return;
     }
 
-    // this.isLoading = true;
+    const systemUsers = JSON.parse(localStorage.getItem('system_users_db') || '[]');
+    
+    const matchedUser = systemUsers.find((user: any) => 
+      user.userCode.toLowerCase() === this.username.toLowerCase() && 
+      user.password === this.password
+    );
+
+    if (!matchedUser) {
+      alert('Invalid User Code or Password credential entries! Access Denied.');
+      return;
+    }
+
+    this.isGlobalLoading = true;
 
     setTimeout(() => {
-      // this.isLoading = false;
       this.isSuccess = true;
 
       localStorage.setItem('angular_token', 'dummy_token_v1');
-      localStorage.setItem('user', JSON.stringify({ name: this.username }));
+      localStorage.setItem('user', JSON.stringify({ 
+        name: matchedUser.userName, 
+        code: matchedUser.userCode,
+        id: matchedUser.userId 
+      }));
+      
       this.isGlobalLoading = false;
       this.router.navigate(['/home']);
-    }, 5000);
+    }, 2000);
   }
 }

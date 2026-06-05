@@ -44,6 +44,17 @@ export class ModuleService {
         { title: 'Update Cheque', link: '/home/update-cheque' },
       ],
     },
+     {
+      title: 'Administrative',
+      icon: 'fa-solid fa-user',
+      hasSubmenu: true,
+      isExpanded: false,
+      submodules: [
+        { title: 'User Creation', link: '/home/user' },
+        // { title: 'Remove Cheque', link: '/home/remove-cheque' },
+        // { title: 'Update Cheque', link: '/home/update-cheque' },
+      ],
+    },
   ];
 
   getMenus(): MenuItem[] {

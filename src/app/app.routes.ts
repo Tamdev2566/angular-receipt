@@ -46,6 +46,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
       },
+      {
+        path: 'user',
+        loadComponent: () =>
+          import('./components/user-creation/user-creation').then((m) => m.UserCreation),
+      },
     ],
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },

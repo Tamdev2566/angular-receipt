@@ -1,34 +1,55 @@
-.exact-argon-banner {
-  background: transparent !important;
-  background-image: none !important;
-  background-color: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border-bottom: none !important;
-  box-shadow: none !important;
+.header-navbar-wrapper {
+  min-height: 70px; 
+  background: transparent;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start;
 }
 
-.dashboard-main-view {
-  background: transparent !important;
-  height: calc(100vh - 85px);
-  overflow-y: auto;
-  scrollbar-width: none;
-  position: relative;
-  z-index: 5;
+.custom-hamburger-nav {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px !important; 
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background-color: #ffffff !important;
+  color: #333333;
+  margin: 0 !important;
 
-  &::-webkit-scrollbar {
-    display: none;
+  @media (min-width: 768px) {
+    display: none !important; 
   }
 }
 
-.exact-argon-banner {
-  background: linear-gradient(
-    135deg,
-    rgba(111, 211, 156, 0.2) 0%,
-    rgba(139, 228, 180, 0.05) 100%
-  ) !important;
+.sidebar-container {
+  width: 270px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000 !important;
 
-  backdrop-filter: none !important;
-  background-color: transparent !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+  @media (max-width: 767.98px) {
+    position: fixed !important;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100vh;
+    transform: translateX(-105%); 
+    
+    &.active {
+      transform: translateX(0);
+    }
+  }
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  backdrop-filter: blur(2px);
 }
