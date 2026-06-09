@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AlertService } from '../../services/alertService/alert';
+import { AlertService, AlertConfig } from '../../services/alertService/alert';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-alert-message',
@@ -9,23 +10,40 @@ import { AlertService } from '../../services/alertService/alert';
   templateUrl: './alert.html',
   styleUrls: ['./alert.scss'],
 })
-export class AlertMessage {
-  constructor(public alertService: AlertService) {}
+export class AlertMessage implements OnInit, OnDestroy {
+  visible: boolean = false;
+  type: string = 'success';
+  title: string = '';
+  message: string = '';
 
-  get visible() {
-    return this.alertService.visible;
-  }
-  get type() {
-    return this.alertService.type;
-  }
-  get title() {
-    return this.alertService.title;
-  }
-  get message() {
-    return this.alertService.message;
+  private alertSubscription!: Subscription;
+
+  constructor(
+    private alertService: AlertService,
+    private cdr: ChangeDetectorRef,
+  ) {}
+
+  ngOnInit(): void {
+    this.alertSubscription = this.alertService.alertState$.subscribe({
+      next: (state: AlertConfig) => {
+        setTimeout(() => {
+          this.visible = state.visible;
+          this.type = state.type;
+          this.title = state.title;
+          this.message = state.message;
+          this.cdr.detectChanges();
+        });
+      },
+    });
   }
 
-  dismiss() {
+  dismiss(): void {
     this.alertService.clearAlert();
+  }
+
+  ngOnDestroy(): void {
+    if (this.alertSubscription) {
+      this.alertSubscription.unsubscribe();
+    }
   }
 }

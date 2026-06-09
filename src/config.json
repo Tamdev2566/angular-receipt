@@ -1,0 +1,20 @@
+{
+  "BASE_API": "https://staging-api-glossys.samudera.id",
+  "BASE_UPLOAD_DIR": "/tmp",
+  "standalone": [],
+  "example": {
+    "endpoint": "/MasterBookings",
+    "target": "http://localhost:14000"
+  },
+  "example2": {
+    "endpoint": "/MasterSailingSchedules",
+    "target": "http://localhost:10000"
+  },
+  "jasperUrl": "https://staging-glossys.samudera.id:8443",
+  "getPDFUrl": "https://staging-api-glossys.samudera.id",
+  "pdfUrl": "https://staging-glossys.samudera.id",
+  "server": "PRODUCTIONSTG",
+  "title": "Glossys (STAGING) DDSep2023 hh:mi SGT",
+  "dashboardUrl": "http://10.7.234.2:3000",
+  "doReleaseUrl": "http://10.7.234.2:8083"
+}
