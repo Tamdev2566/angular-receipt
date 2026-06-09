@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://dev-api.com',
+  apiUrl: 'https://staging-api-glossys.samudera.id',
 };
