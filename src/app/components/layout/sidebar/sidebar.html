@@ -1,21 +1,22 @@
 <aside class="d-flex flex-column h-100 floating-sidebar user-select-none">
   <div class="d-flex align-items-center px-4 brand-header-space">
-    <div class="d-flex align-items-center gap-2.5">
-          <div class="d-flex align-items-center gap-2">
-      <img src="asset/images/logo.png" alt="Samudera Logo" height="20px" width="30px" />
-      <span
-        class="fw-bold tracking-wide"
-        style="font-size: 0.95rem; color: #32325d; font-family: 'Open Sans', sans-serif"
-        >Samudera Ltd</span
-      >
-    </div>
+    <div class="d-flex align-items-center gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <img src="asset/images/logo.png" alt="Samudera Logo" height="20px" width="30px" />
+        <span
+          class="fw-bold tracking-wide"
+          style="font-size: 0.95rem; color: #32325d; font-family: 'Open Sans', sans-serif"
+        >
+          Samudera Ltd
+        </span>
+      </div>
     </div>
   </div>
 
   <hr class="horizontal dark mt-0 mb-3 mx-3 opacity-3" />
 
   <div class="overflow-y-auto flex-grow-1 px-3 custom-menu-scroller">
-   <ul class="list-unstyled m-0 p-0 d-flex flex-column gap-3">
+    <ul class="list-unstyled m-0 p-0 d-flex flex-column gap-3">
       <li *ngFor="let menu of appMenus" class="w-100">
         <div
           (click)="toggleSubmenu(menu)"
@@ -63,6 +64,6 @@
           </ul>
         </div>
       </li>
-    </ul> 
+    </ul>
   </div>
 </aside>

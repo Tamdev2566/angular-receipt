@@ -31,6 +31,19 @@ export class NewReceiptComponent {
     status: 'Unverified',
   };
 
+  ngOnInit(): void {
+    document.body.classList.add('receipt-open');
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('receipt-open');
+  }
+
+  onClose(): void {
+    document.body.classList.remove('receipt-open');
+    this.close.emit();
+  }
+
   onCheckOutstanding() {
     alert('Outstanding checked: Clean ledger state');
   }
@@ -49,7 +62,7 @@ export class NewReceiptComponent {
     this.close.emit();
   }
 
-  onClose() {
-    this.close.emit();
-  }
+  // onClose() {
+  //   this.close.emit();
+  // }
 }

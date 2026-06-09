@@ -22,6 +22,7 @@ export class MainLayout {
 
   isGlobalLoading: boolean = false;
   isSidebarOpen: boolean = false;
+  showReceiptModal = false;
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;

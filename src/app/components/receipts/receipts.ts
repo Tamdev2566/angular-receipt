@@ -16,7 +16,7 @@ import { NewReceiptComponent } from '../new-receipts/new-receipts';
     NewReceiptComponent,
   ],
   templateUrl: './receipts.html',
-  styleUrls: ['./receipts.scss'] 
+  styleUrls: ['./receipts.scss'],
 })
 export class ReceiptComponent implements OnInit {
   Math = Math;
@@ -31,7 +31,7 @@ export class ReceiptComponent implements OnInit {
       vesselName: 'KOTA RAJA',
       voyageNo: 'V.202X',
       date: '2026-06-01',
-      amount: 4250.00,
+      amount: 4250.0,
       currency: 'SGD',
       payMode: 'Cheque / TT',
       status: 'Verified',
@@ -45,7 +45,7 @@ export class ReceiptComponent implements OnInit {
       vesselName: 'MAERSK MC-KINNEY',
       voyageNo: 'V.405L',
       date: '2026-05-02',
-      amount: 1850.00,
+      amount: 1850.0,
       currency: 'SGD',
       payMode: 'Cash',
       status: 'Unverified',
@@ -59,7 +59,7 @@ export class ReceiptComponent implements OnInit {
       vesselName: 'COSCO NEBULA',
       voyageNo: 'V.102N',
       date: '2026-06-28',
-      amount: 9400.00,
+      amount: 9400.0,
       currency: 'USD',
       payMode: 'Cheque / TT',
       status: 'Verified',
@@ -73,7 +73,7 @@ export class ReceiptComponent implements OnInit {
       vesselName: 'ONE APUS',
       voyageNo: 'V.089W',
       date: '2026-06-03',
-      amount: 520.00,
+      amount: 520.0,
       currency: 'SGD',
       payMode: 'Cash',
       status: 'Verified',
@@ -87,7 +87,7 @@ export class ReceiptComponent implements OnInit {
       vesselName: 'CMA CGM MARCO POLO',
       voyageNo: 'V.881S',
       date: '2026-05-15',
-      amount: 12450.00,
+      amount: 12450.0,
       currency: 'SGD',
       payMode: 'Cheque / TT',
       status: 'Unverified',
@@ -98,9 +98,9 @@ export class ReceiptComponent implements OnInit {
   paginatedRecords: any[] = [];
 
   filterFromDate = '2026-05-01';
-  filterToDate = '2026-06-30'; 
+  filterToDate = '2026-06-30';
   filterInvoice = '';
-  searchQuery = ''; 
+  searchQuery = '';
   currentPage = 1;
   pageSize = 6;
   totalPages = 1;
@@ -120,7 +120,7 @@ export class ReceiptComponent implements OnInit {
   showRemoveModal = false;
   showUndoModal = false;
 
-  totalPagesCount= 0
+  totalPagesCount = 0;
 
   ngOnInit() {
     this.applyFilters();
@@ -130,7 +130,6 @@ export class ReceiptComponent implements OnInit {
     this.filteredRecords = this.ledgerData.filter((item) => {
       let mFrom = this.filterFromDate ? new Date(item.date) >= new Date(this.filterFromDate) : true;
       let mTo = this.filterToDate ? new Date(item.date) <= new Date(this.filterToDate) : true;
-      
       let searchKey = this.searchQuery ? this.searchQuery.toLowerCase().trim() : '';
       let mSearch = searchKey
         ? item.invoiceNo.toLowerCase().includes(searchKey) ||
@@ -153,12 +152,13 @@ export class ReceiptComponent implements OnInit {
 
   updateMetricsCounters() {
     this.totalReceiptsCount = this.ledgerData.length;
-    
-    this.todaysReceiptsCount = this.ledgerData.filter(item => item.date === '2026-06-01').length;
-    this.pendingChequesCount = this.ledgerData.filter(item => item.status === 'Unverified').length;
-    
+    this.todaysReceiptsCount = this.ledgerData.filter((item) => item.date === '2026-06-01').length;
+    this.pendingChequesCount = this.ledgerData.filter(
+      (item) => item.status === 'Unverified',
+    ).length;
+
     this.totalCollectionAmount = this.ledgerData
-      .filter(item => item.currency === 'SGD')
+      .filter((item) => item.currency === 'SGD')
       .reduce((sum, item) => sum + item.amount, 0);
   }
 
@@ -193,7 +193,7 @@ export class ReceiptComponent implements OnInit {
 
   toggleSelectAllRows(event: any) {
     if (event.target.checked) {
-      this.selectedIdsToRemove = this.paginatedRecords.map(r => r.id);
+      this.selectedIdsToRemove = this.paginatedRecords.map((r) => r.id);
     } else {
       this.selectedIdsToRemove = [];
     }
@@ -201,12 +201,12 @@ export class ReceiptComponent implements OnInit {
 
   isAllRowsSelected(): boolean {
     if (this.paginatedRecords.length === 0) return false;
-    return this.paginatedRecords.every(r => this.selectedIdsToRemove.includes(r.id));
+    return this.paginatedRecords.every((r) => this.selectedIdsToRemove.includes(r.id));
   }
 
   toggleRemoveSelection(id: string) {
     if (this.selectedIdsToRemove.includes(id)) {
-      this.selectedIdsToRemove = this.selectedIdsToRemove.filter(item => item !== id);
+      this.selectedIdsToRemove = this.selectedIdsToRemove.filter((item) => item !== id);
     } else {
       this.selectedIdsToRemove.push(id);
     }
@@ -268,6 +268,4 @@ export class ReceiptComponent implements OnInit {
       this.toastVisible = false;
     }, 4000);
   }
-
-  
 }

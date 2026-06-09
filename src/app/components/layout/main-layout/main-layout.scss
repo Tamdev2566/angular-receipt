@@ -1,9 +1,14 @@
 .header-navbar-wrapper {
-  min-height: 70px; 
+  min-height: 70px;
   background: transparent;
   display: flex !important;
   align-items: center !important;
   justify-content: flex-start;
+}
+
+.dashboard-main-view {
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .custom-hamburger-nav {
@@ -12,7 +17,7 @@
   justify-content: center;
   width: 42px;
   height: 42px;
-  border-radius: 8px !important; 
+  border-radius: 8px !important;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   background-color: #ffffff !important;
@@ -20,7 +25,7 @@
   margin: 0 !important;
 
   @media (min-width: 768px) {
-    display: none !important; 
+    display: none !important;
   }
 }
 
@@ -35,8 +40,8 @@
     bottom: 0;
     left: 0;
     height: 100vh;
-    transform: translateX(-105%); 
-    
+    transform: translateX(-105%);
+
     &.active {
       transform: translateX(0);
     }
@@ -45,11 +50,15 @@
 
 .sidebar-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background: rgba(0, 0, 0, 0.3);
   z-index: 999;
   backdrop-filter: blur(2px);
+}
+
+.receipt-blur {
+  filter: blur(8px);
+  opacity: 0.35;
+  pointer-events: none;
+  transition: all 0.3s ease;
 }
