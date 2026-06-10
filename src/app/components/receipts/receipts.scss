@@ -1,4 +1,4 @@
-$primary-mint: #48bb78;       
+$primary-mint: #48bb78;
 $primary-hover: #38a169;
 $border-white: rgba(255, 255, 255, 0.2);
 
@@ -13,10 +13,10 @@ $border-white: rgba(255, 255, 255, 0.2);
 }
 
 .welcome-banner-wrapper {
-  background: linear-gradient(135deg, rgba(72, 187, 120, 0.85) 0%, rgba(56, 161, 105, 0.65) 100%) !important;
+  background: #33708f !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
-  border-radius: 0.75rem !important; 
+  border-radius: 0.75rem !important;
   border: 1px solid rgba(255, 255, 255, 0.35);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
@@ -24,7 +24,7 @@ $border-white: rgba(255, 255, 255, 0.2);
 .btn-create-receipt.slim-banner-btn {
   background: #ffffff !important;
   color: #14532d !important;
-  font-weight: 600; 
+  font-weight: 600;
   font-size: 0.78rem;
   padding: 5px 14px !important;
   border: none;
@@ -38,8 +38,8 @@ $border-white: rgba(255, 255, 255, 0.2);
 }
 
 .filter-glass-bar {
-  background: rgba(255, 255, 255, 0.12) !important; 
-  backdrop-filter: blur(20px) !important;            
+  background: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15) !important;
@@ -48,7 +48,7 @@ $border-white: rgba(255, 255, 255, 0.2);
   .table-search-box {
     background: rgba(255, 255, 255, 0.1) !important;
     border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    
+
     &::placeholder {
       color: rgba(255, 255, 255, 0.4) !important;
     }
@@ -59,26 +59,27 @@ $border-white: rgba(255, 255, 255, 0.2);
   }
 }
 
-
 .card.metric-glass-card {
-  background: rgba(255, 255, 255, 0.45) !important; 
+  background: rgba(255, 255, 255, 0.45) !important;
   background-color: rgba(255, 255, 255, 0.45) !important;
   backdrop-filter: blur(25px) saturate(200%) !important;
   -webkit-backdrop-filter: blur(25px) saturate(200%) !important;
-  
+
   border: 1px solid rgba(255, 255, 255, 0.5) !important;
   border-radius: 0.75rem !important;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08) !important;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.25s ease;
 
   &:hover {
     transform: translateY(-5px) !important;
     box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.15) !important;
-    background: rgba(255, 255, 255, 0.6) !important; 
+    background: rgba(255, 255, 255, 0.6) !important;
   }
 
   .inner-info-table {
-    background: rgba(0, 0, 0, 0.04) !important; 
+    background: rgba(0, 0, 0, 0.04) !important;
     border: 1px solid rgba(0, 0, 0, 0.05) !important;
   }
 }
@@ -86,14 +87,14 @@ $border-white: rgba(255, 255, 255, 0.2);
 .font-normal-title {
   font-weight: 600 !important;
   font-size: 0.85rem;
-  color: #32325d !important; 
-  text-shadow: none !important; 
+  color: #32325d !important;
+  text-shadow: none !important;
 }
 
 .font-amount-title {
   font-weight: 700 !important;
   font-size: 1.25rem;
-  color: #172b4d !important; 
+  color: #172b4d !important;
   text-shadow: none !important;
 }
 
@@ -131,51 +132,68 @@ $border-white: rgba(255, 255, 255, 0.2);
   }
 }
 
-.text-white-50 { 
+.text-white-50 {
   color: #525f7f !important;
 }
 
-.text-white { 
-  color: #2b385c !important; 
+.text-white {
+  color: #2b385c !important;
   font-weight: 500 !important;
 }
-.text-header { 
-  color: #ffffff !important; 
+.text-header {
+  color: #ffffff !important;
   font-weight: 500 !important;
 }
 
-.text-white-70 { 
-  color: #4a5568 !important; 
+.text-white-70 {
+  color: #4a5568 !important;
 }
 
-.border-white-10 { 
-  border-color: rgba(0, 0, 0, 0.08) !important; 
+.border-white-10 {
+  border-color: rgba(0, 0, 0, 0.08) !important;
 }
 
 .code-light {
   background: rgba(0, 0, 0, 0.05) !important;
-  color: #b83280 !important; 
+  color: #b83280 !important;
   padding: 2px 6px;
   border-radius: 4px;
   font-weight: 600;
 }
 
-
-.text-success-bright { color: #2dce89 !important; }
-.text-warning-bright { color: #fb6340 !important; }
-.bg-success-light { background-color: rgba(45, 206, 137, 0.18) !important; }
-.bg-warning-light { background-color: rgba(251, 99, 64, 0.18) !important; }
-.mint-text { color: #21854d !important; font-weight: 600; } 
+.text-success-bright {
+  color: #2dce89 !important;
+}
+.text-warning-bright {
+  color: #fb6340 !important;
+}
+.bg-success-light {
+  background-color: rgba(45, 206, 137, 0.18) !important;
+}
+.bg-warning-light {
+  background-color: rgba(251, 99, 64, 0.18) !important;
+}
+.mint-text {
+  color: #21854d !important;
+  font-weight: 600;
+}
 
 .pag-btn {
   background: transparent !important;
   color: #525f7f !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  
-  &:hover { background: rgba(0, 0, 0, 0.05) !important; color: #172b4d !important; }
-  &.active-p { background: #48bb78 !important; border-color: #48bb78 !important; color: #ffffff !important; font-weight: 700; }
-}
 
+  &:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+    color: #172b4d !important;
+  }
+  &.active-p {
+    background: #48bb78 !important;
+    border-color: #48bb78 !important;
+    color: #ffffff !important;
+    font-weight: 700;
+  }
+}
 
 @media (max-width: 991.98px) {
   .row {
@@ -210,7 +228,7 @@ $border-white: rgba(255, 255, 255, 0.2);
     box-sizing: border-box !important;
 
     .card-body {
-      padding: 20px 16px !important; 
+      padding: 20px 16px !important;
       min-height: auto !important;
       display: flex !important;
       flex-direction: column !important;
@@ -221,15 +239,15 @@ $border-white: rgba(255, 255, 255, 0.2);
   .inner-info-table {
     width: 100% !important;
     box-sizing: border-box !important;
-    
+
     .max-w-160 {
-      max-width: 70% !important; 
+      max-width: 70% !important;
     }
   }
 
   .card-body .row.g-2 {
     display: flex !important;
-    flex-direction: row !important; 
+    flex-direction: row !important;
     width: 100% !important;
     margin: 0 !important;
 
@@ -237,7 +255,7 @@ $border-white: rgba(255, 255, 255, 0.2);
       flex: 1 !important;
       padding: 0 4px !important;
     }
-    
+
     .core-action-card-btn,
     .core-action-card-btn-danger {
       width: 100% !important;
@@ -263,7 +281,7 @@ $border-white: rgba(255, 255, 255, 0.2);
   .card-body .row.g-2 {
     flex-direction: column !important;
     gap: 8px !important;
-    
+
     .col-6 {
       width: 100% !important;
       padding: 0 !important;

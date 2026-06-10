@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { PasswordMgmt } from '../password-mgmt/password-mgmt';
 import { Router, RouterModule } from '@angular/router';
-import { LoaderComponent } from '../../shared/loader/loader';
 import { AlertService } from '../../services/alertService/alert';
 import { AuthService } from '../../services/authService/auth.service';
+import { LoaderComponent } from '../../shared/loader/loader';
+import { PasswordMgmt } from '../password-mgmt/password-mgmt';
 
 @Component({
   selector: 'app-login',

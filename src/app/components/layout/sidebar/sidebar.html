@@ -1,62 +1,78 @@
-<aside class="d-flex flex-column h-100 floating-sidebar user-select-none">
-  <div class="d-flex align-items-center px-4 brand-header-space">
+<aside
+  class="d-flex flex-column h-100 rounded-4 shadow-lg user-select-none"
+  style="background-color: #33708f; font-family: 'Open Sans', sans-serif"
+>
+  <div class="d-flex align-items-center px-4" style="height: 78px">
     <div class="d-flex align-items-center gap-2">
-      <div class="d-flex align-items-center gap-2">
-        <img src="asset/images/logo.png" alt="Samudera Logo" height="20px" width="30px" />
-        <span
-          class="fw-bold tracking-wide"
-          style="font-size: 0.95rem; color: #32325d; font-family: 'Open Sans', sans-serif"
-        >
-          Samudera Ltd
-        </span>
-      </div>
+      <img
+        src="asset/images/logo.png"
+        alt="Samudera Logo"
+        height="20px"
+        width="30px"
+        class="rounded-2"
+      />
+      <span class="fw-bold text-white tracking-wide" style="font-size: 0.95rem">Samudera Ltd</span>
     </div>
   </div>
 
-  <hr class="horizontal dark mt-0 mb-3 mx-3 opacity-3" />
+  <hr class="border-white opacity-25 mx-3 mt-0 mb-3" />
 
-  <div class="overflow-y-auto flex-grow-1 px-3 custom-menu-scroller">
-    <ul class="list-unstyled m-0 p-0 d-flex flex-column gap-3">
-      <li *ngFor="let menu of appMenus" class="w-100">
-        <div
+  <div class="overflow-y-auto flex-grow-1 px-3 hide-scrollbar">
+    <ul class="nav nav-pills flex-column mb-auto gap-2">
+      <li class="nav-item w-100" *ngFor="let menu of appMenus">
+        <a
+          class="nav-link text-white d-flex align-items-center justify-content-between px-3 py-2 rounded-3 transition-all menu-hover"
+          [ngClass]="
+            menu.isExpanded
+              ? 'bg-white bg-opacity-25 border border-white border-opacity-25'
+              : 'border border-transparent'
+          "
           (click)="toggleSubmenu(menu)"
-          class="d-flex align-items-center justify-content-between px-3 py-2.5 exact-curvy-tab transition-all"
-          [class.custom-tab-active]="menu.isExpanded"
           style="cursor: pointer"
         >
           <div class="d-flex align-items-center gap-3">
             <div
-              class="icon-shape-container rounded-3 d-flex align-items-center justify-content-center"
-              [class.active-icon-bg]="menu.isExpanded"
+              class="d-flex align-items-center justify-content-center rounded-3 shadow-sm transition-all"
+              [ngClass]="
+                menu.isExpanded
+                  ? 'bg-info bg-gradient'
+                  : 'bg-white bg-opacity-10 border border-white border-opacity-10'
+              "
+              style="width: 32px; height: 32px"
             >
               <i
-                [class]="menu.icon"
-                class="sidebar-icon-element"
-                [style.color]="menu.isExpanded ? '#ffffff' : 'rgba(255, 255, 255, 0.7)'"
+                [class]="menu.icon || ''"
+                class="transition-all"
+                [ngClass]="menu.isExpanded ? 'text-white' : 'text-white-50'"
+                style="font-size: 0.85rem"
               ></i>
             </div>
 
-            <span class="sidebar-menu-title" [class.active-text-dark]="menu.isExpanded">
+            <span
+              class="transition-all"
+              [ngClass]="menu.isExpanded ? 'text-white fw-bold' : 'text-white-50 fw-medium'"
+              style="font-size: 0.825rem"
+            >
               {{ menu.title }}
             </span>
           </div>
 
-          <span
+          <i
             *ngIf="menu.hasSubmenu"
-            class="chevron-indicator-wrapper"
-            [class.rotated]="menu.isExpanded"
-          >
-            <i class="fa-solid fa-chevron-right"></i>
-          </span>
-        </div>
+            class="fa-solid fa-chevron-right transition-all chevron-rotate"
+            [ngClass]="menu.isExpanded ? 'text-info rotated' : 'text-white-50'"
+            style="font-size: 0.65rem"
+          ></i>
+        </a>
 
-        <div class="animated-submenu-wrapper" [class.show-submenu]="menu.isExpanded">
-          <ul class="list-unstyled m-0 p-0 submenu-inner-list">
-            <li *ngFor="let sub of menu.submodules; trackBy: trackBySubmoduleId">
+        <div class="submenu-transition" [style.max-height]="menu.isExpanded ? '400px' : '0px'">
+          <ul class="nav flex-column ms-4 ps-2 border-start border-white border-opacity-25 mt-1">
+            <li class="nav-item" *ngFor="let sub of menu.submodules; trackBy: trackBySubmoduleId">
               <a
                 [routerLink]="sub.link"
-                routerLinkActive="active-sub-item fw-bold"
-                class="d-block text-decoration-none sub-link-item-row"
+                routerLinkActive="bg-white text-dark fw-bold shadow-sm border border-white border-opacity-50"
+                class="nav-link text-white-50 px-3 py-2 mb-1 rounded-3 transition-all sub-menu-hover"
+                style="font-size: 0.8rem; font-weight: 500"
               >
                 {{ sub.title }}
               </a>

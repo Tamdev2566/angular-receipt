@@ -1,18 +1,16 @@
-import { Component, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Component, ElementRef, EventEmitter, HostListener, Output } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.html',
-  styleUrl: './navbar.scss',
   standalone: true,
   imports: [CommonModule],
 })
 export class Navbar {
   isCardOpen = false;
-
-  isSearchFocused: boolean = false;
+  isSearchFocused = false;
 
   @Output() logoutTriggered = new EventEmitter<void>();
 
@@ -21,7 +19,8 @@ export class Navbar {
     private elementRef: ElementRef,
   ) {}
 
-  toggleAccountCard(): void {
+  toggleAccountCard(event: Event): void {
+    event.stopPropagation();
     this.isCardOpen = !this.isCardOpen;
   }
 
@@ -32,17 +31,25 @@ export class Navbar {
     }
   }
 
-  onLogout(): void {
-    this.logoutTriggered.emit();
-  }
-
   onHomeClick(): void {
+    this.isCardOpen = false;
     this.router.navigate(['/home']);
   }
 
   onNotificationClick(): void {}
 
-  onAccountSettings(): void {}
+  onAccountSettings(): void {
+    this.isCardOpen = false;
+    this.router.navigate(['/account-settings']);
+  }
 
-  onChangePassword(): void {}
+  onChangePassword(): void {
+    this.isCardOpen = false;
+    this.router.navigate(['/change-password']);
+  }
+
+  onLogout(): void {
+    this.isCardOpen = false;
+    this.logoutTriggered.emit();
+  }
 }

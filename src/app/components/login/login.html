@@ -1,121 +1,209 @@
-<div class="login-wrapper">
-  <div class="login-card">
-    <div class="left-panel">
-      <div class="form-wrapper">
-        <div class="system-header">
-          <div class="company-logo">
-            <img src="asset/images/logo.png" alt="Samudera Logo" />
-          </div>
-          <div class="company-details">
-            <h1>SAMUDERA SHIPPING LINE LTD</h1>
-            <h2>Receipt System - SG</h2>
-          </div>
+<div class="container-fluid p-0 min-vh-100 overflow-hidden bg-white">
+  <div class="row g-0 vh-100">
+    <div class="col-12 col-md-6 d-flex flex-column position-relative bg-white z-1">
+      <div
+        class="d-block d-md-none position-relative w-100"
+        style="height: 35vh; min-height: 250px"
+      >
+        <div
+          class="position-absolute top-0 start-0 w-100 h-100"
+          style="
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+            z-index: 2;
+          "
+        ></div>
+        <img
+          src="asset/images/login-bg.jpg"
+          class="w-100 h-100 object-fit-cover position-absolute top-0 start-0"
+          style="z-index: 1"
+          alt="Header"
+        />
+        <button
+          type="button"
+          class="btn bg-white rounded-circle position-absolute shadow-sm d-flex align-items-center justify-content-center"
+          style="top: 1.5rem; left: 1.5rem; width: 40px; height: 40px; z-index: 10"
+        >
+          <i class="fa-solid fa-chevron-left" style="color: #333"></i>
+        </button>
+        <div class="position-absolute bottom-0 start-0 w-100" style="line-height: 0; z-index: 3">
+          <svg
+            viewBox="0 0 1440 320"
+            class="w-100 h-auto"
+            fill="#ffffff"
+            preserveAspectRatio="none"
+            style="height: 50px"
+          >
+            <path d="M0,160 C480,360 800,0 1440,100 L1440,320 L0,320 Z"></path>
+          </svg>
         </div>
+      </div>
 
-        <div class="form-container">
-          <form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)" autocomplete="off">
-            <div
-              class="custom-input"
-              [class.input-error]="userId.invalid && (userId.touched || formSubmitted)"
+      <div
+        class="d-none d-md-block position-absolute top-0 start-0"
+        style="
+          width: 350px;
+          height: 350px;
+          background-color: #e8f4ff;
+          border-bottom-right-radius: 100%;
+          z-index: 0;
+        "
+      ></div>
+      <div
+        class="d-none d-md-block position-absolute top-0 start-0"
+        style="
+          width: 250px;
+          height: 250px;
+          background-color: #cce5ff;
+          border-bottom-right-radius: 100%;
+          z-index: 0;
+        "
+      ></div>
+      <div
+        class="d-none d-md-block position-absolute top-0 start-0"
+        style="
+          width: 150px;
+          height: 150px;
+          background-color: #5eaeff;
+          border-bottom-right-radius: 100%;
+          z-index: 0;
+        "
+      ></div>
+
+      <div
+        class="flex-grow-1 d-flex flex-column justify-content-center p-4 p-md-5 w-100 position-relative z-1"
+      >
+        <div class="w-100 mx-auto" style="max-width: 450px">
+          <div class="text-center mb-5 mt-2 mt-md-0">
+            <img
+              src="asset/images/logo.png"
+              alt="Samudera Logo"
+              style="max-height: 55px"
+              class="mb-2"
+            />
+            <h4 class="fw-bolder text-dark mb-0" style="letter-spacing: 0.5px">SAMUDERA</h4>
+            <small class="text-muted fw-medium" style="font-size: 0.8rem"
+              >Receipt System - SG</small
             >
-              <label>User ID</label>
-              <div class="input-wrapper">
+          </div>
+
+          <form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)" autocomplete="off">
+            <div class="mb-4">
+              <div
+                class="d-flex align-items-center rounded-pill transition-all px-4"
+                [class.border-danger]="userId.invalid && (userId.touched || formSubmitted)"
+                style="background-color: #f4f6f9; border: 1.5px solid transparent; height: 58px"
+              >
+                <i
+                  class="fa-regular fa-solid fa-user text-muted fs-5 me-3"
+                  style="color: #33708f !important"
+                ></i>
                 <input
                   type="text"
                   name="username"
                   [(ngModel)]="username"
                   #userId="ngModel"
-                  placeholder="Enter User ID"
+                  class="form-control border-0 bg-transparent shadow-none p-0 h-100 fw-medium text-dark flex-grow-1"
+                  placeholder="Username or Email"
                   required
                   minlength="3"
                   autocomplete="new-password"
+                  style="font-size: 0.95rem"
                 />
-                <i class="fa-regular fa-user"></i>
               </div>
-              <div class="error-text" *ngIf="userId.invalid && (userId.touched || formSubmitted)">
-                <span *ngIf="userId.errors?.['required']"> User ID is required </span>
-                <span *ngIf="userId.errors?.['minlength']"> Minimum 3 characters required </span>
+              <div
+                class="text-danger mt-2 small ms-4"
+                *ngIf="userId.invalid && (userId.touched || formSubmitted)"
+              >
+                <span *ngIf="userId.errors?.['required']">Username is required</span>
+                <span *ngIf="userId.errors?.['minlength']">Minimum 3 characters</span>
               </div>
             </div>
 
-            <div
-              class="custom-input"
-              [class.input-error]="
-                passwordField.invalid && (passwordField.touched || formSubmitted)
-              "
-            >
-              <label>Password</label>
-              <div class="input-wrapper">
+            <div class="mb-4">
+              <div
+                class="d-flex align-items-center rounded-pill transition-all px-4"
+                [class.border-danger]="
+                  passwordField.invalid && (passwordField.touched || formSubmitted)
+                "
+                style="background-color: #f4f6f9; border: 1.5px solid transparent; height: 58px"
+              >
+                <i
+                  class="fa-solid fa-lock text-muted fs-5 me-3"
+                  style="color: #33708f !important"
+                ></i>
                 <input
                   [type]="showPassword ? 'text' : 'password'"
                   name="password"
                   [(ngModel)]="password"
                   #passwordField="ngModel"
-                  placeholder="Enter Password"
+                  class="form-control border-0 bg-transparent shadow-none p-0 h-100 fw-medium text-dark flex-grow-1"
+                  placeholder="••••••••"
                   required
                   minlength="6"
                   autocomplete="new-password"
+                  style="font-size: 0.95rem; letter-spacing: 2px"
                 />
-                <button type="button" class="eye-btn" (click)="togglePassword()">
-                  <svg
-                    *ngIf="!showPassword"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                  <svg
-                    *ngIf="showPassword"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a21.8 21.8 0 0 1 5.06-6.94"
-                    ></path>
-                    <path
-                      d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.8 21.8 0 0 1-3.17 4.62"
-                    ></path>
-                    <path d="M1 1l22 22"></path>
-                    <path d="M9.88 9.88A3 3 0 1 0 14.12 14.12"></path>
-                  </svg>
+                <button
+                  type="button"
+                  class="btn p-0 border-0 shadow-none text-muted ms-2 d-flex align-items-center justify-content-center"
+                  (click)="togglePassword()"
+                  style="width: 24px; height: 24px"
+                >
+                  <i
+                    class="fa-solid fs-6"
+                    style="color: #33708f"
+                    [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                  ></i>
                 </button>
               </div>
               <div
-                class="error-text"
+                class="text-danger mt-2 small ms-4"
                 *ngIf="passwordField.invalid && (passwordField.touched || formSubmitted)"
               >
-                <span *ngIf="passwordField.errors?.['required']"> Password is required </span>
-                <span *ngIf="passwordField.errors?.['minlength']">
-                  Minimum 6 characters required
-                </span>
+                <span *ngIf="passwordField.errors?.['required']">Password is required</span>
+                <span *ngIf="passwordField.errors?.['minlength']">Minimum 6 characters</span>
               </div>
             </div>
 
-            <div class="password-actions-row">
-              <a href="#" class="action-link" (click)="openForgotModal($event, 'forgot')"
-                >Forgot Password?</a
-              >
-              <span class="divider-dot">•</span>
+            <div class="d-flex justify-content-between align-items-center mb-5 mt-2 px-3">
+              <div class="form-check mb-0 d-flex align-items-center">
+                <input
+                  class="form-check-input shadow-none mt-0 me-2"
+                  type="checkbox"
+                  id="rememberMe"
+                  style="cursor: pointer"
+                />
+                <label
+                  class="form-check-label small fw-medium text-muted"
+                  for="rememberMe"
+                  style="cursor: pointer"
+                >
+                  Remember me
+                </label>
+              </div>
               <a
                 href="#"
-                class="action-link highlight-action"
-                (click)="openForgotModal($event, 'change')"
-                >Change Password?</a
+                class="text-decoration-none small fw-bold"
+                style="color: #33708f"
+                (click)="openForgotModal($event, 'forgot')"
               >
+                Forgot Password ?
+              </a>
             </div>
 
-            <div class="button-group">
-              <button type="submit" class="primary-btn" [disabled]="isLoading">
-                <ng-container *ngIf="!isLoading && !isSuccess"> LogIn </ng-container>
+            <div class="d-grid mb-4">
+              <button
+                type="submit"
+                class="btn text-white border-0 py-3 fw-bold shadow-sm rounded-pill"
+                [disabled]="isLoading"
+                style="
+                  background: linear-gradient(135deg, #33708f 0%, #4a91b8 100%);
+                  box-shadow: 0 8px 20px rgba(51, 112, 143, 0.35);
+                  font-size: 0.95rem;
+                  letter-spacing: 0.5px;
+                "
+              >
+                <ng-container *ngIf="!isLoading && !isSuccess">LOGIN</ng-container>
                 <ng-container *ngIf="isLoading">
                   <i class="fa-solid fa-circle-notch fa-spin me-2"></i> Connecting...
                 </ng-container>
@@ -124,21 +212,35 @@
                 </ng-container>
               </button>
             </div>
+
+            <div class="text-center small mt-4">
+              <span class="text-muted">Don't have an account?</span>
+              <a href="#" class="text-decoration-none fw-bold ms-1" style="color: #33708f"
+                >Sign Up</a
+              >
+            </div>
           </form>
         </div>
       </div>
-
-      <footer class="footer-links">
-        <a href="#"> Privacy Policy </a>
-        <span>•</span>
-        <a href="#"> Terms of Service </a>
-      </footer>
     </div>
 
-    <div class="right-panel">
-      <div class="overlay-dark"></div>
-      <div class="overlay-blue"></div>
-      <img src="asset/images/login-bg.jpg" alt="Sea Shipping Cargo Container Vessel" />
+    <div
+      class="col-md-6 d-none d-md-block position-relative p-0 bg-dark h-100 overflow-hidden"
+      style="border-top-left-radius: 250px; border-bottom-left-radius: 250px"
+    >
+      <div
+        class="position-absolute top-0 start-0 w-100 h-100"
+        style="
+          background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%);
+          z-index: 2;
+        "
+      ></div>
+      <img
+        src="asset/images/login-bg.jpg"
+        alt="Cargo Ship Sailing into Sunset"
+        class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover"
+        style="z-index: 1"
+      />
     </div>
   </div>
 </div>

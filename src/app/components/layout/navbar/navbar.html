@@ -1,79 +1,219 @@
-<header
-  class="navbar navbar-expand-lg ps-0 pe-4 d-flex align-items-center justify-content-between bg-transparent premium-nav-matrix position-relative"
-  style="min-height: 70px"
+<nav
+  class="px-2 px-md-4 py-2 py-md-3 d-flex align-items-center justify-content-between flex-nowrap gap-2 gap-md-4"
+  style="position: relative"
 >
-  <div class="d-flex align-items-center">
-    <!-- <button
-      class="btn btn-link text-white p-0 border-0 d-lg-none shadow-none me-3"
-      type="button"
-      data-bs-toggle="offcanvas"
-      data-bs-target="#mobileSidebarDrawer"
-      aria-controls="mobileSidebarDrawer"
-    >
-      <i class="fa-solid fa-bars fs-3 text-white"></i>
-    </button> -->
-
-    <div class="d-none d-lg-flex align-items-center breadcrumb-container">
-      <div
-        class="input-group input-group-alternative search-box-wrapper shadow-none border-0"
-        [class.focused]="isSearchFocused"
-      >
-        <span class="input-group-text bg-transparent border-0 pe-1 ps-3 d-flex align-items-center">
-          <i class="fa-solid fa-magnifying-glass search-icon-style"></i>
-        </span>
-        <input
-          type="text"
-          class="form-control border-0 bg-transparent text-dark shadow-none search-input-field"
-          placeholder="Search here..."
-          (focus)="isSearchFocused = true"
-          (blur)="isSearchFocused = false"
-        />
-      </div>
-    </div>
-  </div>
-
-  <div class="d-flex align-items-center dynamic-action-gap">
-    <div class="d-flex align-items-center control-button-cluster gap-3">
-      <button
-        class="btn btn-link nav-utility-btn p-1 text-white shadow-none border-0 d-flex align-items-center"
-        type="button"
-        (click)="onHomeClick()"
-      >
-        <i class="fa-solid fa-house tray-interactive-icon fs-5"></i>
-      </button>
-      <button
-        class="btn btn-link nav-utility-btn p-1 text-white shadow-none border-0 d-flex align-items-center"
-        type="button"
-        (click)="onNotificationClick()"
-      >
-        <i class="fa-solid fa-bell tray-interactive-icon fs-5"></i>
-      </button>
-
-      <div
-        class="d-flex align-items-center cursor-pointer text-white"
-        (click)="toggleAccountCard(); $event.stopPropagation()"
-        title="Account Settings"
-      >
-        <i class="fa-solid fa-user-gear fs-4 tray-interactive-icon"></i>
-      </div>
-    </div>
-  </div>
-
   <div
-    class="custom-action-card shadow border-0"
-    *ngIf="isCardOpen"
-    (click)="$event.stopPropagation()"
+    class="position-relative d-flex align-items-center w-100"
+    style="max-width: 600px; --search-max-width: 600px"
   >
-    <div class="card-body p-2">
-      <button class="card-item-btn" (click)="onAccountSettings(); isCardOpen = false">
-        <i class="fa-regular fa-circle-user"></i><span>Account Settings</span>
-      </button>
-      <button class="card-item-btn" (click)="onChangePassword(); isCardOpen = false">
-        <i class="fa-solid fa-key"></i><span>Change Password</span>
-      </button>
-      <button class="card-item-btn text-danger" (click)="onLogout(); isCardOpen = false">
-        <i class="fa-solid fa-right-from-bracket"></i><span>Log out</span>
-      </button>
+    <svg
+      class="position-absolute start-0 ms-3"
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      style="width: 1rem; height: 1rem; fill: #33708f; z-index: 5"
+    >
+      <g>
+        <path
+          d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"
+        ></path>
+      </g>
+    </svg>
+
+    <input
+      placeholder="Search"
+      type="search"
+      class="form-control border-0 rounded-3 shadow-sm"
+      style="
+        height: 40px;
+        padding-left: 2.7rem;
+        background-color: #e5eef3;
+        color: #0d0c22;
+        font-size: 0.95rem;
+      "
+    />
+  </div>
+
+  <div class="d-flex align-items-center flex-shrink-0 gap-2 gap-md-3">
+    <div class="d-flex align-items-center gap-1 gap-md-2">
+      <!-- Home Button -->
+      <div
+        class="d-flex justify-content-center align-items-center rounded-circle"
+        style="
+          width: 38px;
+          height: 38px;
+          background-color: #f9fafb;
+          border: 1px solid #f3f4f6;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        "
+        onmouseover="
+          this.style.backgroundColor = '#f3f4f6';
+          this.style.borderColor = '#e5e7eb';
+        "
+        onmouseout="
+          this.style.backgroundColor = '#f9fafb';
+          this.style.borderColor = '#f3f4f6';
+        "
+      >
+        <i class="fa-solid fa-house" style="color: #33708f; font-size: 1.05rem"></i>
+      </div>
+
+      <!-- Notification Button -->
+      <div
+        class="position-relative d-flex justify-content-center align-items-center rounded-circle"
+        style="
+          width: 38px;
+          height: 38px;
+          background-color: #f9fafb;
+          border: 1px solid #f3f4f6;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        "
+        onmouseover="
+          this.style.backgroundColor = '#f3f4f6';
+          this.style.borderColor = '#e5e7eb';
+        "
+        onmouseout="
+          this.style.backgroundColor = '#f9fafb';
+          this.style.borderColor = '#f3f4f6';
+        "
+      >
+        <i class="fa-solid fa-bell" style="color: #33708f; font-size: 1.05rem"></i>
+        <span
+          class="position-absolute rounded-circle"
+          style="
+            width: 8px;
+            height: 8px;
+            background-color: #f04438;
+            top: 9px;
+            right: 9px;
+            border: 2px solid #ffffff;
+          "
+        ></span>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 gap-md-3" style="position: relative">
+      <div
+        style="width: 1px; height: 28px; background-color: #e5e7eb"
+        class="d-none d-sm-block"
+      ></div>
+
+      <div
+        id="profileDropdownBtn"
+        class="d-flex align-items-center gap-2 p-1 rounded-3"
+        style="cursor: pointer; transition: background-color 0.2s ease; user-select: none"
+        (click)="toggleAccountCard($event)"
+      >
+        <div class="text-end d-none d-sm-flex flex-column justify-content-center me-1">
+          <span class="m-0 lh-1 fw-semibold" style="font-size: 0.85rem; color: #1f2937"
+            >Jhon Smith</span
+          >
+          <span class="m-0 lh-1 mt-1" style="font-size: 0.72rem; color: #9ca3af; font-weight: 500"
+            >Developer</span
+          >
+        </div>
+
+        <div class="position-relative">
+          <div
+            class="d-flex justify-content-center align-items-center rounded-circle fw-bold text-white shadow-sm"
+            style="
+              width: 36px;
+              height: 36px;
+              background: linear-gradient(135deg, #33708f, #4a8cae);
+              font-size: 0.85rem;
+              letter-spacing: 0.5px;
+            "
+          >
+            JS
+          </div>
+          <span
+            class="position-absolute rounded-circle"
+            style="
+              width: 9px;
+              height: 9px;
+              background-color: #12b76a;
+              bottom: 0px;
+              right: 0px;
+              border: 2px solid #ffffff;
+            "
+          ></span>
+        </div>
+
+        <i
+          class="fa-solid fa-chevron-down d-none d-sm-block ms-1"
+          style="color: #9ca3af; font-size: 0.7rem"
+        ></i>
+      </div>
+      <div
+        id="profileMenuCard"
+        class="shadow rounded-3 border bg-body"
+        [ngClass]="{ 'd-none': !isCardOpen }"
+        style="position: absolute; top: 54px; right: 0; width: 260px; z-index: 1050"
+      >
+        <div class="p-3 d-flex align-items-center gap-3">
+          <div
+            class="d-flex justify-content-center align-items-center rounded-circle text-white fw-bold text-uppercase"
+            style="
+              width: 46px;
+              height: 46px;
+              background-color: #2b617d;
+              font-size: 0.95rem;
+              letter-spacing: 0.5px;
+            "
+          >
+            JS
+          </div>
+
+          <div class="d-flex flex-column lh-sm">
+            <span class="fw-bold text-body" style="font-size: 1rem"> Jhon Smith </span>
+            <span
+              class="text-uppercase text-body-secondary fw-semibold mt-1"
+              style="font-size: 0.72rem; letter-spacing: 0.5px"
+            >
+              Developer
+            </span>
+          </div>
+        </div>
+
+        <hr class="border-secondary-subtle my-0 opacity-25" />
+
+        <div class="p-2 d-flex flex-column gap-1">
+          <a
+            href="javascript:void(0)"
+            (click)="onAccountSettings()"
+            class="d-flex align-items-center gap-3 px-3 py-2 text-decoration-none rounded text-body-secondary custom-menu-item"
+            style="font-size: 0.9rem; font-weight: 500"
+          >
+            <i class="fa-solid fa-user-gear text-body-secondary" style="width: 16px"></i>
+            <span>Account Settings</span>
+          </a>
+
+          <a
+            href="javascript:void(0)"
+            (click)="onChangePassword()"
+            class="d-flex align-items-center gap-3 px-3 py-2 text-decoration-none rounded text-body-secondary custom-menu-item"
+            style="font-size: 0.9rem; font-weight: 500"
+          >
+            <i class="fa-solid fa-key text-body-secondary" style="width: 16px"></i>
+            <span>Change Password</span>
+          </a>
+        </div>
+
+        <hr class="border-secondary-subtle my-0 opacity-25" />
+
+        <div class="p-2">
+          <a
+            href="javascript:void(0)"
+            (click)="onLogout()"
+            class="d-flex align-items-center gap-3 px-3 py-2 text-decoration-none rounded text-danger custom-logout-item"
+            style="font-size: 0.9rem; font-weight: 500"
+          >
+            <i class="fa-solid fa-right-from-bracket" style="width: 16px"></i>
+            <span>Log Out</span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
-</header>
+</nav>

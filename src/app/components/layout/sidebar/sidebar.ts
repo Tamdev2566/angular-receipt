@@ -1,6 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { NgFor, NgIf } from '@angular/common';
 import { MenuItem, ModuleService } from '../../../services/module-service/module-service';
 
 @Component({
@@ -8,18 +8,17 @@ import { MenuItem, ModuleService } from '../../../services/module-service/module
   standalone: true,
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.scss'],
-  imports: [RouterLink, RouterLinkActive, NgFor, NgIf],
+  imports: [RouterLink, RouterLinkActive, CommonModule],
 })
 export class Sidebar implements OnInit {
   private modulesService = inject(ModuleService);
-  
+
   appMenus: MenuItem[] = [];
 
   ngOnInit(): void {
     this.appMenus = this.modulesService.getMenus();
 
-    console.log('appMenus',this.appMenus);
-    
+    console.log('appMenus', this.appMenus);
   }
 
   toggleSubmenu(menu: MenuItem): void {
@@ -29,6 +28,6 @@ export class Sidebar implements OnInit {
   }
 
   trackBySubmoduleId(index: number, sub: any): string {
-    return sub.id || sub.title; 
+    return sub.id || sub.title;
   }
 }
