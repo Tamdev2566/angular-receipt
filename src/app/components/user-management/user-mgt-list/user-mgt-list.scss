@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+
   background: #f8fafc !important;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -176,6 +177,11 @@
       }
     }
   }
+}
+
+.table {
+  --bs-table-bg: transparent !important;
+  --bs-table-accent-bg: transparent !important;
 }
 
 .user-profile-title {

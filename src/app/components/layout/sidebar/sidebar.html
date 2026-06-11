@@ -1,8 +1,9 @@
 <aside
-  class="d-flex flex-column h-100 rounded-4 shadow-lg user-select-none"
+  class="d-flex flex-column h-100 rounded-4 shadow-lg user-select-none sidebar-master-frame"
   style="background-color: #33708f; font-family: 'Open Sans', sans-serif"
 >
-  <div class="d-flex align-items-center px-4" style="height: 78px">
+  <!-- Top Logo Section (Fixed Area Height Locked) -->
+  <div class="d-flex align-items-center px-4 flex-shrink-0" style="height: 78px">
     <div class="d-flex align-items-center gap-2">
       <img
         src="asset/images/logo.png"
@@ -15,10 +16,10 @@
     </div>
   </div>
 
-  <hr class="border-white opacity-25 mx-3 mt-0 mb-3" />
+  <hr class="border-white opacity-25 mx-3 mt-0 mb-3 flex-shrink-0" />
 
-  <div class="overflow-y-auto flex-grow-1 px-3 hide-scrollbar">
-    <ul class="nav nav-pills flex-column mb-auto gap-2">
+  <div class="flex-grow-1 px-3 custom-sidebar-scroll">
+    <ul class="nav nav-pills flex-column mb-auto gap-2 pb-4">
       <li class="nav-item w-100" *ngFor="let menu of appMenus">
         <a
           class="nav-link text-white d-flex align-items-center justify-content-between px-3 py-2 rounded-3 transition-all menu-hover"
@@ -65,6 +66,7 @@
           ></i>
         </a>
 
+        <!-- Submenus list container wrapper module -->
         <div class="submenu-transition" [style.max-height]="menu.isExpanded ? '400px' : '0px'">
           <ul class="nav flex-column ms-4 ps-2 border-start border-white border-opacity-25 mt-1">
             <li class="nav-item" *ngFor="let sub of menu.submodules; trackBy: trackBySubmoduleId">

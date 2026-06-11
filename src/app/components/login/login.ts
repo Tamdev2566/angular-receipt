@@ -86,12 +86,13 @@ export class LoginPage {
       error: (err) => {
         this.isGlobalLoading = false;
         console.log('ERROR', err);
-
-        this.alertService.showAlert(
-          err?.error?.message || err?.error || 'Login Failed',
-          '',
-          'error',
-        );
+        if (err.message) {
+          this.alertService.showAlert('Something went wrong, Please try again later', '', 'error');
+          this.isGlobalLoading = false;
+        } else {
+          this.alertService.showAlert(err?.error?.message || err?.error, '', 'error');
+          this.isGlobalLoading = false;
+        }
       },
     });
   }

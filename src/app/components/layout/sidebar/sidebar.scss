@@ -1,5 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 
+.sidebar-master-frame {
+  overflow: hidden !important; // Keeps parent container strict and sharp
+}
+
+.custom-sidebar-scroll {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  height: 100%;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    &:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
 .nav-link,
 .nav-link:focus,
 .nav-link:active,
@@ -9,12 +36,6 @@ a:focus,
 a:active {
   outline: none !important;
   box-shadow: none !important;
-}
-.hide-scrollbar {
-  scrollbar-width: none;
-}
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
 }
 
 .transition-all {

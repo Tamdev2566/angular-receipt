@@ -23,9 +23,14 @@ export const routes: Routes = [
           import('./components/layout/welcome/welcome').then((m) => m.WelcomeComponent),
       },
       {
-        path: 'receipt-glossys',
+        path: 'receipts',
         loadComponent: () =>
           import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
+      },
+      {
+        path: 'new-receipt',
+        loadComponent: () =>
+          import('./components/new-receipts/new-receipts').then((m) => m.NewReceiptComponent),
       },
       {
         path: 'receipt-undo',
@@ -46,6 +51,48 @@ export const routes: Routes = [
         path: 'receipt-update-tt',
         loadComponent: () =>
           import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
+      },
+      {
+        path: 'user-mgt-list',
+        loadComponent: () =>
+          import('./components/user-management/user-mgt-list/user-mgt-list').then(
+            (m) => m.UserMgtList,
+          ),
+      },
+      {
+        path: 'user-mgt-details',
+        loadComponent: () =>
+          import('./components/user-management/user-mgt-details/user-mgt-details').then(
+            (m) => m.UserMgtDetails,
+          ),
+      },
+      {
+        path: 'user-mgt-history',
+        loadComponent: () =>
+          import('./components/user-management/user-mgt-history/user-mgt-history').then(
+            (m) => m.UserMgtHistoryComponent,
+          ),
+      },
+      {
+        path: 'group-mgt-list',
+        loadComponent: () =>
+          import('./components/group-management/group-mgt-list/group-mgt-list').then(
+            (m) => m.GroupMgtList,
+          ),
+      },
+      {
+        path: 'group-mgt-details',
+        loadComponent: () =>
+          import('./components/group-management/group-mgt-details/group-mgt-details').then(
+            (m) => m.GroupMgtDetails,
+          ),
+      },
+      {
+        path: 'group-mgt-history',
+        loadComponent: () =>
+          import('./components/group-management/group-mgt-history/group-mgt-history').then(
+            (m) => m.GroupMgtHistoryComponent,
+          ),
       },
     ],
   },

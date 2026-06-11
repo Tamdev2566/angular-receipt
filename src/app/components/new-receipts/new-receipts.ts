@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-receipt',
@@ -31,17 +32,10 @@ export class NewReceiptComponent {
     status: 'Unverified',
   };
 
+  constructor(private router: Router) {}
+
   ngOnInit(): void {
-    document.body.classList.add('receipt-open');
-  }
-
-  ngOnDestroy(): void {
-    document.body.classList.remove('receipt-open');
-  }
-
-  onClose(): void {
-    document.body.classList.remove('receipt-open');
-    this.close.emit();
+    // document.body.classList.add('receipt-open');
   }
 
   onCheckOutstanding() {
@@ -60,6 +54,10 @@ export class NewReceiptComponent {
     this.newRecord.id = `REC-${Math.floor(100 + Math.random() * 900)}`;
     this.save.emit({ ...this.newRecord });
     this.close.emit();
+  }
+
+  backToLists() {
+    this.router.navigate(['/home/receipts']);
   }
 
   // onClose() {

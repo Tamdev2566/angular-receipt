@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { UndoReceiptComponent } from '../undo-receipts/undo-receipts';
 import { RemoveReceiptComponent } from '../remove-receipts/remove-receipts';
 import { NewReceiptComponent } from '../new-receipts/new-receipts';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -122,6 +123,8 @@ export class ReceiptComponent implements OnInit {
 
   totalPagesCount = 0;
 
+  constructor(private router: Router) {}
+
   ngOnInit() {
     this.applyFilters();
   }
@@ -230,7 +233,7 @@ export class ReceiptComponent implements OnInit {
   }
 
   openNewReceiptModal() {
-    this.openModal('new');
+    this.router.navigate(['/home/new-receipt']);
   }
 
   closeModal() {
@@ -267,5 +270,9 @@ export class ReceiptComponent implements OnInit {
       this.toastMessage = null;
       this.toastVisible = false;
     }, 4000);
+  }
+
+  onSearch(event: any): void {
+    const query = event.target.value.toLowerCase();
   }
 }

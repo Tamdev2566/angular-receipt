@@ -1,0 +1,171 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <div class="main-scrollable-content-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom-flat pb-3">
+      <div>
+        <!-- <button class="btn btn-flat-action-secondary py-1 px-2.5 mb-2" style="font-size: 0.72rem">
+          <i class="fa-solid fa-arrow-left me-1"></i> Back to Home
+        </button> -->
+        <h4 class="text-header-title m-0 fw-bold">Master Group Management</h4>
+      </div>
+    </div>
+
+    <div
+      class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 px-3 py-2.5 rounded-2 bg-action-bar"
+    >
+      <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-flat-action-primary" (click)="onCreateButtonClick()">
+          <i class="fa-solid fa-plus small"></i> Create
+        </button>
+        <button class="btn btn-flat-action-secondary" disabled>
+          <i class="fa-solid fa-pencil small"></i> Update
+        </button>
+        <button class="btn btn-flat-action-secondary">
+          <i class="fa-solid fa-arrows-rotate small"></i> Activate/Deactivate
+        </button>
+        <button class="btn btn-flat-action-secondary btn-flat-active">
+          <i class="fa-solid fa-check small"></i> All
+        </button>
+        <button class="btn btn-flat-action-secondary">
+          <i class="fa-solid fa-print small"></i> Print
+        </button>
+        <button class="btn btn-flat-action-secondary" (click)="onClickHistory()">
+          <i class="fa-solid fa-history small"></i> History
+        </button>
+        <button class="btn btn-flat-action-secondary">
+          <i class="fa-solid fa-bars-progress small"></i> Bulk Assign Menu
+        </button>
+      </div>
+
+      <div class="search-flat-wrapper d-flex align-items-center">
+        <input
+          type="text"
+          placeholder="SEARCH..."
+          class="search-flat-input"
+          [(ngModel)]="searchQuery"
+        />
+        <button class="btn-search-flat-go">Go</button>
+      </div>
+    </div>
+
+    <div class="main-container p-0">
+      <div class="table-responsive rounded-2 flat-table-border">
+        <table class="table align-middle m-0 corporate-flat-table">
+          <thead>
+            <tr>
+              <th class="ps-3 text-center" style="width: 50px">
+                <div class="custom-flat-checkbox">
+                  <input
+                    type="checkbox"
+                    id="selectAllRows"
+                    [checked]="isAllSelected()"
+                    (change)="toggleAllRows($event)"
+                  />
+                  <label for="selectAllRows"></label>
+                </div>
+              </th>
+              <th class="text-center" style="width: 60px">No</th>
+              <th>Group Identification</th>
+              <th>Group Profile Metadata</th>
+              <th class="text-center">Valid?</th>
+              <th class="text-center">Total Users</th>
+              <th style="width: 300px">Privileges Summary (Preview)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let record of groupRecords; let i = index"
+              class="flat-table-row"
+              [class.row-selected-flat]="record.isSelected"
+            >
+              <td class="ps-3 text-center">
+                <div class="custom-flat-checkbox">
+                  <input
+                    type="checkbox"
+                    [id]="'check-' + record.id"
+                    [(ngModel)]="record.isSelected"
+                  />
+                  <label [for]="'check-' + record.id"></label>
+                </div>
+              </td>
+
+              <td class="text-center text-secondary font-monospace fw-semibold">
+                {{ i + 1 }}
+              </td>
+
+              <td>
+                <div
+                  class="user-profile-title fw-bold text-uppercase text-wrap"
+                  style="max-width: 250px"
+                >
+                  {{ record.name }}
+                </div>
+                <span class="badge-id-pill-flat mt-1">ID: {{ record.id }}</span>
+              </td>
+
+              <td class="text-secondary" style="font-size: 0.72rem; line-height: 1.4">
+                <div *ngIf="record.createdBy">
+                  Created By: <span class="text-dark fw-semibold">{{ record.createdBy }}</span>
+                  <div class="font-monospace text-muted-meta">{{ record.dateCreated }}</div>
+                </div>
+                <div class="mt-1" *ngIf="record.modifiedBy">
+                  Modified By: <span class="text-dark fw-semibold">{{ record.modifiedBy }}</span>
+                  <div class="font-monospace text-muted-meta">{{ record.dateModified }}</div>
+                </div>
+              </td>
+
+              <td class="text-center">
+                <span
+                  class="badge-corporate"
+                  [ngClass]="record.valid === 'Y' ? 'bg-flat-success' : 'bg-flat-danger'"
+                >
+                  {{ record.valid === 'Y' ? 'ACTIVE' : 'INACTIVE' }}
+                </span>
+              </td>
+
+              <td class="text-center fw-bold fs-7">
+                <span
+                  [class.text-danger]="record.totalUsers === 0"
+                  [class.text-success]="record.totalUsers > 0"
+                >
+                  {{ record.totalUsers }}
+                </span>
+              </td>
+
+              <td>
+                <div class="privilege-preview-container py-1">
+                  <ul class="list-unstyled m-0 d-flex flex-column gap-1">
+                    <li
+                      *ngFor="let privilege of record.privileges"
+                      class="text-truncate privilege-item text-muted"
+                    >
+                      <span class="bullet-marker">◆</span> {{ privilege }}
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center pt-3 mt-2">
+        <div class="text-muted small">
+          Showing entries <strong>1 to 7</strong> of <strong>7</strong> directory pages
+        </div>
+        <nav>
+          <ul class="pagination pagination-sm mb-0 gap-1 align-items-center custom-flat-pagination">
+            <li class="page-item disabled">
+              <button class="page-link shadow-none">&laquo;</button>
+            </li>
+            <li class="page-item active">
+              <button class="page-link shadow-none">1</button>
+            </li>
+            <li class="page-item disabled">
+              <button class="page-link shadow-none">&raquo;</button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

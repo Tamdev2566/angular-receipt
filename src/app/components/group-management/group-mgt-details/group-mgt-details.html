@@ -1,0 +1,195 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <div
+    class="d-flex justify-content-between align-items-center mb-4 border-bottom-flat pb-3 p-4 bg-white shadow-sm rounded-top-2"
+  >
+    <div>
+      <h4 class="text-header-title m-0 fw-bold">Define New Group / Role</h4>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-flat-action-secondary py-1.5" (click)="onDeepClone()">
+        <i class="fa-solid fa-clone small me-1"></i> DEEP CLONE FROM EXISTING GROUP
+      </button>
+      <button class="btn btn-flat-action-primary py-1.5" (click)="onSave()">
+        <i class="fa-solid fa-plus small me-1"></i> Save
+      </button>
+      <button class="btn btn-flat-action-danger-outline py-1.5" (click)="onCancel()">
+        <i class="fa-solid fa-xmark small me-1"></i> Cancel
+      </button>
+    </div>
+  </div>
+
+  <div class="main-scrollable-content-fluid px-4 pb-4">
+    <div class="row g-4">
+      <div class="col-12 col-lg-5">
+        <div class="card workspace-form-card shadow-sm border-0 h-100">
+          <div class="card-header-accent py-2.5 px-3">
+            <h5 class="m-0 text-white panel-title-txt fw-semibold">Group Details</h5>
+          </div>
+          <div class="card-body p-4 d-flex flex-column gap-3.5">
+            <div class="form-group-block">
+              <label class="form-corporate-label mb-1.5">Group ID</label>
+              <input
+                type="text"
+                class="form-control flat-corporate-input bg-disabled"
+                [value]="groupId"
+                disabled
+              />
+              <small class="text-muted-meta mt-1 d-block">Disabled/Auto-generated</small>
+            </div>
+
+            <div class="form-group-block">
+              <label class="form-corporate-label mb-1.5"
+                >Group Name <span class="text-danger-indicator">*</span></label
+              >
+              <input
+                type="text"
+                class="form-control flat-corporate-input"
+                placeholder="Enter unique role setup matrix profiles..."
+                [(ngModel)]="groupName"
+                name="groupName"
+                required
+              />
+            </div>
+
+            <div class="form-group-block">
+              <label class="form-corporate-label mb-1.5">Total Assigned Users</label>
+              <input
+                type="number"
+                class="form-control flat-corporate-input bg-disabled"
+                [value]="totalAssignedUsers"
+                disabled
+              />
+            </div>
+
+            <div class="d-flex align-items-center gap-3 pt-2">
+              <label class="form-corporate-label m-0 cursor-pointer" for="validToggleSwitch"
+                >Valid?</label
+              >
+              <div class="custom-corporate-switch">
+                <input
+                  type="checkbox"
+                  id="validToggleSwitch"
+                  [(ngModel)]="isValid"
+                  name="isValid"
+                />
+                <label for="validToggleSwitch"></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer bg-light border-0 py-3 px-4 rounded-bottom-2 mt-auto">
+            <div
+              class="row text-secondary font-monospace"
+              style="font-size: 0.72rem; line-height: 1.5"
+            >
+              <div class="col-6 border-end-flat">
+                <div><span class="fw-semibold text-dark">Created By:</span> {{ createdBy }}</div>
+                <div class="text-muted mt-0.5">Date Created:</div>
+              </div>
+              <div class="col-6 ps-3">
+                <div>
+                  <span class="fw-semibold text-dark">Modified By:</span> {{ modifiedBy || 'N/A' }}
+                </div>
+                <div class="text-muted mt-0.5">Date Modified:</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-7">
+        <div class="card workspace-form-card shadow-sm border-0 h-100">
+          <div class="card-header-accent py-2.5 px-3">
+            <h5 class="m-0 text-white panel-title-txt fw-semibold">
+              Assigned Privileges: Dynamic Menu & Access Level Table
+            </h5>
+          </div>
+
+          <div class="card-body p-4 d-flex flex-column h-100">
+            <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+              <button
+                class="btn btn-flat-action-primary py-1.5 px-3 fs-7.5"
+                (click)="addPrivilegeRow()"
+              >
+                <i class="fa-solid fa-plus small me-1"></i> Add Privilege
+              </button>
+
+              <div class="search-flat-wrapper d-flex align-items-center" style="max-width: 240px">
+                <input
+                  type="text"
+                  placeholder="Search Assigned Menus..."
+                  class="search-flat-input"
+                  [(ngModel)]="privilegeSearchQuery"
+                />
+                <button class="btn-search-flat-go">
+                  <i class="fa-solid fa-magnifying-glass font-0.7"></i>
+                </button>
+              </div>
+            </div>
+
+            <div
+              class="table-responsive rounded-2 border table-nested-frame flex-grow-1"
+              style="min-height: 250px"
+            >
+              <table class="table align-middle m-0 corporate-flat-table text-nowrap">
+                <thead>
+                  <tr>
+                    <th>Menu Name</th>
+                    <th>Access Level</th>
+                    <th class="text-center" style="width: 100px">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let row of assignedPrivileges; let idx = index"
+                    class="flat-table-row animate-fade-in"
+                  >
+                    <td>
+                      <input
+                        type="text"
+                        class="form-control inner-table-input"
+                        placeholder="Menu Name"
+                        [(ngModel)]="row.menuName"
+                        [name]="'menuName-' + idx"
+                      />
+                    </td>
+                    <td>
+                      <select
+                        class="form-select inner-table-select"
+                        [(ngModel)]="row.accessLevel"
+                        [name]="'accessLevel-' + idx"
+                      >
+                        <option value="FULL ACCESS">FULL ACCESS</option>
+                        <option value="READ ONLY">READ ONLY</option>
+                        <option value="WRITE / MODIFY">WRITE / MODIFY</option>
+                        <option value="NO ACCESS">NO ACCESS</option>
+                      </select>
+                    </td>
+                    <td class="text-center">
+                      <button
+                        class="btn-delete-row shadow-none"
+                        (click)="removePrivilegeRow(idx)"
+                        title="Remove Row"
+                      >
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr *ngIf="assignedPrivileges.length === 0">
+                    <td colspan="3" class="text-center py-5 text-muted-meta font-normal border-0">
+                      <div class="fallback-empty-indicator-box mb-1">
+                        <i class="fa-solid fa-folder-open fs-4 text-black-10"></i>
+                      </div>
+                      No Rows To Show
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

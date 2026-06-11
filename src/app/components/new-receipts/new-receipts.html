@@ -1,5 +1,8 @@
-<div class="modal fade show d-block animate-fade receipt-modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-scrollable modal-xl">
+<div class="receipt-page container-fluid py-3">
+  <div
+    class="receipt-content border-0 shadow-lg rounded-4 overflow-hidden"
+    style="background-color: #f8f9fa"
+  >
     <div
       class="modal-content border-0 shadow-lg rounded-4 overflow-hidden"
       style="background-color: #f8f9fa"
@@ -11,19 +14,23 @@
           class="modal-title fw-bold text-dark d-flex align-items-center gap-2 m-0"
           style="font-size: 0.9rem; color: #32325d !important; letter-spacing: 0.025em"
         >
-          <span
-            class="text-success fw-bold fs-4 m-0"
-            style="color: #2dce89 !important; line-height: 1"
+          <!-- <span
+            class="text-success fw-bold fs- mb-1"
+            style="color: #33708f !important; line-height: 1"
             >+</span
-          >
+          > -->
           CREATE RECEIPT (GLOSSYS FORM)
         </h5>
-        <button
+        <!-- <button
           type="button"
           class="btn-close shadow-none border-0"
           (click)="onClose()"
           style="font-size: 0.8rem"
-        ></button>
+        ></button> -->
+
+        <button class="btn btn-flat-action-secondary px-3 py-1.5" (click)="backToLists()">
+          <i class="fa-solid fa-arrow-left me-1.5 small"></i> Back to Lists
+        </button>
       </div>
 
       <div class="bg-white px-4 pb-3 pt-1 border-bottom border-light">
@@ -450,7 +457,6 @@
                   color: #525f7f;
                   background: #fff;
                 "
-                (click)="onClose()"
               >
                 Cancel
               </button>

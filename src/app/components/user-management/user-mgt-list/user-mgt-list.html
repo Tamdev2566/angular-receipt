@@ -1,0 +1,193 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <!-- Loading Overlay -->
+  <div *ngIf="loading" class="ui inverted dimmer active" style="z-index: 1000">
+    <div class="ui medium text loader">Loading Security Matrix...</div>
+  </div>
+
+  <!-- INNER STRICT SCROLL CONTAINER FRAME -->
+  <div class="main-scrollable-content-fluid p-4">
+    <!-- Top Header Title Area -->
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom-flat pb-3">
+      <div>
+        <h4 class="text-header-title m-0 fw-bold">User Management</h4>
+      </div>
+      <div></div>
+    </div>
+
+    <!-- Action Toolbar (Buttons & Search Layout Matching Theme Rule) -->
+    <div
+      class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 px-3 py-2.5 rounded-2"
+    >
+      <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-flat-action-primary" (click)="onCreateNewUser()">
+          <i class="fa-solid fa-plus small"></i> Create
+        </button>
+
+        <button
+          class="btn btn-flat-action-secondary"
+          [disabled]="!selectedRecord"
+          (click)="openEditModal(selectedRecord)"
+        >
+          <i class="fa-solid fa-pencil small"></i> Update
+        </button>
+
+        <button class="btn btn-flat-action-secondary" (click)="toggleValidity()">
+          <i class="fa-solid fa-arrows-rotate small"></i> Valid/Invalid
+        </button>
+
+        <button class="btn btn-flat-action-secondary btn-flat-active" (click)="filterAll()">
+          <i class="fa-solid fa-check small"></i> ALL
+        </button>
+
+        <button class="btn btn-flat-action-secondary" (click)="printLedger()">
+          <i class="fa-solid fa-print small"></i> Print
+        </button>
+
+        <button class="btn btn-flat-action-secondary" (click)="viewHistory()">
+          <i class="fa-solid fa-history small"></i> History
+        </button>
+      </div>
+
+      <!-- Search Section -->
+      <div class="search-flat-wrapper d-flex align-items-center">
+        <input
+          type="text"
+          placeholder="SEARCH..."
+          class="search-flat-input"
+          (input)="onSearch($event)"
+        />
+        <button class="btn-search-flat-go">Go</button>
+      </div>
+    </div>
+
+    <!-- Datatable Workspace Section -->
+    <div class="main-container receipt-container p-0">
+      <div class="table-responsive rounded-2 flat-table-border" *ngIf="paginatedRecords.length > 0">
+        <table class="table align-middle m-0 corporate-flat-table">
+          <thead>
+            <tr>
+              <th class="ps-3 text-center" style="width: 50px">
+                <div class="custom-flat-checkbox">
+                  <input
+                    type="checkbox"
+                    id="selectAllRows"
+                    [checked]="isAllSelected()"
+                    (change)="toggleAllRows($event)"
+                  />
+                  <label for="selectAllRows"></label>
+                </div>
+              </th>
+              <th class="text-center" style="width: 60px">No</th>
+              <th>User / Profile Identification</th>
+              <th>Email Identity</th>
+              <th>Office Workspace Placement</th>
+              <th class="text-center">Account Validity</th>
+              <th>Audit Log Metadata</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let record of paginatedRecords"
+              class="flat-table-row"
+              [class.row-selected-flat]="record.isSelected"
+            >
+              <td class="ps-3 text-center">
+                <div class="custom-flat-checkbox">
+                  <input
+                    type="checkbox"
+                    [id]="'check-' + record.userId"
+                    [(ngModel)]="record.isSelected"
+                    (change)="onRowSelect(record)"
+                  />
+                  <label [for]="'check-' + record.userId"></label>
+                </div>
+              </td>
+
+              <td class="text-center text-secondary font-monospace fw-semibold">
+                {{ record.no }}
+              </td>
+
+              <td>
+                <div class="user-profile-title fw-bold">{{ record.userName }}</div>
+                <div class="text-muted small mt-0.5" style="font-size: 0.72rem">
+                  {{ record.fullName }}
+                </div>
+                <span class="badge-id-pill-flat">ID: {{ record.userId }}</span>
+              </td>
+
+              <td>
+                <code class="code-corporate-accent">{{ record.email }}</code>
+              </td>
+
+              <td>
+                <span class="d-block text-dark font-normal text-value-main">
+                  {{ record.defaultOffice }}
+                </span>
+                <small class="vessel-flat-subtext">
+                  <i class="map marker alternate icon me-1"></i>Base Hub:
+                  {{ record.defaultLocation }}
+                </small>
+              </td>
+
+              <td class="text-center">
+                <span
+                  class="badge-corporate"
+                  [ngClass]="record.valid === 'Y' ? 'bg-flat-success' : 'bg-flat-danger'"
+                >
+                  {{ record.valid === 'Y' ? 'VALID ACCOUNT' : 'SUSPENDED' }}
+                </span>
+              </td>
+
+              <td class="text-secondary" style="font-size: 0.72rem; line-height: 1.4">
+                <div>
+                  Created By: <span class="text-dark fw-semibold">{{ record.createdBy }}</span>
+                </div>
+                <div class="font-monospace text-muted" style="font-size: 0.65rem">
+                  {{ record.dateCreated }}
+                </div>
+                <div class="mt-1">
+                  Modified By: <span class="text-dark fw-semibold">{{ record.modifiedBy }}</span>
+                </div>
+                <div class="font-monospace text-muted" style="font-size: 0.65rem">
+                  {{ record.dateModified }}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Footer -->
+      <div
+        class="d-flex justify-content-between align-items-center pt-3 mt-2"
+        *ngIf="filteredRecords.length > 0"
+      >
+        <div class="text-muted small pagination-status-txt">
+          Showing entries <strong>{{ currentPage }}</strong> of
+          <strong>{{ totalPages }}</strong> directory pages
+        </div>
+        <nav>
+          <ul class="pagination pagination-sm mb-0 gap-1 align-items-center custom-flat-pagination">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <button class="page-link shadow-none" (click)="changePage(currentPage - 1)">
+                &laquo;
+              </button>
+            </li>
+            <li
+              class="page-item"
+              *ngFor="let page of pageNumbers"
+              [class.active]="currentPage === page"
+            >
+              <button class="page-link shadow-none" (click)="changePage(page)">{{ page }}</button>
+            </li>
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <button class="page-link shadow-none" (click)="changePage(currentPage + 1)">
+                &raquo;
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

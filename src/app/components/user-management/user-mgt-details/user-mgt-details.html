@@ -1,0 +1,370 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <div *ngIf="loading" class="ui inverted dimmer active" style="z-index: 1000">
+    <div class="ui medium text loader">Processing Security Credentials...</div>
+  </div>
+
+  <div class="main-scrollable-content-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom-flat pb-3">
+      <div>
+        <h4 class="text-header-title m-0 fw-bold">User Management</h4>
+      </div>
+      <button class="btn btn-flat-action-secondary px-3 py-1.5" (click)="backToLists()">
+        <i class="fa-solid fa-arrow-left me-1.5 small"></i> Back to Lists
+      </button>
+    </div>
+
+    <div class="d-flex gap-2 mb-4">
+      <button
+        type="submit"
+        form="userManagementForm"
+        class="btn btn-flat-action-primary py-1.5 px-4"
+        [disabled]="!userForm.valid"
+      >
+        <i class="fa-solid fa-check me-1.5 small"></i> SAVE
+      </button>
+      <button
+        type="button"
+        class="btn btn-flat-action-secondary py-1.5 px-3"
+        (click)="backToLists()"
+      >
+        <i class="fa-solid fa-xmark me-1.5 small"></i> Cancel
+      </button>
+    </div>
+
+    <form
+      id="userManagementForm"
+      #userForm="ngForm"
+      (ngSubmit)="onSaveUser(userForm)"
+      autocomplete="off"
+      class="mb-4"
+    >
+      <input type="text" style="display: none" name="fake_username_remembered" />
+      <input type="password" style="display: none" name="fake_password_remembered" />
+
+      <div class="row g-3">
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">User Name:</label>
+          <input
+            type="text"
+            name="userName"
+            [(ngModel)]="formData.userName"
+            class="form-control form-control-sm custom-flat-input"
+            placeholder="User Name"
+            required
+          />
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">Full Name:</label>
+          <input
+            type="text"
+            name="fullName"
+            [(ngModel)]="formData.fullName"
+            class="form-control form-control-sm custom-flat-input"
+            placeholder="Full Name"
+            required
+          />
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">Phone:</label>
+          <input
+            type="text"
+            name="phone"
+            [(ngModel)]="formData.phone"
+            class="form-control form-control-sm custom-flat-input"
+            placeholder="Phone Number"
+            required
+          />
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">Email:</label>
+          <input
+            type="email"
+            name="email"
+            [(ngModel)]="formData.email"
+            class="form-control form-control-sm custom-flat-input"
+            placeholder="email@domain.com"
+            [disabled]="isEditMode"
+            required
+          />
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">Default Location:</label>
+          <input
+            type="text"
+            name="defaultLocation"
+            [(ngModel)]="formData.defaultLocation"
+            class="form-control form-control-sm custom-flat-input"
+            placeholder="Search Location..."
+            required
+          />
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">Default Office:</label>
+          <input
+            type="text"
+            name="defaultOffice"
+            [(ngModel)]="formData.defaultOffice"
+            class="form-control form-control-sm custom-flat-input"
+            placeholder="Search Office..."
+            required
+          />
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">Password:</label>
+          <div class="position-relative password-wrapper">
+            <input
+              [type]="hidePassword ? 'password' : 'text'"
+              name="password"
+              [(ngModel)]="formData.password"
+              class="form-control form-control-sm custom-flat-input pe-5"
+              placeholder="[ Password ]"
+              [disabled]="isEditMode"
+              [required]="!isEditMode"
+              autocomplete="new-password"
+            />
+            <button
+              type="button"
+              class="btn-password-toggle"
+              (click)="hidePassword = !hidePassword"
+              [disabled]="isEditMode"
+            >
+              <i class="fa-solid" [ngClass]="hidePassword ? 'fa-eye' : 'fa-eye-slash'"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">Confirm Password:</label>
+          <div class="position-relative password-wrapper">
+            <input
+              [type]="hideConfirmPassword ? 'password' : 'text'"
+              name="confirmPassword"
+              [(ngModel)]="formData.confirmPassword"
+              class="form-control form-control-sm custom-flat-input pe-5"
+              placeholder="[ Confirm Password ]"
+              [disabled]="isEditMode"
+              [required]="!isEditMode"
+              autocomplete="new-password"
+            />
+            <button
+              type="button"
+              class="btn-password-toggle"
+              (click)="hideConfirmPassword = !hideConfirmPassword"
+              [disabled]="isEditMode"
+            >
+              <i class="fa-solid" [ngClass]="hideConfirmPassword ? 'fa-eye' : 'fa-eye-slash'"></i>
+            </button>
+          </div>
+        </div>
+
+        <ng-container *ngIf="isEditMode">
+          <div class="col-12 col-sm-6 col-md-3">
+            <label class="form-label text-muted custom-flat-label mb-1.5">Created Metadata:</label>
+            <input
+              type="text"
+              class="form-control form-control-sm custom-flat-input input-readonly-flat"
+              [value]="formData.createdBy + ' - ' + formData.dateCreated"
+              disabled
+            />
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <label class="form-label text-muted custom-flat-label mb-1.5">Modified Metadata:</label>
+            <input
+              type="text"
+              class="form-control form-control-sm custom-flat-input input-readonly-flat"
+              [value]="formData.modifiedBy + ' - ' + formData.dateModified"
+              disabled
+            />
+          </div>
+        </ng-container>
+
+        <div class="col-12 col-sm-6 col-md-3 d-flex flex-column justify-content-end pb-1">
+          <label class="form-label fw-bold custom-flat-label mb-2">Account Status:</label>
+          <div class="form-switch custom-flat-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="accountStatusSwitch"
+              name="valid"
+              [(ngModel)]="formData.isValidToggle"
+            />
+            <label class="form-check-label p-0 m-0" for="accountStatusSwitch">
+              <span
+                class="badge-corporate"
+                [ngClass]="formData.isValidToggle ? 'bg-flat-success' : 'bg-flat-danger'"
+              >
+                {{ formData.isValidToggle ? 'Valid: ON' : 'Valid: OFF' }}
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="row g-3 mt-2 panels-sub-cards-section">
+      <div class="col-12 col-xl-5">
+        <div class="card flat-sub-card-box h-100">
+          <div class="card-header flat-panel-title text-uppercase fw-bold text-white">Location</div>
+          <div class="card-body p-3 bg-white">
+            <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+              <button
+                type="button"
+                class="btn btn-flat-action-primary btn-sm compact-btn"
+                (click)="addLocation()"
+              >
+                <i class="fa-solid fa-plus me-1.5 small"></i> Add Location
+              </button>
+              <div class="search-flat-wrapper d-flex align-items-center">
+                <input
+                  type="text"
+                  placeholder="Search Location ..."
+                  class="search-flat-input py-1"
+                  (input)="onSearchLocation($event)"
+                />
+              </div>
+            </div>
+
+            <div class="table-responsive rounded-2 flat-inner-table-border">
+              <table class="table align-middle m-0 flat-inner-table">
+                <thead>
+                  <tr>
+                    <th class="text-center" style="width: 45px">No</th>
+                    <th>Location</th>
+                    <th>Office</th>
+                    <th class="text-center" style="width: 65px">Default</th>
+                    <th class="text-center" style="width: 75px">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let loc of locationRecords; let i = index"
+                    class="flat-inner-row"
+                    [class.active-flat-row]="loc.isDefault"
+                  >
+                    <td class="text-center text-muted font-monospace small">{{ i + 1 }}</td>
+                    <td class="fw-bold text-dark text-truncate" style="max-width: 95px">
+                      {{ loc.locationName }}
+                    </td>
+                    <td class="text-secondary small text-truncate" style="max-width: 140px">
+                      {{ loc.officeName }}
+                    </td>
+                    <td class="text-center">
+                      <div class="custom-flat-radio">
+                        <input
+                          type="radio"
+                          [id]="'radio-flat-loc-' + i"
+                          name="defaultLocationRadio"
+                          [checked]="loc.isDefault"
+                          (change)="setDefaultLocation(loc)"
+                        />
+                        <label [for]="'radio-flat-loc-' + i"></label>
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      <button
+                        type="button"
+                        class="btn-flat-remove-action"
+                        (click)="removeLocation(loc)"
+                      >
+                        <i class="fa-solid fa-trash-can me-1"></i> Remove
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-4">
+        <div class="card flat-sub-card-box h-100">
+          <div class="card-header flat-panel-title text-uppercase fw-bold text-white">Group</div>
+          <div class="card-body p-3 bg-white">
+            <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+              <div class="meta-flat-text text-secondary">
+                Groups for: <span class="text-dark fw-bold">{{ activeLocationContext }}</span>
+              </div>
+              <button
+                type="button"
+                class="btn btn-flat-action-secondary btn-sm compact-btn"
+                (click)="cloneGroups()"
+              >
+                <i class="fa-solid fa-clone me-1"></i> Clone Groups To...
+              </button>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-flat-action-secondary btn-sm compact-btn mb-3"
+              (click)="addGroup()"
+            >
+              <i class="fa-solid fa-plus me-1.5 small"></i> Add Group
+            </button>
+
+            <div class="table-responsive rounded-2 flat-inner-table-border">
+              <table class="table align-middle m-0 flat-inner-table">
+                <thead>
+                  <tr>
+                    <th class="ps-3">Group Name</th>
+                    <th class="text-center" style="width: 80px">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let grp of groupRecords" class="flat-inner-row">
+                    <td class="ps-3 text-dark fw-medium text-truncate" style="max-width: 200px">
+                      {{ grp.groupName }}
+                    </td>
+                    <td class="text-center">
+                      <button
+                        type="button"
+                        class="btn-flat-remove-action"
+                        (click)="removeGroup(grp)"
+                      >
+                        <i class="fa-solid fa-trash-can me-1"></i> Remove
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="groupRecords.length === 0">
+                    <td colspan="2" class="text-center p-4 text-muted small">
+                      No groups associated.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card flat-sub-card-box h-100">
+          <div class="card-header flat-panel-title text-uppercase fw-bold text-white">
+            Privileges
+          </div>
+          <div class="card-body p-3 bg-white">
+            <div class="meta-flat-text text-secondary mb-3" style="line-height: 1.3">
+              Effective Access Preview for:
+              <span class="text-dark d-block fw-bold mt-0.5">{{ activeOfficeContext }}</span>
+            </div>
+
+            <div
+              class="no-privileges-flat-box rounded-2 p-4 text-center mt-2 d-flex flex-column align-items-center justify-content-center"
+            >
+              <i class="fa-solid fa-shield-halved text-muted mb-2 fs-4"></i>
+              <span class="text-muted small">No privileges assigned.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

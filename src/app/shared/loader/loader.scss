@@ -4,11 +4,9 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  
-  background: rgba(15, 23, 42, 0.35) !important; 
+  background: rgba(15, 23, 42, 0.35) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  
   display: flex;
   justify-content: center;
   align-items: center;
@@ -26,22 +24,22 @@
 }
 
 .pl__ring--a {
-  stroke: #48bb78 !important;
+  stroke: #33708f !important;
 }
 
 .pl__ring--b {
   animation-name: ringB;
-  stroke: rgba(255, 255, 255, 0.9) !important; 
+  stroke: rgba(255, 255, 255, 0.9) !important;
 }
 
 .pl__ring--c {
   animation-name: ringC;
-  stroke: #38a169 !important; 
+  stroke: #b5d3e2 !important;
 }
 
 .pl__ring--d {
   animation-name: ringD;
-  stroke: rgba(255, 255, 255, 0.4) !important; 
+  stroke: rgba(255, 255, 255, 0.4) !important;
 }
 
 @keyframes ringA {

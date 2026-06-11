@@ -54,12 +54,13 @@
           this.style.backgroundColor = '#f9fafb';
           this.style.borderColor = '#f3f4f6';
         "
+        (click)="onHomeClick()"
       >
         <i class="fa-solid fa-house" style="color: #33708f; font-size: 1.05rem"></i>
       </div>
 
       <!-- Notification Button -->
-      <div
+      <!-- <div
         class="position-relative d-flex justify-content-center align-items-center rounded-circle"
         style="
           width: 38px;
@@ -90,7 +91,7 @@
             border: 2px solid #ffffff;
           "
         ></span>
-      </div>
+      </div> -->
     </div>
 
     <div class="d-flex align-items-center gap-2 gap-md-3" style="position: relative">
@@ -106,11 +107,9 @@
         (click)="toggleAccountCard($event)"
       >
         <div class="text-end d-none d-sm-flex flex-column justify-content-center me-1">
-          <span class="m-0 lh-1 fw-semibold" style="font-size: 0.85rem; color: #1f2937"
-            >Jhon Smith</span
-          >
+          <span class="m-0 lh-1 fw-semibold" style="font-size: 0.85rem; color: #1f2937">Admin</span>
           <span class="m-0 lh-1 mt-1" style="font-size: 0.72rem; color: #9ca3af; font-weight: 500"
-            >Developer</span
+            >Administrator</span
           >
         </div>
 
@@ -125,7 +124,7 @@
               letter-spacing: 0.5px;
             "
           >
-            JS
+            AD
           </div>
           <span
             class="position-absolute rounded-circle"
