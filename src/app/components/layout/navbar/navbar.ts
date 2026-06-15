@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, HostListener, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserService } from '../../../services/userService/user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -14,11 +15,18 @@ export class Navbar {
 
   @Output() logoutTriggered = new EventEmitter<void>();
 
+  user: any;
+
   constructor(
     private router: Router,
     private elementRef: ElementRef,
+    private userService: UserService,
   ) {}
 
+  ngOnInit(): void {
+    this.user = this.userService.getUser();
+    console.log(this.user);
+  }
   toggleAccountCard(event: Event): void {
     event.stopPropagation();
     this.isCardOpen = !this.isCardOpen;

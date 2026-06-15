@@ -107,9 +107,13 @@
         (click)="toggleAccountCard($event)"
       >
         <div class="text-end d-none d-sm-flex flex-column justify-content-center me-1">
-          <span class="m-0 lh-1 fw-semibold" style="font-size: 0.85rem; color: #1f2937">Admin</span>
-          <span class="m-0 lh-1 mt-1" style="font-size: 0.72rem; color: #9ca3af; font-weight: 500"
-            >Administrator</span
+          <span class="m-0 lh-1 fw-semibold" style="font-size: 0.85rem; color: #1f2937">
+            {{ user.email }}</span
+          >
+          <span
+            class="m-0 lh-1 mt-1"
+            style="font-size: 0.72rem; color: #9ca3af; font-weight: 500"
+            >{{ user.userLocation }}</span
           >
         </div>
 
@@ -124,7 +128,7 @@
               letter-spacing: 0.5px;
             "
           >
-            AD
+            {{ user.userInitial }}
           </div>
           <span
             class="position-absolute rounded-circle"
@@ -161,16 +165,16 @@
               letter-spacing: 0.5px;
             "
           >
-            AD
+            {{ user.userInitial }}
           </div>
 
           <div class="d-flex flex-column lh-sm">
-            <span class="fw-bold text-body" style="font-size: 1rem"> Admin </span>
+            <span class="fw-bold text-body" style="font-size: 1rem"> {{ user.name }} </span>
             <span
               class="text-body-secondary fw-semibold mt-1"
-              style="font-size: 0.72rem; letter-spacing: 0.5px"
+              style="font-size: 0.6rem; letter-spacing: 0.5px"
             >
-              Administrator
+              Last sync: {{ user?.lastLogin }}
             </span>
           </div>
         </div>
