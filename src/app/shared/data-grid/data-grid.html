@@ -1,0 +1,143 @@
+<div class="table-responsive rounded-2 border shadow-sm" *ngIf="records().length > 0">
+  <table class="table table-hover align-middle mb-0 bg-white">
+    <thead>
+      <tr>
+        <th class="ps-3 text-center" style="width: 50px; background-color: #33708f; color: white">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [checked]="isAllSelected()"
+            (change)="toggleAllRows($event)"
+          />
+        </th>
+        <th class="text-center" style="width: 60px; background-color: #33708f; color: white">No</th>
+        <th style="background-color: #33708f; color: white">User / Profile Identification</th>
+        <th style="background-color: #33708f; color: white">Email Identity</th>
+        <th style="background-color: #33708f; color: white">Office Workspace Placement</th>
+        <th class="text-center" style="background-color: #33708f; color: white">
+          Account Validity
+        </th>
+        <th style="background-color: #33708f; color: white">Audit Log Metadata</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr
+        *ngFor="let record of records()"
+        [class.table-active]="record.isSelected"
+        style="transition: background 0.15s ease-in-out"
+      >
+        <td class="ps-3 text-center border-bottom">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [(ngModel)]="record.isSelected"
+            (change)="onRowSelect()"
+          />
+        </td>
+
+        <td class="text-center text-secondary font-monospace fw-semibold border-bottom">
+          {{ record.no }}
+        </td>
+
+        <td class="border-bottom">
+          <div class="text-dark fw-bold" style="font-size: 0.85rem">{{ record.userName }}</div>
+          <div class="text-muted small" style="font-size: 0.75rem">{{ record.fullName }}</div>
+          <span
+            class="badge bg-light text-secondary border mt-1 font-monospace"
+            style="font-size: 0.65rem"
+          >
+            ID: {{ record.userId }}
+          </span>
+        </td>
+
+        <td class="border-bottom">
+          <code
+            class="badge bg-light text-dark border font-monospace px-2 py-1"
+            style="font-size: 0.75rem"
+          >
+            {{ record.email }}
+          </code>
+        </td>
+
+        <td class="border-bottom">
+          <span class="d-block text-dark fw-medium" style="font-size: 0.85rem">
+            {{ record.defaultOffice }}
+          </span>
+          <small class="text-secondary d-block mt-1" style="font-size: 0.75rem">
+            <i class="fa-solid fa-location-dot me-1"></i>Base Hub: {{ record.defaultLocation }}
+          </small>
+        </td>
+
+        <td class="text-center border-bottom">
+          <span
+            class="badge rounded-pill px-3 py-1"
+            [ngClass]="
+              record.valid === 'Y'
+                ? 'bg-success-subtle text-success border border-success-subtle'
+                : 'bg-danger-subtle text-danger border border-danger-subtle'
+            "
+          >
+            {{ record.valid === 'Y' ? 'VALID ACCOUNT' : 'SUSPENDED' }}
+          </span>
+        </td>
+
+        <td class="text-secondary border-bottom" style="font-size: 0.75rem; line-height: 1.4">
+          <div>
+            Created By: <span class="text-dark fw-semibold">{{ record.createdBy }}</span>
+          </div>
+          <div class="font-monospace text-muted mb-1" style="font-size: 0.7rem">
+            {{ record.dateCreated }}
+          </div>
+          <div>
+            Modified By: <span class="text-dark fw-semibold">{{ record.modifiedBy }}</span>
+          </div>
+          <div class="font-monospace text-muted" style="font-size: 0.7rem">
+            {{ record.dateModified }}
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="d-flex justify-content-between align-items-center pt-3" *ngIf="records().length > 0">
+  <div class="text-muted small">
+    Showing entries <strong class="text-dark">{{ currentPage() }}</strong> of
+    <strong class="text-dark">{{ totalPages() }}</strong> pages
+  </div>
+
+  <nav>
+    <ul class="pagination pagination-sm mb-0 shadow-sm">
+      <li class="page-item" [class.disabled]="currentPage() === 1">
+        <button class="page-link text-secondary" (click)="changePage(currentPage() - 1)">
+          &laquo;
+        </button>
+      </li>
+
+      <li
+        class="page-item"
+        *ngFor="let page of pageNumbers()"
+        [class.active]="currentPage() === page"
+      >
+        <button
+          class="page-link"
+          [ngStyle]="
+            currentPage() === page
+              ? { 'background-color': '#33708f', 'border-color': '#33708f', color: 'white' }
+              : { color: '#475569' }
+          "
+          (click)="changePage(page)"
+        >
+          {{ page }}
+        </button>
+      </li>
+
+      <li class="page-item" [class.disabled]="currentPage() === totalPages()">
+        <button class="page-link text-secondary" (click)="changePage(currentPage() + 1)">
+          &raquo;
+        </button>
+      </li>
+    </ul>
+  </nav>
+</div>

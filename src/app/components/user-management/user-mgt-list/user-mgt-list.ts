@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DataGrid } from '../../../shared/data-grid/data-grid';
 
 @Component({
   selector: 'app-user-mgmt-list',
   standalone: true,
   templateUrl: './user-mgt-list.html',
   styleUrls: ['./user-mgt-list.scss'],
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DataGrid],
 })
 export class UserMgtList implements OnInit {
   loading: boolean = false;
