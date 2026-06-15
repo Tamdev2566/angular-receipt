@@ -34,9 +34,9 @@ export class NewReceiptComponent {
 
   constructor(private router: Router) {}
 
-  ngOnInit(): void {
-    // document.body.classList.add('receipt-open');
-  }
+  // ngOnInit(): void {
+  //   document.body.classList.add('receipt-open');
+  // }
 
   onCheckOutstanding() {
     alert('Outstanding checked: Clean ledger state');

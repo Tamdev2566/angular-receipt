@@ -4,31 +4,24 @@
   </div>
 
   <div class="main-scrollable-content-fluid p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom-flat pb-3">
-      <div>
+    <div class="d-flex justify-content-between mb-2">
+      <div class="">
         <h4 class="text-header-title m-0 fw-bold">User Management</h4>
       </div>
-      <button class="btn btn-flat-action-secondary px-3 py-1.5" (click)="backToLists()">
-        <i class="fa-solid fa-arrow-left me-1.5 small"></i> Back to Lists
-      </button>
-    </div>
 
-    <div class="d-flex gap-2 mb-4">
-      <button
-        type="submit"
-        form="userManagementForm"
-        class="btn btn-flat-action-primary py-1.5 px-4"
-        [disabled]="!userForm.valid"
-      >
-        <i class="fa-solid fa-check me-1.5 small"></i> SAVE
-      </button>
-      <button
-        type="button"
-        class="btn btn-flat-action-secondary py-1.5 px-3"
-        (click)="backToLists()"
-      >
-        <i class="fa-solid fa-xmark me-1.5 small"></i> Cancel
-      </button>
+      <div class="d-flex gap-2 justify-content-end mb-4">
+        <button
+          type="submit"
+          form="userManagementForm"
+          class="btn btn-flat-action-primary py-1.5 px-4"
+          [disabled]="!userForm.valid"
+        >
+          <i class="fa-solid fa-check me-1.5 small"></i> Save
+        </button>
+        <button class="btn btn-flat-action-danger-outline py-1.5" (click)="onBackToLists()">
+          <i class="fa-solid fa-xmark small me-1"></i> Cancel
+        </button>
+      </div>
     </div>
 
     <form
@@ -75,6 +68,8 @@
             class="form-control form-control-sm custom-flat-input"
             placeholder="Phone Number"
             required
+            maxlength="15"
+            (keypress)="allowNumbersOnly($event)"
           />
         </div>
 
@@ -84,11 +79,22 @@
             type="email"
             name="email"
             [(ngModel)]="formData.email"
+            #email="ngModel"
             class="form-control form-control-sm custom-flat-input"
             placeholder="email@domain.com"
             [disabled]="isEditMode"
             required
+            email
           />
+          <div
+            class="text-danger mt-1"
+            style="font-size: 12px"
+            *ngIf="email.invalid && email.touched"
+          >
+            <span *ngIf="email.errors?.['required']">Email is required</span>
+
+            <span *ngIf="email.errors?.['email']"> Please enter a valid email address </span>
+          </div>
         </div>
 
         <div class="col-12 col-sm-6 col-md-3">

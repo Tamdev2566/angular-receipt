@@ -31,6 +31,12 @@ export class RemoveReceiptComponent implements OnInit {
       this.matches = [this.record];
       this.selectedIds = [this.record.id];
     }
+
+    document.body.classList.add('receipt-open');
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('receipt-open');
   }
 
   retrieveRemoveModalData() {
@@ -76,6 +82,7 @@ export class RemoveReceiptComponent implements OnInit {
   }
 
   onClose() {
+    document.body.classList.remove('receipt-open');
     this.close.emit();
   }
 }

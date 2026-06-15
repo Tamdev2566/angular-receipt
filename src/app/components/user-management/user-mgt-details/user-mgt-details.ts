@@ -54,8 +54,8 @@ export class UserMgtDetails implements OnInit {
   groupRecords: any[] = [{ groupName: 'GRP11431- KIEN - SINGAPORE' }];
   activeLocationContext: string = 'SINGAPORE (Main Office)';
   activeOfficeContext: string = 'SINGAPORE (PT. SAMUDERA SHIPPING SERVICES - SINGAPORE)';
-  hidePassword: boolean = true;
-  hideConfirmPassword: boolean = true;
+  hidePassword: boolean = false;
+  hideConfirmPassword: boolean = false;
 
   constructor(private router: Router) {}
 
@@ -66,6 +66,14 @@ export class UserMgtDetails implements OnInit {
     if (stateData) {
       this.isEditMode = true;
       this.formData = { ...stateData, isValidToggle: stateData.valid === 'Y' };
+    }
+  }
+
+  allowNumbersOnly(event: KeyboardEvent): void {
+    const charCode = event.which ? event.which : event.keyCode;
+
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
     }
   }
 
@@ -104,7 +112,7 @@ export class UserMgtDetails implements OnInit {
     });
   }
 
-  backToLists(): void {
+  onBackToLists(): void {
     this.router.navigate(['/home/user-mgt-list']);
   }
 

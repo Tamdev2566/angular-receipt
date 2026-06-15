@@ -24,6 +24,11 @@ export class UndoReceiptComponent implements OnInit {
       this.searchBl = this.record.blNo;
       this.searchCheque = this.record.chequeNo;
     }
+
+    document.body.classList.add('receipt-open');
+  }
+  ngOnDestroy(): void {
+    document.body.classList.remove('receipt-open');
   }
 
   retrieveReplicaData() {
@@ -52,6 +57,7 @@ export class UndoReceiptComponent implements OnInit {
   }
 
   onClose() {
+    document.body.classList.remove('receipt-open');
     this.close.emit();
   }
 }

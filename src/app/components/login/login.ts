@@ -6,6 +6,7 @@ import { AlertService } from '../../services/alertService/alert';
 import { AuthService } from '../../services/authService/auth.service';
 import { LoaderComponent } from '../../shared/loader/loader';
 import { PasswordMgmt } from '../password-mgmt/password-mgmt';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -73,27 +74,34 @@ export class LoginPage {
       password: this.password,
     };
 
-    this.authService.login(payload).subscribe({
-      next: (res: any) => {
-        console.log('response', res);
-
-        localStorage.setItem('angular_token', res.token);
-        localStorage.setItem('token_expire', res.expire);
-        this.router.navigate(['/home']);
-        this.alertService.showAlert('Logged In Successfully!', '', 'success');
-      },
-
-      error: (err) => {
-        this.isGlobalLoading = false;
-        console.log('ERROR', err);
-        if (err.message) {
-          this.alertService.showAlert('Something went wrong, Please try again later', '', 'error');
+    this.authService
+      .login(payload)
+      .pipe(
+        finalize(() => {
           this.isGlobalLoading = false;
-        } else {
-          this.alertService.showAlert(err?.error?.message || err?.error, '', 'error');
-          this.isGlobalLoading = false;
-        }
-      },
-    });
+          this.cdr.detectChanges();
+        }),
+      )
+      .subscribe({
+        next: (res: any) => {
+          console.log('response', res);
+
+          localStorage.setItem('angular_token', res.token);
+          localStorage.setItem('token_expire', res.expire);
+
+          this.alertService.showAlert('Logged In Successfully!', '', 'success');
+          this.router.navigate(['/home']);
+        },
+
+        error: (err) => {
+          console.log('ERROR:', err);
+
+          this.alertService.showAlert(
+            err?.error?.message || err?.error || 'Something went wrong, Please try again later',
+            '',
+            'error',
+          );
+        },
+      });
   }
 }

@@ -6,12 +6,18 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () => import('./components/login/login').then((m) => m.LoginPage),
   },
+
   {
     path: 'home',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./components/layout/main-layout/main-layout').then((m) => m.MainLayout),
     children: [
+      {
+        path: '404',
+        loadComponent: () =>
+          import('./shared/not-found-page/not-found-page').then((m) => m.NotFoundPage),
+      },
       {
         path: '',
         redirectTo: 'welcome',
@@ -73,29 +79,29 @@ export const routes: Routes = [
             (m) => m.UserMgtHistoryComponent,
           ),
       },
-      {
-        path: 'group-mgt-list',
-        loadComponent: () =>
-          import('./components/group-management/group-mgt-list/group-mgt-list').then(
-            (m) => m.GroupMgtList,
-          ),
-      },
-      {
-        path: 'group-mgt-details',
-        loadComponent: () =>
-          import('./components/group-management/group-mgt-details/group-mgt-details').then(
-            (m) => m.GroupMgtDetails,
-          ),
-      },
-      {
-        path: 'group-mgt-history',
-        loadComponent: () =>
-          import('./components/group-management/group-mgt-history/group-mgt-history').then(
-            (m) => m.GroupMgtHistoryComponent,
-          ),
-      },
+      // {
+      //   path: 'group-mgt-list',
+      //   loadComponent: () =>
+      //     import('./components/group-management/group-mgt-list/group-mgt-list').then(
+      //       (m) => m.GroupMgtList,
+      //     ),
+      // },
+      // {
+      //   path: 'group-mgt-details',
+      //   loadComponent: () =>
+      //     import('./components/group-management/group-mgt-details/group-mgt-details').then(
+      //       (m) => m.GroupMgtDetails,
+      //     ),
+      // },
+      // {
+      //   path: 'group-mgt-history',
+      //   loadComponent: () =>
+      //     import('./components/group-management/group-mgt-history/group-mgt-history').then(
+      //       (m) => m.GroupMgtHistoryComponent,
+      //     ),
+      // },
     ],
   },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: '**', redirectTo: 'login' },
+  // { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '**', redirectTo: 'home/404' },
 ];
