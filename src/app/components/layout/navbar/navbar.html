@@ -22,6 +22,8 @@
     <input
       placeholder="Search"
       type="search"
+      [value]="searchText"
+      (input)="onSearch($event)"
       class="form-control border-0 rounded-3 shadow-sm"
       style="
         height: 40px;
@@ -31,6 +33,73 @@
         font-size: 0.95rem;
       "
     />
+    <div
+      *ngIf="searchText && filteredMenus.length > 0"
+      class="position-absolute top-100 start-0 w-100 mt-2"
+      style="
+        z-index: 2000;
+        max-height: 350px;
+        overflow-y: auto;
+        border-radius: 16px;
+        background: #ffffff;
+        border: 1px solid #dbe5eb;
+        box-shadow: 0 12px 30px rgba(51, 112, 143, 0.12);
+      "
+    >
+      <div
+        *ngFor="let item of filteredMenus"
+        (click)="navigateTo(item.link)"
+        class="d-flex align-items-center gap-3 px-4 py-3 border-bottom"
+        style="cursor: pointer; transition: all 0.2s ease; border-color: #eef3f6 !important"
+        onmouseover="
+          this.style.background = '#f4f8fb';
+          this.style.paddingLeft = '28px';
+        "
+        onmouseout="
+          this.style.background = 'white';
+          this.style.paddingLeft = '24px';
+        "
+      >
+        <div
+          class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+          style="width: 36px; height: 36px; background: rgba(51, 112, 143, 0.12)"
+        >
+          <i class="fa-solid fa-compass" style="color: #33708f; font-size: 14px"></i>
+        </div>
+
+        <div class="flex-grow-1">
+          <div class="fw-semibold" style="color: #1f2937; font-size: 14px">
+            {{ item.title }}
+          </div>
+        </div>
+
+        <i class="fa-solid fa-arrow-right" style="color: #33708f; font-size: 12px"></i>
+      </div>
+    </div>
+
+    <!-- No Results -->
+    <div
+      *ngIf="searchText && filteredMenus.length === 0"
+      class="position-absolute top-100 start-0 w-100 mt-2"
+      style="
+        z-index: 2000;
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #dbe5eb;
+        box-shadow: 0 12px 30px rgba(51, 112, 143, 0.12);
+      "
+    >
+      <div class="text-center py-4">
+        <i
+          class="fa-solid fa-magnifying-glass"
+          style="font-size: 24px; color: #33708f; opacity: 0.5"
+        ></i>
+
+        <div class="mt-2 fw-semibold" style="color: #33708f">No menu found</div>
+
+        <small class="text-secondary"> Try searching another module </small>
+      </div>
+    </div>
   </div>
 
   <div class="d-flex align-items-center flex-shrink-0 gap-2 gap-md-3">

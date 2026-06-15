@@ -1,25 +1,37 @@
-<div class="alert-banner" *ngIf="visible" [ngClass]="type">
-  <div class="icon-box">
+<div
+  *ngIf="visible"
+  class="alert shadow-lg border-0 d-flex align-items-center position-relative mx-auto mt-3"
+  [ngClass]="{
+    'alert-success  bg-success': type === 'success',
+    'alert-danger  bg-danger': type === 'error',
+    'alert-warning  bg-warning': type === 'warning',
+    'alert-info  bg-info': type === 'info',
+  }"
+  style="width: 560px; max-width: 92vw; border-radius: 16px; color: white"
+>
+  <div class="fs-4 me-3">
     <i class="fa-solid fa-circle-check" *ngIf="type === 'success'"></i>
     <i class="fa-solid fa-circle-xmark" *ngIf="type === 'error'"></i>
     <i class="fa-solid fa-triangle-exclamation" *ngIf="type === 'warning'"></i>
+    <i class="fa-solid fa-circle-info" *ngIf="type === 'info'"></i>
   </div>
-  <div class="content-box">
-    <h4>{{ title }}</h4>
-    <p>{{ message }}</p>
+
+  <div class="flex-grow-1">
+    <div class="fw-bold">{{ title }}</div>
+    <small>{{ message }}</small>
   </div>
-  <button type="button" class="close-action" (click)="dismiss()">
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2.5"
-    >
-      <line x1="18" y1="6" x2="6" y2="18"></line>
-      <line x1="6" y1="6" x2="18" y2="18"></line>
-    </svg>
-  </button>
+
+  <button
+    type="button"
+    class="btn-close btn-close-white ms-3"
+    *ngIf="type === 'success' || type === 'error' || type === 'info'"
+    (click)="dismiss()"
+  ></button>
+
+  <button
+    type="button"
+    class="btn-close ms-3"
+    *ngIf="type === 'warning'"
+    (click)="dismiss()"
+  ></button>
 </div>
-<!-- <div class="alert-progress"></div> -->

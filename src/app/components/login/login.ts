@@ -145,11 +145,7 @@ export class LoginPage {
         error: (err) => {
           console.log('ERROR', err);
 
-          this.alertService.showAlert(
-            err?.error?.message || err?.error || 'Something went wrong, Please try again later',
-            '',
-            'error',
-          );
+          this.alertService.showAlert(err?.error, '', 'error');
         },
       });
   }
