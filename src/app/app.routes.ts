@@ -39,14 +39,14 @@ export const routes: Routes = [
           import('./components/new-receipts/new-receipts').then((m) => m.NewReceiptComponent),
       },
       {
-        path: 'receipt-undo',
+        path: 'receipt-remove',
         loadComponent: () =>
           import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
       },
       {
-        path: 'receipt-remove',
+        path: 'receipt-undo',
         loadComponent: () =>
-          import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
+          import('./components/undo-receipts/undo-receipts').then((m) => m.UndoReceiptComponent),
       },
       {
         path: 'receipt-update-cheque',
@@ -79,27 +79,27 @@ export const routes: Routes = [
             (m) => m.UserMgtHistoryComponent,
           ),
       },
-      // {
-      //   path: 'group-mgt-list',
-      //   loadComponent: () =>
-      //     import('./components/group-management/group-mgt-list/group-mgt-list').then(
-      //       (m) => m.GroupMgtList,
-      //     ),
-      // },
-      // {
-      //   path: 'group-mgt-details',
-      //   loadComponent: () =>
-      //     import('./components/group-management/group-mgt-details/group-mgt-details').then(
-      //       (m) => m.GroupMgtDetails,
-      //     ),
-      // },
-      // {
-      //   path: 'group-mgt-history',
-      //   loadComponent: () =>
-      //     import('./components/group-management/group-mgt-history/group-mgt-history').then(
-      //       (m) => m.GroupMgtHistoryComponent,
-      //     ),
-      // },
+      {
+        path: 'group-mgt-list',
+        loadComponent: () =>
+          import('./components/group-management/group-mgt-list/group-mgt-list').then(
+            (m) => m.GroupMgtList,
+          ),
+      },
+      {
+        path: 'group-mgt-details',
+        loadComponent: () =>
+          import('./components/group-management/group-mgt-details/group-mgt-details').then(
+            (m) => m.GroupMgtDetails,
+          ),
+      },
+      {
+        path: 'group-mgt-history',
+        loadComponent: () =>
+          import('./components/group-management/group-mgt-history/group-mgt-history').then(
+            (m) => m.GroupMgtHistoryComponent,
+          ),
+      },
     ],
   },
   // { path: '', redirectTo: 'login', pathMatch: 'full' },
