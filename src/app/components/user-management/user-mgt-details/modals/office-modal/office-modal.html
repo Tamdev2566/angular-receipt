@@ -1,0 +1,73 @@
+<div class="modal-backdrop-flat">
+  <div class="modal-card-flat modal-card-flat-lg">
+    <div class="modal-header-flat">
+      <span> Step 2 of 2: Assign Offices & Default </span>
+
+      <button type="button" class="modal-close-flat" (click)="closeModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-flat">
+      <div class="modal-description-flat">Select office for each location.</div>
+
+      <div class="modal-table-wrapper">
+        <table class="table align-middle m-0 flat-inner-table">
+          <thead>
+            <tr>
+              <th>Location</th>
+
+              <th>
+                Office
+                <span class="text-danger">*</span>
+              </th>
+
+              <th class="text-center">Set Default</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let loc of selectedLocations; let i = index">
+              <td class="fw-semibold">
+                {{ loc.code }}
+              </td>
+
+              <td>
+                <select class="modal-form-select-flat" [(ngModel)]="loc.office">
+                  <option value="">-- Select Office --</option>
+
+                  <option *ngFor="let office of offices" [value]="office">
+                    {{ office }}
+                  </option>
+                </select>
+              </td>
+
+              <td class="text-center">
+                <input
+                  type="radio"
+                  name="defaultOffice"
+                  [checked]="loc.isDefault"
+                  (change)="setDefaultOffice(i)"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="modal-footer-flat">
+      <button class="btn btn-flat-action-secondary" (click)="goBack()">
+        <i class="fa-solid fa-arrow-left me-1 mt-1"></i> Back
+      </button>
+
+      <div class="d-flex gap-2">
+        <button class="btn btn-flat-action-secondary" (click)="closeModal()">Cancel</button>
+
+        <button class="btn btn-flat-action-primary" (click)="saveLocations()">
+          Save Locations
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

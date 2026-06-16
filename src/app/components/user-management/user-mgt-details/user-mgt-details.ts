@@ -2,13 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LocationModalComponent } from './modals/location-modal/location-modal';
+import { OfficeModalComponent } from './modals/office-modal/office-modal';
+import { GroupModal } from './modals/group-modal/group-modal';
+import { UserMgtService } from '../user-mgt-service';
 
 @Component({
   selector: 'app-user-mgt-details',
   standalone: true,
   templateUrl: './user-mgt-details.html',
   styleUrls: ['./user-mgt-details.scss'],
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LocationModalComponent, OfficeModalComponent, GroupModal],
 })
 export class UserMgtDetails implements OnInit {
   loading: boolean = false;
@@ -57,7 +61,37 @@ export class UserMgtDetails implements OnInit {
   hidePassword: boolean = false;
   hideConfirmPassword: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    public rowData: UserMgtService,
+  ) {}
+
+  availableGroups = [
+    {
+      groupName: 'GRP11431- KIEN - SINGAPORE',
+      selected: false,
+    },
+    {
+      groupName: 'GRP11432 - ADMIN',
+      selected: false,
+    },
+    {
+      groupName: 'GRP11433 - FINANCE',
+      selected: false,
+    },
+    {
+      groupName: 'GRP11434 - OPERATION',
+      selected: false,
+    },
+    {
+      groupName: 'GRP11435 - SALES',
+      selected: false,
+    },
+    {
+      groupName: 'GRP11436 - HR',
+      selected: false,
+    },
+  ];
 
   ngOnInit(): void {
     this.masterLocationRecords = [...this.locationRecords];
@@ -67,6 +101,8 @@ export class UserMgtDetails implements OnInit {
       this.isEditMode = true;
       this.formData = { ...stateData, isValidToggle: stateData.valid === 'Y' };
     }
+
+    console.log('rowData', this.rowData.userListRowData);
   }
 
   allowNumbersOnly(event: KeyboardEvent): void {
@@ -84,8 +120,8 @@ export class UserMgtDetails implements OnInit {
 
     setTimeout(() => {
       this.loading = false;
-      console.log('Saved Object Matrix:', this.formData);
-      this.router.navigate(['/user-management-list']);
+      console.log('Saved Object:', this.formData);
+      this.router.navigate(['/home/user-mgt-list']);
     }, 1000);
   }
 
@@ -116,23 +152,75 @@ export class UserMgtDetails implements OnInit {
     this.router.navigate(['/home/user-mgt-list']);
   }
 
-  addLocation(): void {
-    console.log('Add Location trigger fired.');
-  }
-
   removeLocation(loc: any): void {
     console.log('Remove location targeted event hit:', loc);
   }
 
-  cloneGroups(): void {
-    console.log('Clone groups rule engine mappings triggered.');
+  showLocationModal = false;
+  showOfficeModal = false;
+  showGroupModal = false;
+  selectedLocations: any[] = [];
+
+  addLocation() {
+    this.showLocationModal = true;
   }
 
-  addGroup(): void {
-    console.log('Add group configuration setup initiated.');
+  closeLocationModal() {
+    this.showLocationModal = false;
   }
 
-  removeGroup(grp: any): void {
-    console.log('Remove group targeted event hit:', grp);
+  openOfficeModal(locations: any[]) {
+    this.selectedLocations = locations;
+
+    if (this.selectedLocations.length) {
+      this.selectedLocations[0].isDefault = true;
+    }
+
+    this.showLocationModal = false;
+    this.showOfficeModal = true;
+  }
+
+  closeOfficeModal() {
+    this.showOfficeModal = false;
+  }
+
+  backToLocationModal() {
+    this.showOfficeModal = false;
+    this.showLocationModal = true;
+  }
+
+  saveSelectedLocations(data: any[]) {
+    console.log('Selected Locations:', data);
+
+    this.locationRecords = data.map((x) => ({
+      locationName: x.code,
+      officeName: x.office || '',
+      isDefault: x.isDefault || false,
+    }));
+
+    this.showOfficeModal = false;
+  }
+
+  // Group Functions
+  addGroup() {
+    this.showGroupModal = true;
+  }
+
+  closeGroupModal() {
+    this.showGroupModal = false;
+  }
+
+  onGroupsSelected(groups: any[]) {
+    this.groupRecords.push(...groups);
+
+    this.showGroupModal = false;
+  }
+
+  cloneGroups() {
+    console.log('Clone Groups');
+  }
+
+  removeGroup(grp: any) {
+    this.groupRecords = this.groupRecords.filter((g) => g !== grp);
   }
 }

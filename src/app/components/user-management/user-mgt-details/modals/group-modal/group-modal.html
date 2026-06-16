@@ -1,0 +1,87 @@
+<div class="modal-backdrop-flat">
+  <div class="modal-card-flat">
+    <div class="modal-header-flat">
+      <span>Select Groups</span>
+
+      <button type="button" class="modal-close-flat" (click)="close.emit()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-flat">
+      <div class="search-flat-wrapper mb-3">
+        <input
+          type="text"
+          class="search-flat-input"
+          placeholder="Search group..."
+          [(ngModel)]="groupSearch"
+          (input)="filterGroups()"
+        />
+      </div>
+
+      <div class="modal-table-wrapper">
+        <table class="table align-middle m-0 flat-inner-table">
+          <thead>
+            <tr>
+              <th class="text-center" style="width: 80px">Select</th>
+
+              <th>Group Name</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let grp of paginatedGroups" class="flat-inner-row">
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="grp.selected" />
+              </td>
+
+              <td>
+                {{ grp.groupName }}
+              </td>
+            </tr>
+
+            <tr *ngIf="paginatedGroups.length === 0">
+              <td colspan="2" class="text-center p-4 text-muted">No groups found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="modal-pagination-flat">
+        <small class="text-muted">
+          Displaying
+          {{ paginatedGroups.length }}
+          of
+          {{ filteredGroups.length }}
+          groups
+        </small>
+
+        <div class="d-flex gap-2 align-items-center">
+          <button
+            class="btn btn-flat-action-secondary btn-sm"
+            (click)="prevPage()"
+            [disabled]="currentPage === 1"
+          >
+            Prev
+          </button>
+
+          <span> Page {{ currentPage }} of {{ totalPages }} </span>
+
+          <button
+            class="btn btn-flat-action-secondary btn-sm"
+            (click)="nextPage()"
+            [disabled]="currentPage === totalPages"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer-flat">
+      <button class="btn btn-flat-action-secondary" (click)="close.emit()">Cancel</button>
+
+      <button class="btn btn-flat-action-primary" (click)="saveGroups()">Add Selected</button>
+    </div>
+  </div>
+</div>

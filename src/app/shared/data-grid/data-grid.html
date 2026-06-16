@@ -62,10 +62,10 @@
 
         <td class="border-bottom">
           <span class="d-block text-dark fw-medium" style="font-size: 0.85rem">
-            {{ record.defaultOffice }}
+            {{ record.locationName }}
           </span>
           <small class="text-secondary d-block mt-1" style="font-size: 0.75rem">
-            <i class="fa-solid fa-location-dot me-1"></i>Base Hub: {{ record.defaultLocation }}
+            <i class="fa-solid fa-location-dot me-1"></i>Base Hub: {{ record.officeName }}
           </small>
         </td>
 
@@ -73,24 +73,24 @@
           <span
             class="badge rounded-pill px-3 py-1"
             [ngClass]="
-              record.valid === 'Y'
+              record.isValid === 'Y'
                 ? 'bg-success-subtle text-success border border-success-subtle'
                 : 'bg-danger-subtle text-danger border border-danger-subtle'
             "
           >
-            {{ record.valid === 'Y' ? 'VALID ACCOUNT' : 'SUSPENDED' }}
+            {{ record.isValid === 'Y' ? 'VALID ACCOUNT' : 'SUSPENDED' }}
           </span>
         </td>
 
         <td class="text-secondary border-bottom" style="font-size: 0.75rem; line-height: 1.4">
           <div>
-            Created By: <span class="text-dark fw-semibold">{{ record.createdBy }}</span>
+            Created By: <span class="text-dark fw-semibold">{{ record.userCreated }}</span>
           </div>
           <div class="font-monospace text-muted mb-1" style="font-size: 0.7rem">
-            {{ record.dateCreated }}
+            <!-- {{ record.dateCreated }} -->
           </div>
           <div>
-            Modified By: <span class="text-dark fw-semibold">{{ record.modifiedBy }}</span>
+            Modified By: <span class="text-dark fw-semibold">{{ record.userModified }}</span>
           </div>
           <div class="font-monospace text-muted" style="font-size: 0.7rem">
             {{ record.dateModified }}

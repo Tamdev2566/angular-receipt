@@ -225,11 +225,11 @@
       >
         <div class="p-3 d-flex align-items-center gap-3">
           <div
-            class="d-flex justify-content-center align-items-center rounded-circle text-white fw-bold text-uppercase"
+            class="d-flex justify-content-center align-items-center rounded-circle fw-bold text-white shadow-sm"
             style="
               width: 46px;
               height: 46px;
-              background-color: #2b617d;
+              background: linear-gradient(135deg, #33708f, #4a8cae);
               font-size: 0.95rem;
               letter-spacing: 0.5px;
             "
@@ -238,12 +238,14 @@
           </div>
 
           <div class="d-flex flex-column lh-sm">
-            <span class="fw-bold text-body" style="font-size: 1rem"> {{ user.name }} </span>
+            <span class="fw-bold text-body text-capitalize" style="font-size: 1rem">
+              {{ user.name }}
+            </span>
             <span
               class="text-body-secondary fw-semibold mt-1"
               style="font-size: 0.6rem; letter-spacing: 0.5px"
             >
-              Last sync: {{ user?.lastLogin }}
+              Last Logged In: {{ user?.lastLogin }}
             </span>
           </div>
         </div>

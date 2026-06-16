@@ -1,9 +1,4 @@
 <div class="user-management-flat-wrapper animate-fade-in">
-  <!-- Loading Overlay -->
-  <div *ngIf="loading" class="ui inverted dimmer active" style="z-index: 1000">
-    <div class="ui medium text loader">Loading Security Matrix...</div>
-  </div>
-
   <!-- INNER STRICT SCROLL CONTAINER FRAME -->
   <div class="main-scrollable-content-fluid p-4">
     <!-- Top Header Title Area -->
@@ -25,7 +20,7 @@
 
         <button
           class="btn btn-flat-action-secondary"
-          [disabled]="!selectedRecord"
+          [disabled]="!selectedRecord || selectedRecord.length > 0"
           (click)="openEditModal(selectedRecord)"
         >
           <i class="fa-solid fa-pencil small"></i> Update
@@ -55,8 +50,9 @@
           placeholder="SEARCH..."
           class="search-flat-input"
           (input)="onSearch($event)"
+          (keypress)="onKeyPress($event)"
         />
-        <button class="btn-search-flat-go">Go</button>
+        <button class="btn-search-flat-go" (click)="searchUsers()">Go</button>
       </div>
     </div>
 
@@ -73,3 +69,5 @@
     </div>
   </div>
 </div>
+
+<app-loader *ngIf="isGlobalLoading" [isLoading]="isGlobalLoading"> </app-loader>
