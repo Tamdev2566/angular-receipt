@@ -1,0 +1,10 @@
+<button
+  class="icon-button"
+  [ngClass]="colorClass()"
+  [ngStyle]="customStyle()"
+  [title]="title()"
+  [disabled]="disabled()"
+  (click)="onClick.emit($event)"
+>
+  <i [class]="iconClass()"></i>
+</button>

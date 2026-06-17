@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { DataGrid } from '../../../shared/data-grid/data-grid';
-import { ApiService } from '../../../services/api.service';
-import { LoaderComponent } from '../../../shared/loader/loader';
 import { finalize } from 'rxjs';
+import { ApiService } from '../../../services/api.service';
+import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
+import { LoaderComponent } from '../../../shared/loader/loader';
 import { UserMgtService } from '../user-mgt-service';
 
 @Component({
@@ -30,6 +30,35 @@ export class UserMgtList implements OnInit {
   searchText = '';
   isGlobalLoading: boolean = false;
 
+  tableHeaders: ColumnDef[] = [
+    {
+      label: 'No',
+      field: 'no',
+      width: '60px',
+      align: 'center',
+    },
+    {
+      label: 'User / Profile Identification',
+      field: 'userProfile',
+    },
+    {
+      label: 'Email Identity',
+      field: 'email',
+    },
+    {
+      label: 'Office Workspace Placement',
+      field: 'officeWorkspace',
+    },
+    {
+      label: 'Account Validity',
+      field: 'accountValidity',
+      align: 'center',
+    },
+    {
+      label: 'Audit Log Metadata',
+      field: 'auditLog',
+    },
+  ];
   constructor(
     private router: Router,
     private apiService: ApiService,

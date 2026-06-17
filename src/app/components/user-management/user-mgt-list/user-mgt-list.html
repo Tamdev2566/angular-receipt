@@ -60,9 +60,7 @@
     <div class="container-fluid p-4 bg-light">
       <app-data-grid
         [records]="paginatedRecords"
-        [currentPage]="currentPage"
-        [totalPages]="totalPages"
-        (pageChange)="changePage($event)"
+        [columns]="tableHeaders"
         (selectionChange)="onRowSelect($event)"
       >
       </app-data-grid>

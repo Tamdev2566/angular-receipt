@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MenuItem, ModuleService } from '../../../services/module-service/module-service';
 
 @Component({
@@ -14,6 +14,7 @@ export class Sidebar implements OnInit {
   private modulesService = inject(ModuleService);
 
   appMenus: MenuItem[] = [];
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.appMenus = this.modulesService.getMenus();
@@ -24,6 +25,8 @@ export class Sidebar implements OnInit {
   toggleSubmenu(menu: MenuItem): void {
     if (menu.hasSubmenu) {
       menu.isExpanded = !menu.isExpanded;
+    } else if (menu.link) {
+      this.router.navigateByUrl(menu.link);
     }
   }
 

@@ -1,20 +1,31 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
+import { IconButton } from '../../../shared/icon-button/icon-button';
 
 @Component({
   selector: 'app-group-mgt-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DataGrid, IconButton],
   templateUrl: './group-mgt-list.html',
   styleUrls: ['./group-mgt-list.scss'],
 })
 export class GroupMgtList implements OnInit {
   loading = false;
   searchQuery = '';
+  gridColumns: ColumnDef[] = [
+    { label: 'Group ID', field: 'id', align: 'center' },
+    { label: 'Profile Name', field: 'name' },
+    { label: 'Created By', field: 'createdBy', align: 'center' },
+    { label: 'Date Created', field: 'dateCreated', align: 'center' },
+    { label: 'Modified By', field: 'modifiedBy', align: 'center' },
+    { label: 'Total Users', field: 'totalUsers', align: 'center', type: 'badge' },
+    { label: 'Valid', field: 'valid', align: 'center' },
+  ];
 
-  groupRecords = [
+  gridData = [
     {
       id: 'G00001',
       name: 'BILL OF LADING (OUTWARD) CENTRIC PROFILE',
@@ -125,12 +136,23 @@ export class GroupMgtList implements OnInit {
   ngOnInit(): void {}
 
   isAllSelected(): boolean {
-    return this.groupRecords.every((r) => r.isSelected);
+    return this.gridData.every((r) => r.isSelected);
   }
 
   toggleAllRows(event: any): void {
     const checked = event.target.checked;
-    this.groupRecords.forEach((r) => (r.isSelected = checked));
+    this.gridData.forEach((r) => (r.isSelected = checked));
+  }
+  onGridSelectionChange(selectedRows: any[]): void {
+    console.log('Currently selected rows:', selectedRows);
+  }
+
+  viewDetails(row: any) {
+    console.log('Viewing details for:', row);
+  }
+
+  deleteUser(id: number) {
+    console.log('Deleting user ID:', id);
   }
 
   onCreateButtonClick(): void {

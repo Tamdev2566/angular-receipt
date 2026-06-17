@@ -27,7 +27,10 @@
       <app-navbar class="flex-grow-1" (logoutTriggered)="handleGlobalLogout()"></app-navbar>
     </header>
 
-    <main class="flex-grow-1 px-4 pb-4 dashboard-main-view">
+    <main
+      class="flex-grow-1 px-4 pb-4 dashboard-main-view"
+      style="background-color: #f8fafc; border-radius: 10px"
+    >
       <router-outlet></router-outlet>
     </main>
   </div>

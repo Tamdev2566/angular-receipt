@@ -18,13 +18,19 @@ export interface MenuItem {
 export class ModuleService {
   private appMenus: MenuItem[] = [
     {
+      title: 'Dashboard',
+      icon: 'fa-solid fa-chart-line',
+      link: '/home/dashboard',
+      hasSubmenu: false,
+    },
+    {
       title: 'Receipts',
       icon: 'fa-solid fa-receipt',
       hasSubmenu: true,
       isExpanded: false,
       submodules: [
         { title: 'Glossys & Docsys', link: '/home/receipts' },
-        { title: 'Undo Receipt', link: '/home/undo-receipt' },
+        { title: 'Undo Receipt', link: '/home/receipt-undo' },
         { title: 'Remove Receipt', link: '/home/remove-receipt' },
         { title: 'Update Cheque', link: '/home/update-cheque' },
         { title: 'Update TT Ref', link: '/home/update-ttref' },

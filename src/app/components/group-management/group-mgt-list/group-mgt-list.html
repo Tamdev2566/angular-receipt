@@ -48,124 +48,33 @@
     </div>
 
     <div class="main-container p-0">
-      <div class="table-responsive rounded-2 flat-table-border">
-        <table class="table align-middle m-0 corporate-flat-table">
-          <thead>
-            <tr>
-              <th class="ps-3 text-center" style="width: 50px">
-                <div class="custom-flat-checkbox">
-                  <input
-                    type="checkbox"
-                    id="selectAllRows"
-                    [checked]="isAllSelected()"
-                    (change)="toggleAllRows($event)"
-                  />
-                  <label for="selectAllRows"></label>
-                </div>
-              </th>
-              <th class="text-center" style="width: 60px">No</th>
-              <th>Group Identification</th>
-              <th>Group Profile Metadata</th>
-              <th class="text-center">Valid?</th>
-              <th class="text-center">Total Users</th>
-              <th style="width: 300px">Privileges Summary (Preview)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              *ngFor="let record of groupRecords; let i = index"
-              class="flat-table-row"
-              [class.row-selected-flat]="record.isSelected"
-            >
-              <td class="ps-3 text-center">
-                <div class="custom-flat-checkbox">
-                  <input
-                    type="checkbox"
-                    [id]="'check-' + record.id"
-                    [(ngModel)]="record.isSelected"
-                  />
-                  <label [for]="'check-' + record.id"></label>
-                </div>
-              </td>
+      <app-data-grid
+        [records]="gridData"
+        [columns]="gridColumns"
+        [showCheckbox]="true"
+        [showAction]="true"
+        (selectionChange)="onGridSelectionChange($event)"
+        [actionTemplate]="myCustomActionDesign"
+      ></app-data-grid>
 
-              <td class="text-center text-secondary font-monospace fw-semibold">
-                {{ i + 1 }}
-              </td>
+      <ng-template #myCustomActionDesign let-row>
+        <app-icon-button
+          iconClass="bi bi-pencil-fill"
+          colorClass="color-info"
+          title="View"
+          [customStyle]="{ 'margin-right': '8px' }"
+          (onClick)="viewDetails(row)"
+        >
+        </app-icon-button>
 
-              <td>
-                <div
-                  class="user-profile-title fw-bold text-uppercase text-wrap"
-                  style="max-width: 250px"
-                >
-                  {{ record.name }}
-                </div>
-                <span class="badge-id-pill-flat mt-1">ID: {{ record.id }}</span>
-              </td>
-
-              <td class="text-secondary" style="font-size: 0.72rem; line-height: 1.4">
-                <div *ngIf="record.createdBy">
-                  Created By: <span class="text-dark fw-semibold">{{ record.createdBy }}</span>
-                  <div class="font-monospace text-muted-meta">{{ record.dateCreated }}</div>
-                </div>
-                <div class="mt-1" *ngIf="record.modifiedBy">
-                  Modified By: <span class="text-dark fw-semibold">{{ record.modifiedBy }}</span>
-                  <div class="font-monospace text-muted-meta">{{ record.dateModified }}</div>
-                </div>
-              </td>
-
-              <td class="text-center">
-                <span
-                  class="badge-corporate"
-                  [ngClass]="record.valid === 'Y' ? 'bg-flat-success' : 'bg-flat-danger'"
-                >
-                  {{ record.valid === 'Y' ? 'ACTIVE' : 'INACTIVE' }}
-                </span>
-              </td>
-
-              <td class="text-center fw-bold fs-7">
-                <span
-                  [class.text-danger]="record.totalUsers === 0"
-                  [class.text-success]="record.totalUsers > 0"
-                >
-                  {{ record.totalUsers }}
-                </span>
-              </td>
-
-              <td>
-                <div class="privilege-preview-container py-1">
-                  <ul class="list-unstyled m-0 d-flex flex-column gap-1">
-                    <li
-                      *ngFor="let privilege of record.privileges"
-                      class="text-truncate privilege-item text-muted"
-                    >
-                      <span class="bullet-marker">◆</span> {{ privilege }}
-                    </li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="d-flex justify-content-between align-items-center pt-3 mt-2">
-        <div class="text-muted small">
-          Showing entries <strong>1 to 7</strong> of <strong>7</strong> directory pages
-        </div>
-        <nav>
-          <ul class="pagination pagination-sm mb-0 gap-1 align-items-center custom-flat-pagination">
-            <li class="page-item disabled">
-              <button class="page-link shadow-none">&laquo;</button>
-            </li>
-            <li class="page-item active">
-              <button class="page-link shadow-none">1</button>
-            </li>
-            <li class="page-item disabled">
-              <button class="page-link shadow-none">&raquo;</button>
-            </li>
-          </ul>
-        </nav>
-      </div>
+        <app-icon-button
+          iconClass="bi bi-trash3-fill"
+          colorClass="color-danger"
+          title="Delete"
+          (onClick)="deleteUser(row.id)"
+        >
+        </app-icon-button>
+      </ng-template>
     </div>
   </div>
 </div>
