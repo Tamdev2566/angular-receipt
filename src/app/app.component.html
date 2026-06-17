@@ -1,4 +1,5 @@
 <div class="app-container">
   <router-outlet></router-outlet>
   <app-alert-message></app-alert-message>
+  <app-loader [isLoading]="loaderService.isLoading()"></app-loader>
 </div>

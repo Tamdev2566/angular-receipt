@@ -6,7 +6,6 @@ import { finalize } from 'rxjs';
 import { AlertService } from '../../services/alertService/alert';
 import { AuthService } from '../../services/authService/auth.service';
 import { UserService } from '../../services/userService/user.service';
-import { LoaderComponent } from '../../shared/loader/loader';
 import { PasswordMgmt } from '../password-mgmt/password-mgmt';
 
 @Component({
@@ -14,7 +13,7 @@ import { PasswordMgmt } from '../password-mgmt/password-mgmt';
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, PasswordMgmt, LoaderComponent],
+  imports: [CommonModule, FormsModule, RouterModule, PasswordMgmt],
 })
 export class LoginPage {
   username = '';
@@ -27,8 +26,6 @@ export class LoginPage {
   formSubmitted = false;
   showForgotModal: boolean = false;
   modalMode: 'forgot' | 'change' = 'forgot';
-
-  isGlobalLoading: boolean = false;
 
   constructor(
     private router: Router,
@@ -79,8 +76,6 @@ export class LoginPage {
       return;
     }
 
-    this.isGlobalLoading = true;
-
     const payload = {
       email: this.username,
       password: this.password,
@@ -90,7 +85,6 @@ export class LoginPage {
       .login(payload)
       .pipe(
         finalize(() => {
-          this.isGlobalLoading = false;
           this.cdr.detectChanges();
         }),
       )

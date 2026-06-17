@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environment/environment';
 
 @Injectable({
@@ -8,21 +8,21 @@ import { environment } from '../../environment/environment';
 export class ApiService {
   private baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
-  get(endpoint: string) {
-    return this.http.get(`${this.baseUrl}/${endpoint}`);
+  get(endpoint: string, options?: any) {
+    return this.http.get(`${this.baseUrl}/${endpoint}`, options);
   }
 
-  post(endpoint: string, data: any) {
-    return this.http.post(`${this.baseUrl}/${endpoint}`, data);
+  post(endpoint: string, data: any, options?: any) {
+    return this.http.post(`${this.baseUrl}/${endpoint}`, data, options);
   }
 
-  put(endpoint: string, data: any) {
-    return this.http.put(`${this.baseUrl}/${endpoint}`, data);
+  put(endpoint: string, data: any, options?: any) {
+    return this.http.put(`${this.baseUrl}/${endpoint}`, data, options);
   }
 
-  delete(endpoint: string) {
-    return this.http.delete(`${this.baseUrl}/${endpoint}`);
+  delete(endpoint: string, options?: any) {
+    return this.http.delete(`${this.baseUrl}/${endpoint}`, options);
   }
 }

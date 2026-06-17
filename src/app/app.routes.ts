@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { UndoReceiptComponent } from './components/undo-receipts/undo-receipts';
-import { authGuard } from './guards/auth.guard';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {

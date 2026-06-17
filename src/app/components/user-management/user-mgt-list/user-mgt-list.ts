@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ApiService } from '../../../services/api.service';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
-import { LoaderComponent } from '../../../shared/loader/loader';
 import { UserMgtService } from '../user-mgt-service';
 
 @Component({
@@ -13,7 +12,7 @@ import { UserMgtService } from '../user-mgt-service';
   standalone: true,
   templateUrl: './user-mgt-list.html',
   styleUrls: ['./user-mgt-list.scss'],
-  imports: [CommonModule, FormsModule, DataGrid, LoaderComponent],
+  imports: [CommonModule, FormsModule, DataGrid],
 })
 export class UserMgtList implements OnInit {
   toastMessage: string | null = null;
@@ -28,7 +27,6 @@ export class UserMgtList implements OnInit {
   pageNumbers: number[] = [];
   selectedRecord: any = null;
   searchText = '';
-  isGlobalLoading: boolean = false;
   tableHeaders: ColumnDef[] = [
     {
       label: 'No',
@@ -59,12 +57,12 @@ export class UserMgtList implements OnInit {
     {
       label: 'Default Location',
       field: 'defaultLocation',
-      width: '180px',
+      width: '250px',
     },
     {
       label: 'Default Office',
       field: 'defaultOffice',
-      width: '180px',
+      width: '300px',
     },
     {
       label: 'Valid?',
@@ -75,12 +73,12 @@ export class UserMgtList implements OnInit {
     {
       label: 'Created By',
       field: 'createdBy',
-      width: '140px',
+      width: '170px',
     },
     {
       label: 'Date Created',
       field: 'dateCreated',
-      width: '180px',
+      width: '250px',
     },
     {
       label: 'Modified By',
@@ -90,7 +88,7 @@ export class UserMgtList implements OnInit {
     {
       label: 'Date Modified',
       field: 'dateModified',
-      width: '180px',
+      width: '250px',
     },
     // {
     //   label: 'Location & Group (Preview)',
@@ -114,12 +112,10 @@ export class UserMgtList implements OnInit {
   }
 
   loadUserLedger(): void {
-    this.isGlobalLoading = true;
     this.apiService
       .post(`?q=/UserManagements/users/${this.currentPage}/${this.pageSize}/ASC/user_id`, {})
       .pipe(
         finalize(() => {
-          this.isGlobalLoading = false;
           this.cdr.detectChanges();
         }),
       )
@@ -148,13 +144,10 @@ export class UserMgtList implements OnInit {
 
           this.totalPages = res.totalPages;
 
-          this.isGlobalLoading = false;
-
           console.log('paginatedRecords', this.paginatedRecords);
         },
         error: (err) => {
           console.error(err);
-          this.isGlobalLoading = false;
         },
       });
   }
@@ -167,7 +160,6 @@ export class UserMgtList implements OnInit {
   }
 
   searchUsers(): void {
-    this.isGlobalLoading = true;
     const searchValue = this.searchText?.trim() || '*';
     const endpoint = `?q=/UserManagements/users/${this.currentPage}/${this.pageSize}/ASC/user_id`;
 
@@ -175,7 +167,6 @@ export class UserMgtList implements OnInit {
       .post(endpoint, { search: searchValue })
       .pipe(
         finalize(() => {
-          this.isGlobalLoading = false;
           this.cdr.detectChanges();
         }),
       )
@@ -185,12 +176,10 @@ export class UserMgtList implements OnInit {
           this.filteredRecords = [...this.userLedgerData];
           this.paginatedRecords = [...this.userLedgerData];
           this.totalPages = res.totalPages;
-          this.isGlobalLoading = false;
         },
 
         error: (err) => {
           console.error(err);
-          this.isGlobalLoading = false;
         },
       });
   }
