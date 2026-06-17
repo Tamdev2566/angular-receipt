@@ -16,6 +16,10 @@ export class DataGrid {
   pageChange = output<number>();
   selectionChange = output<any[]>();
 
+  ngOnInit() {
+    console.log('records', this.records);
+  }
+
   pageNumbers = computed(() => {
     return Array.from({ length: this.totalPages() }, (_, i) => i + 1);
   });
