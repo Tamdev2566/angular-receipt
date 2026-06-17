@@ -1,0 +1,41 @@
+<div class="form-group">
+  <div class="combo-box">
+    <div class="input-wrapper">
+      <input
+        type="text"
+        class="combo-input"
+        [(ngModel)]="searchText"
+        [placeholder]="extraProp?.placeholder || 'Select'"
+        [disabled]="disabled"
+        (focus)="onComboBoxInteract()"
+        (ngModelChange)="onSearchInput($event)"
+      />
+
+      <i
+        *ngIf="searchText && !disabled"
+        class="clear-btn fa fa-times"
+        (click)="clearSelection($event)"
+      ></i>
+      <i class="dropdown-arrow fa fa-angle-down" (click)="toggleDropdown($event)"></i>
+    </div>
+
+    <div *ngIf="isOpen" class="combo-dropdown">
+      <div *ngIf="isLoading" class="combo-status-msg">Loading...</div>
+
+      <div *ngIf="!isLoading && filteredItems.length === 0" class="combo-status-msg">
+        No records found
+      </div>
+
+      <div *ngIf="!isLoading && filteredItems.length > 0">
+        <div class="combo-count-header">Count: {{ filteredItems.length }}</div>
+        <div
+          *ngFor="let item of filteredItems"
+          class="combo-item"
+          (click)="selectItem(item, $event)"
+        >
+          {{ codeExpr ? item[codeExpr] + ' - ' + item[displayExpr] : item[displayExpr] }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

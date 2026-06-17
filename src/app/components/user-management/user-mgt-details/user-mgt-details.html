@@ -3,8 +3,8 @@
     <div class="d-flex justify-content-between mb-2">
       <div class="">
         <h4 class="text-header-title m-0 fw-bold">User Management</h4>
-        <span *ngIf="rowData.userListRowData.length">{{
-          rowData.userListRowData[0].userName
+        <span *ngIf="userService.userListRowData.length">{{
+          userService.userListRowData[0].userName
         }}</span>
       </div>
 
@@ -99,26 +99,28 @@
 
         <div class="col-12 col-sm-6 col-md-3">
           <label class="form-label fw-bold custom-flat-label mb-1.5">Default Location:</label>
-          <input
-            type="text"
-            name="defaultLocation"
-            [(ngModel)]="formData.defaultLocation"
-            class="form-control form-control-sm custom-flat-input"
-            placeholder="Search Location..."
-            required
-          />
+          <app-combobox
+            [url]="'https://staging-api-glossys.samudera.id/?q=/UserManagements/locations/*/*/1/100'"
+            responsePath="content"
+            displayExpr="location_name"
+            valueExpr="location_id"
+            codeExpr="location_code"
+            [(value)]="formData.defaultLocation"
+          >
+          </app-combobox>
         </div>
 
         <div class="col-12 col-sm-6 col-md-3">
           <label class="form-label fw-bold custom-flat-label mb-1.5">Default Office:</label>
-          <input
-            type="text"
-            name="defaultOffice"
-            [(ngModel)]="formData.defaultOffice"
-            class="form-control form-control-sm custom-flat-input"
-            placeholder="Search Office..."
-            required
-          />
+          <app-combobox
+            [url]="'https://staging-api-glossys.samudera.id/?q=/UserManagements/offices'"
+            responsePath=""
+            displayExpr="officeName"
+            valueExpr="officeId"
+            codeExpr="officeId"
+            [(value)]="formData.defaultOffice"
+          >
+          </app-combobox>
         </div>
 
         <div class="col-12 col-sm-6 col-md-3">
@@ -171,21 +173,25 @@
 
         <ng-container *ngIf="isEditMode">
           <div class="col-12 col-sm-6 col-md-3">
-            <label class="form-label text-muted custom-flat-label mb-1.5">Created Metadata:</label>
+            <label class="form-label text-muted custom-flat-label mb-1.5"
+              >Created By & Date Time:</label
+            >
             <input
               type="text"
               class="form-control form-control-sm custom-flat-input input-readonly-flat"
-              [value]="formData.createdBy + ' - ' + formData.dateCreated"
+              [value]="formData.createdBy + ' - ' + formData.createdDate"
               disabled
             />
           </div>
 
           <div class="col-12 col-sm-6 col-md-3">
-            <label class="form-label text-muted custom-flat-label mb-1.5">Modified Metadata:</label>
+            <label class="form-label text-muted custom-flat-label mb-1.5"
+              >Modified By & Date Time:</label
+            >
             <input
               type="text"
               class="form-control form-control-sm custom-flat-input input-readonly-flat"
-              [value]="formData.modifiedBy + ' - ' + formData.dateModified"
+              [value]="formData.modifiedBy + ' - ' + formData.modifiedDate"
               disabled
             />
           </div>

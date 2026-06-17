@@ -29,7 +29,6 @@ export class UserMgtList implements OnInit {
   selectedRecord: any = null;
   searchText = '';
   isGlobalLoading: boolean = false;
-
   tableHeaders: ColumnDef[] = [
     {
       label: 'No',
@@ -38,26 +37,66 @@ export class UserMgtList implements OnInit {
       align: 'center',
     },
     {
-      label: 'User / Profile Identification',
-      field: 'userProfile',
+      label: 'User ID',
+      field: 'userId',
+      width: '100px',
     },
     {
-      label: 'Email Identity',
+      label: 'User Name',
+      field: 'userName',
+      width: '140px',
+    },
+    {
+      label: 'Full Name',
+      field: 'fullName',
+      width: '180px',
+    },
+    {
+      label: 'Email',
       field: 'email',
+      width: '250px',
     },
     {
-      label: 'Office Workspace Placement',
-      field: 'officeWorkspace',
+      label: 'Default Location',
+      field: 'defaultLocation',
+      width: '180px',
     },
     {
-      label: 'Account Validity',
-      field: 'accountValidity',
+      label: 'Default Office',
+      field: 'defaultOffice',
+      width: '180px',
+    },
+    {
+      label: 'Valid?',
+      field: 'valid',
+      width: '100px',
       align: 'center',
     },
     {
-      label: 'Audit Log Metadata',
-      field: 'auditLog',
+      label: 'Created By',
+      field: 'createdBy',
+      width: '140px',
     },
+    {
+      label: 'Date Created',
+      field: 'dateCreated',
+      width: '180px',
+    },
+    {
+      label: 'Modified By',
+      field: 'modifiedBy',
+      width: '140px',
+    },
+    {
+      label: 'Date Modified',
+      field: 'dateModified',
+      width: '180px',
+    },
+    // {
+    //   label: 'Location & Group (Preview)',
+    //   field: 'locationGroupPreview',
+    //   width: '220px',
+    // },
   ];
   constructor(
     private router: Router,
@@ -93,18 +132,13 @@ export class UserMgtList implements OnInit {
             userName: item.userName,
             fullName: item.fullName,
             email: item.email,
-
             defaultOffice: item.officeName,
             defaultLocation: item.locationName,
-
             valid: item.isValid,
-
             createdBy: item.userCreated,
             modifiedBy: item.userModified,
-
             dateCreated: item.dateCreated,
             dateModified: item.dateModified,
-
             isSelected: false,
           }));
 
@@ -208,7 +242,7 @@ export class UserMgtList implements OnInit {
 
   openEditModal(user: any): void {
     console.log('Opening edit modal for user:', user);
-    this.router.navigate(['/home/user-mgt-details']);
+    this.router.navigate(['/home/user-mgt-details'], { state: { userRecord: user } });
   }
 
   isAllSelected(): boolean {

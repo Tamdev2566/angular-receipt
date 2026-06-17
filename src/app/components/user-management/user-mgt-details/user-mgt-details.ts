@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,13 +6,21 @@ import { LocationModalComponent } from './modals/location-modal/location-modal';
 import { OfficeModalComponent } from './modals/office-modal/office-modal';
 import { GroupModal } from './modals/group-modal/group-modal';
 import { UserMgtService } from '../user-mgt-service';
+import { Combobox } from '../../../shared/combobox/combobox';
 
 @Component({
   selector: 'app-user-mgt-details',
   standalone: true,
   templateUrl: './user-mgt-details.html',
   styleUrls: ['./user-mgt-details.scss'],
-  imports: [CommonModule, FormsModule, LocationModalComponent, OfficeModalComponent, GroupModal],
+  imports: [
+    CommonModule,
+    FormsModule,
+    LocationModalComponent,
+    OfficeModalComponent,
+    GroupModal,
+    Combobox,
+  ],
 })
 export class UserMgtDetails implements OnInit {
   loading: boolean = false;
@@ -23,15 +31,15 @@ export class UserMgtDetails implements OnInit {
     fullName: '',
     phone: '',
     email: '',
-    defaultLocation: '',
+    defaultLocation: null,
     defaultOffice: '',
     password: 'password*1',
     confirmPassword: 'password*1',
     isValidToggle: true,
     createdBy: '',
-    dateCreated: '',
+    createDate: '',
     modifiedBy: '',
-    dateModified: '',
+    modifiedDate: '',
   };
 
   locationRecords: any[] = [
@@ -63,7 +71,8 @@ export class UserMgtDetails implements OnInit {
 
   constructor(
     private router: Router,
-    public rowData: UserMgtService,
+    public userService: UserMgtService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   availableGroups = [
@@ -94,15 +103,45 @@ export class UserMgtDetails implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.masterLocationRecords = [...this.locationRecords];
-
     const stateData = history.state?.userRecord;
+
     if (stateData) {
       this.isEditMode = true;
-      this.formData = { ...stateData, isValidToggle: stateData.valid === 'Y' };
-    }
 
-    console.log('rowData', this.rowData.userListRowData);
+      this.userService.getUserInfo(stateData.userId).subscribe({
+        next: (res: any) => {
+          console.log('User Info', res);
+
+          this.formData = {
+            ...res,
+            password: '',
+            isValidToggle: res?.isValid === 'Y',
+            defaultLocation: {
+              location_id: res?.locationId,
+              location_name: res?.locationName,
+            },
+          };
+
+          // Location grid
+          this.locationRecords = (res.assignedLocations || []).map((loc: any) => ({
+            locationId: loc.locationId,
+            locationName: loc.locationName,
+            officeId: loc.officeId,
+            officeName: loc.officeName,
+            isDefault: loc.isDefault,
+            isSelected: loc.isDefault === 'Y',
+          }));
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error(err);
+        },
+      });
+    }
+  }
+
+  onLocationChange(event: any) {
+    console.log('event', event);
   }
 
   allowNumbersOnly(event: KeyboardEvent): void {

@@ -1,0 +1,228 @@
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ElementRef,
+  ChangeDetectorRef,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+
+@Component({
+  selector: 'app-combobox',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './combobox.html',
+  styleUrls: ['./combobox.scss'],
+})
+export class Combobox implements OnInit, OnChanges {
+  @Input() url?: string;
+  @Input() apiMethod: 'GET' | 'POST' = 'GET';
+  @Input() requestBody: any = null;
+  @Input() responsePath: string = 'content';
+
+  @Input() codeExpr: string = '';
+  @Input() displayExpr: string = 'name';
+  @Input() valueExpr: string = 'id';
+
+  @Input() data: any[] = [];
+  @Input() options: any[] = [];
+  @Input() disabled = false;
+
+  @Input() value: any = null;
+  @Output() valueChange = new EventEmitter<any>();
+
+  @Input() extraProp: any = { placeholder: 'Select Option' };
+  @Input() onChange?: (value: any, item: any) => void;
+  @Input() handleChange?: (value: any, item: any) => void;
+
+  isOpen = false;
+  isDataLoaded = false;
+  isLoading = false;
+
+  items: any[] = [];
+  filteredItems: any[] = [];
+
+  selectedItem: any = null;
+  searchText = '';
+
+  constructor(
+    private http: HttpClient,
+    private elementRef: ElementRef,
+    private cdr: ChangeDetectorRef,
+  ) {}
+
+  ngOnInit(): void {
+    this.initializeStaticData();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['value'] || changes['data'] || changes['options']) {
+      if (!this.url) {
+        this.initializeStaticData();
+      } else {
+        this.syncDisplayLabel();
+      }
+    }
+  }
+
+  private initializeStaticData(): void {
+    if (!this.url) {
+      const source = this.data?.length ? this.data : this.options;
+
+      this.items = Array.isArray(source) ? [...source] : [];
+      this.filteredItems = [...this.items];
+
+      this.isDataLoaded = true;
+
+      this.syncDisplayLabel();
+    }
+  }
+
+  onSearchInput(term: string): void {
+    this.searchText = term;
+
+    if (!term?.trim()) {
+      this.loadData('*');
+      return;
+    }
+
+    this.loadData(term);
+  }
+
+  onComboBoxInteract(): void {
+    if (this.disabled) return;
+
+    this.isOpen = true;
+
+    if (!this.isDataLoaded) {
+      this.loadData('*');
+    }
+  }
+
+  loadData(searchTerm: string = '*'): void {
+    if (!this.url) return;
+
+    this.isLoading = true;
+
+    let apiUrl = this.url;
+
+    if (searchTerm !== '*') {
+      apiUrl = this.url.replace('*/*/1/100', `*/${searchTerm}/1/100`);
+    }
+
+    this.http.get(apiUrl).subscribe({
+      next: (response: any) => {
+        let result = response;
+
+        if (this.responsePath?.trim() && result) {
+          const paths = this.responsePath.split('.');
+
+          for (const path of paths) {
+            result = result?.[path];
+          }
+        }
+
+        this.items = Array.isArray(result) ? [...result] : [];
+        this.filteredItems = [...this.items];
+
+        this.isLoading = false;
+        this.isOpen = true;
+        this.isDataLoaded = true;
+
+        this.syncDisplayLabel();
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.items = [];
+        this.filteredItems = [];
+        this.isLoading = false;
+      },
+    });
+  }
+
+  private syncDisplayLabel(): void {
+    const lookupPool = Array.isArray(this.items) ? this.items : [];
+
+    if (this.value === null || this.value === undefined) {
+      this.selectedItem = null;
+      return;
+    }
+
+    const match = lookupPool.find((item) => item && item[this.valueExpr] === this.value);
+
+    if (match) {
+      this.selectedItem = match;
+      this.searchText = match[this.displayExpr];
+      return;
+    }
+
+    // Edit mode fallback
+    if (typeof this.value === 'object' && this.value?.location_name) {
+      this.searchText = this.value.location_name;
+    }
+  }
+
+  toggleDropdown(event: Event): void {
+    event.stopPropagation();
+
+    if (this.disabled) return;
+
+    this.isOpen = !this.isOpen;
+
+    if (this.isOpen && !this.isDataLoaded) {
+      this.loadData('*');
+    }
+  }
+
+  selectItem(item: any, event: Event): void {
+    event.stopPropagation();
+
+    if (!item) return;
+
+    this.selectedItem = item;
+
+    this.searchText = item[this.displayExpr];
+
+    const finalValue = item[this.valueExpr];
+
+    this.value = finalValue;
+
+    this.valueChange.emit(finalValue);
+
+    if (this.onChange) {
+      this.onChange(finalValue, item);
+    }
+
+    if (this.handleChange) {
+      this.handleChange(finalValue, item);
+    }
+
+    this.isOpen = false;
+  }
+
+  clearSelection(event: Event): void {
+    event.stopPropagation();
+
+    this.value = null;
+    this.selectedItem = null;
+    this.searchText = '';
+
+    this.valueChange.emit(null);
+
+    this.loadData('*');
+  }
+
+  @HostListener('document:click', ['$event'])
+  closeDropdown(event: Event): void {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.isOpen = false;
+    }
+  }
+}

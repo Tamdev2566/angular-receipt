@@ -61,6 +61,7 @@
       <app-data-grid
         [records]="paginatedRecords"
         [columns]="tableHeaders"
+        [showCheckbox]="true"
         (selectionChange)="onRowSelect($event)"
       >
       </app-data-grid>

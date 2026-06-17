@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environment/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -7,13 +8,13 @@ import { BehaviorSubject } from 'rxjs';
 export class UserMgtService {
   userListRowData: any[] = [];
 
+  constructor(private http: HttpClient) {}
+
   setRowData(row: any[]) {
     this.userListRowData = row;
   }
 
-  // private userListRowData = new BehaviorSubject<any>(null);
-  // user$ = this.userSource.asObservable();
-  // setUser(data: any) {
-  //   this.userSource.next(data);
-  // }
+  getUserInfo(userId: string) {
+    return this.http.get(`${environment.apiUrl}/?q=/UserManagements/userInfo/${userId}`);
+  }
 }
