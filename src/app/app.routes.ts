@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { UndoReceiptComponent } from './components/undo-receipts/undo-receipts';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -50,8 +51,12 @@ export const routes: Routes = [
       },
       {
         path: 'receipt-undo',
-        loadComponent: () =>
-          import('./components/undo-receipts/undo-receipts').then((m) => m.UndoReceiptComponent),
+        loadComponent: () => import('./shared/wrapper/wrapper').then((m) => m.Wrapper),
+        data: {
+          isModal: false,
+          title: 'Undo Receipt',
+          dynamicComponent: UndoReceiptComponent,
+        },
       },
       {
         path: 'receipt-update-cheque',

@@ -1,27 +1,20 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { UndoReceiptComponent } from '../undo-receipts/undo-receipts';
-import { RemoveReceiptComponent } from '../remove-receipts/remove-receipts';
-import { NewReceiptComponent } from '../new-receipts/new-receipts';
 import { Router } from '@angular/router';
+import { Wrapper } from '../../shared/wrapper/wrapper';
+import { UndoReceiptComponent } from '../undo-receipts/undo-receipts';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    UndoReceiptComponent,
-    RemoveReceiptComponent,
-    NewReceiptComponent,
-  ],
+  imports: [CommonModule, FormsModule, Wrapper],
   templateUrl: './receipts.html',
   styleUrls: ['./receipts.scss'],
 })
 export class ReceiptComponent implements OnInit {
   Math = Math;
-
+  undoReceipt = UndoReceiptComponent;
   ledgerData = [
     {
       id: 'REC-101',
@@ -217,7 +210,6 @@ export class ReceiptComponent implements OnInit {
 
   openModal(type: 'new' | 'undo' | 'remove') {
     this.activeModal = type;
-    if (type === 'new') this.showNewModal = true;
     if (type === 'undo') this.showUndoModal = true;
     if (type === 'remove') this.showRemoveModal = true;
   }

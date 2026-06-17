@@ -13,7 +13,7 @@ export interface ColumnDef {
 @Component({
   selector: 'app-data-grid',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgTemplateOutlet], // NgTemplateOutlet is required
+  imports: [CommonModule, FormsModule, NgTemplateOutlet],
   templateUrl: './data-grid.html',
   styleUrl: './data-grid.scss',
 })
@@ -24,7 +24,6 @@ export class DataGrid {
   showCheckbox = input<boolean>(false);
   showAction = input<boolean>(false);
 
-  // New Input: Receive custom template from parent
   actionTemplate = input<TemplateRef<any> | null>(null);
 
   selectionChange = output<any[]>();

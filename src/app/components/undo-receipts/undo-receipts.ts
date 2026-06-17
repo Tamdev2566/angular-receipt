@@ -1,63 +1,69 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
 
 @Component({
   selector: 'app-undo-receipt',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DataGrid],
   templateUrl: './undo-receipts.html',
 })
-export class UndoReceiptComponent implements OnInit {
-  @Input() record: any;
-  @Input() allRecords: any[] = [];
-  @Output() close = new EventEmitter<void>();
-  @Output() success = new EventEmitter<string>();
+export class UndoReceiptComponent {
+  gridColumns: ColumnDef[] = [
+    { label: 'Receipt No', field: 'no', align: 'start' },
+    { label: 'Date', field: 'date', align: 'start' },
+    { label: 'Payment Mode', field: 'mode', align: 'start' },
+    { label: 'Cheque / Ref', field: 'cheque', align: 'start' },
+    { label: 'Amount', field: 'amount', align: 'end' },
+  ];
 
-  searchInvoice = '';
-  searchBl = '';
-  searchCheque = '';
+  gridData = [
+    {
+      no: 'REC-101',
+      date: '2026-06-01',
+      mode: 'Cheque / TT',
+      cheque: 'CHQ.8821',
+      amount: '$4,250.00',
+    },
+  ];
 
-  ngOnInit() {
-    if (this.record) {
-      this.searchInvoice = this.record.invoiceNo;
-      this.searchBl = this.record.blNo;
-      this.searchCheque = this.record.chequeNo;
-    }
+  invoiceColumns: ColumnDef[] = [
+    { label: 'Invoice No', field: 'no', align: 'start' },
+    { label: 'Date', field: 'date', align: 'center' },
+    { label: 'Currency', field: 'currency', align: 'center' },
+    { label: 'Amount', field: 'amount', align: 'end' },
+    { label: 'Received', field: 'received', align: 'end' },
+    { label: 'Adjustment', field: 'adjust', align: 'end' },
+  ];
 
-    document.body.classList.add('receipt-open');
+  invoices = [
+    {
+      no: 'DI23003580',
+      date: '2026-06-01',
+      currency: 'SGD',
+      amount: '$4,250.00',
+      received: '$4,250.00',
+      adjust: '$0.00',
+    },
+  ];
+  searchForm = {
+    invoiceNumber: 'DI23003580',
+    blNumber: 'BL-00210',
+    chequeNumber: 'CHQ.8821',
+  };
+
+  detailsForm = {
+    blNumber: 'BL-00210',
+    vesselName: 'KOTA RAJA',
+    voyageNumber: 'V.202X',
+    customerName: 'PIL SHIPPING AGENCY',
+  };
+
+  retrieveMatches() {
+    console.log('Retrieving matches for:', this.searchForm);
   }
-  ngOnDestroy(): void {
-    document.body.classList.remove('receipt-open');
-  }
-
-  retrieveReplicaData() {
-    const matched = this.allRecords.find(
-      (item) =>
-        (this.searchInvoice &&
-          item.invoiceNo.toLowerCase().includes(this.searchInvoice.toLowerCase())) ||
-        (this.searchBl && item.blNo.toLowerCase().includes(this.searchBl.toLowerCase())) ||
-        (this.searchCheque &&
-          item.chequeNo.toLowerCase().includes(this.searchCheque.toLowerCase())),
-    );
-
-    if (matched) {
-      this.record = matched;
-      this.success.emit('Match updated from ledger database.');
-    } else {
-      this.success.emit('No direct matched reference found.');
-    }
-  }
-
-  commitUndo() {
-    if (!this.record) return;
-    this.record.status = 'Unverified';
-    this.success.emit(`Invoice verification rollback processed: ${this.record.invoiceNo}`);
-    this.close.emit();
-  }
-
-  onClose() {
-    document.body.classList.remove('receipt-open');
-    this.close.emit();
+  undoPayment() {
+    console.log('Retrieving matches for:');
   }
 }
