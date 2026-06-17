@@ -1,0 +1,74 @@
+<ng-template #componentContent>
+  <ng-container *ngComponentOutlet="dynamicComponent(); inputs: componentInputs()"> </ng-container>
+</ng-template>
+
+<div *ngIf="!isModal()" class="wrapper-container" [ngClass]="wrapperClass()">
+  <div class="wrapper-header border-bottom pb-2 mb-3" *ngIf="title()">
+    <h4 class="m-0 fw-bold">{{ title() }}</h4>
+  </div>
+
+  <div class="wrapper-body">
+    <ng-container *ngTemplateOutlet="componentContent"></ng-container>
+  </div>
+</div>
+
+<div
+  *ngIf="isModal()"
+  class="modal fade show d-block"
+  tabindex="-1"
+  style="background-color: rgba(0, 0, 0, 0.5); z-index: 1050 !important"
+>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content shadow-lg border-0">
+      <div class="modal-header bg-light border-bottom px-4 py-3">
+        <h5
+          class="modal-title fw-bold text-dark d-flex align-items-center gap-2"
+          style="font-size: 0.85rem"
+          *ngIf="title()"
+        >
+          <svg
+            *ngIf="title() !== 'UndoReceipt'"
+            class="text-danger"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            ></path>
+          </svg>
+
+          <svg
+            *ngIf="title() === 'UndoReceipt'"
+            class="text-danger"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+            ></path>
+          </svg>
+
+          {{ title() }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <ng-container *ngTemplateOutlet="componentContent"></ng-container>
+      </div>
+    </div>
+  </div>
+</div>

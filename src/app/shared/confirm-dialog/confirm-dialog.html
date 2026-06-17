@@ -1,0 +1,20 @@
+<div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0, 0, 0, 0.5)">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ title }}</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="onNoClick()"></button>
+      </div>
+
+      <div class="modal-body">
+        <p class="mb-0">{{ message }}</p>
+      </div>
+
+      <div class="modal-footer">
+        w
+        <button type="button" class="btn btn-outline-secondary" (click)="onNoClick()">No</button>
+        <button type="button" class="btn btn-primary" (click)="onYesClick()">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

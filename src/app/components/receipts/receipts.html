@@ -228,24 +228,10 @@
   </div>
 </div>
 
-<app-undo-receipt
+<app-wrapper
   *ngIf="showUndoModal"
-  [record]="selectedRecord"
-  [allRecords]="ledgerData"
-  (close)="closeModal()"
-  (success)="handleToastNotification($event)"
-></app-undo-receipt>
-
-<app-remove-receipt
-  *ngIf="showRemoveModal"
-  [record]="selectedRecord"
-  [allRecords]="ledgerData"
-  (close)="closeModal()"
-  (success)="handleRemoval($event)"
-></app-remove-receipt>
-
-<app-new-receipt
-  *ngIf="showNewModal"
-  (close)="closeModal()"
-  (save)="handleSaveNewReceipt($event)"
-></app-new-receipt>
+  title="UndoReceipt"
+  [dynamicComponent]="undoReceipt"
+  [isModal]="true"
+  (onClose)="closeModal()"
+></app-wrapper>
