@@ -1,18 +1,20 @@
+import { CommonModule } from '@angular/common';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import {
+  ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   HostListener,
   Input,
-  OnInit,
   OnChanges,
+  OnInit,
   Output,
   SimpleChanges,
-  ElementRef,
-  ChangeDetectorRef,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { SKIP_LOADER } from '../../core/interceptors/loaderInterceptor/loader-interceptor-interceptor';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-combobox',
@@ -56,6 +58,7 @@ export class Combobox implements OnInit, OnChanges {
     private http: HttpClient,
     private elementRef: ElementRef,
     private cdr: ChangeDetectorRef,
+    private apiService: ApiService,
   ) {}
 
   ngOnInit(): void {
@@ -117,34 +120,38 @@ export class Combobox implements OnInit, OnChanges {
       apiUrl = this.url.replace('*/*/1/100', `*/${searchTerm}/1/100`);
     }
 
-    this.http.get(apiUrl).subscribe({
-      next: (response: any) => {
-        let result = response;
+    this.apiService
+      .get(apiUrl, {
+        context: new HttpContext().set(SKIP_LOADER, true),
+      })
+      .subscribe({
+        next: (response: any) => {
+          let result = response;
 
-        if (this.responsePath?.trim() && result) {
-          const paths = this.responsePath.split('.');
+          if (this.responsePath?.trim() && result) {
+            const paths = this.responsePath.split('.');
 
-          for (const path of paths) {
-            result = result?.[path];
+            for (const path of paths) {
+              result = result?.[path];
+            }
           }
-        }
 
-        this.items = Array.isArray(result) ? [...result] : [];
-        this.filteredItems = [...this.items];
+          this.items = Array.isArray(result) ? [...result] : [];
+          this.filteredItems = [...this.items];
 
-        this.isLoading = false;
-        this.isOpen = true;
-        this.isDataLoaded = true;
+          this.isLoading = false;
+          this.isOpen = true;
+          this.isDataLoaded = true;
 
-        this.syncDisplayLabel();
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.items = [];
-        this.filteredItems = [];
-        this.isLoading = false;
-      },
-    });
+          this.syncDisplayLabel();
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.items = [];
+          this.filteredItems = [];
+          this.isLoading = false;
+        },
+      });
   }
 
   private syncDisplayLabel(): void {

@@ -100,7 +100,7 @@
         <div class="col-12 col-sm-6 col-md-3">
           <label class="form-label fw-bold custom-flat-label mb-1.5">Default Location:</label>
           <app-combobox
-            [url]="'https://staging-api-glossys.samudera.id/?q=/UserManagements/locations/*/*/1/100'"
+            [url]="'/?q=/UserManagements/locations/*/*/1/100'"
             responsePath="content"
             displayExpr="location_name"
             valueExpr="location_id"
@@ -113,7 +113,7 @@
         <div class="col-12 col-sm-6 col-md-3">
           <label class="form-label fw-bold custom-flat-label mb-1.5">Default Office:</label>
           <app-combobox
-            [url]="'https://staging-api-glossys.samudera.id/?q=/UserManagements/offices'"
+            [url]="'?q=/UserManagements/offices'"
             responsePath=""
             displayExpr="officeName"
             valueExpr="officeId"

@@ -1,16 +1,14 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { LoaderComponent } from '../../../shared/loader/loader';
+import { AlertService } from '../../../services/alertService/alert';
 import { Navbar } from '../navbar/navbar';
 import { Sidebar } from '../sidebar/sidebar';
-import { AlertMessage } from '../../../shared/alert/alert';
-import { AlertService } from '../../../services/alertService/alert';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, LoaderComponent, AlertMessage, Navbar, Sidebar, CommonModule],
+  imports: [RouterOutlet, Navbar, Sidebar, CommonModule],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',
 })

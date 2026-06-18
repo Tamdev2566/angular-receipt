@@ -36,3 +36,12 @@ app-root {
   color: #14532d !important;
   font-weight: 700;
 }
+
+*::-webkit-scrollbar {
+  display: none !important;
+}
+
+* {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+}

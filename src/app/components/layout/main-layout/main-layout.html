@@ -15,7 +15,7 @@
   </div>
 
   <div
-    class="d-flex flex-column flex-grow-1 h-100 overflow-auto position-relative"
+    class="d-flex flex-column flex-grow-1 h-100 overflow-hidden position-relative"
     style="z-index: 10"
     [class.receipt-blur]="showReceiptModal"
   >
@@ -28,13 +28,10 @@
     </header>
 
     <main
-      class="flex-grow-1 px-4 pb-4 dashboard-main-view"
-      style="background-color: #f8fafc; border-radius: 10px"
+      class="flex-grow-1 px-4 pb-4 me-0 mb-0 me-md-3 mb-md-3 dashboard-main-view rounded-3 shadow-sm"
+      style="background-color: #e5eef3; overflow-y: auto"
     >
       <router-outlet></router-outlet>
     </main>
   </div>
 </div>
-
-<app-loader [isLoading]="isGlobalLoading" style="position: relative; z-index: 999999"></app-loader>
-<app-alert-message></app-alert-message>
