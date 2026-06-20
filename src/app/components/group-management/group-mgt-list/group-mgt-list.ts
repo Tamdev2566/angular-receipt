@@ -3,10 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import * as XLSX from 'xlsx-js-style';
 import { ApiService } from '../../../services/api.service';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { IconButton } from '../../../shared/icon-button/icon-button';
-
 @Component({
   selector: 'app-group-mgt-list',
   standalone: true,
@@ -108,8 +108,6 @@ export class GroupMgtList implements OnInit {
       });
   }
 
-  // ==================== UI STATE GETTERS ====================
-
   get validButtonText(): string {
     if (this.validFilterMode === 'INVALID') return 'Invalid';
     if (this.validFilterMode === 'VALID') return 'Valid';
@@ -122,18 +120,112 @@ export class GroupMgtList implements OnInit {
     return 'fa-check-double';
   }
 
-  // ==================== EVENT TRIGGERS ====================
-
   onToggleValidClick(): void {
     if (this.validFilterMode === 'ALL') this.validFilterMode = 'INVALID';
     else if (this.validFilterMode === 'INVALID') this.validFilterMode = 'VALID';
     else this.validFilterMode = 'ALL';
 
-    this.fetchGroupData(1); // Always reset to page 1 on filter change
+    this.fetchGroupData(1);
+  }
+
+  onDownloadExcel(): void {
+    if (!this.gridData || this.gridData.length === 0) {
+      alert('No records found to download!');
+      return;
+    }
+
+    const excelReadyData = this.gridData.map((item: any, index: number) => ({
+      'S.No': index + 1,
+      'Group ID': item.id || '',
+      'Profile Name': item.name || '',
+      'Created By': item.createdBy || '',
+      'Date Created': item.dateCreated || '',
+      'Modified By': item.modifiedBy || '',
+      'Date Modified': item.dateModified || '',
+      'Total Users': item.totalUsers || 0,
+      Status: item.valid === 'Y' ? 'Valid' : 'Invalid',
+      'Preview Privileges': Array.isArray(item.privileges) ? item.privileges.join('  |  ') : '',
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(excelReadyData);
+
+    const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
+
+    for (let row = range.s.r; row <= range.e.r; row++) {
+      for (let col = range.s.c; col <= range.e.c; col++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+        const cell = worksheet[cellAddress];
+
+        if (!cell) continue;
+
+        if (row === 0) {
+          cell.s = {
+            fill: {
+              fgColor: { rgb: '33708F' },
+            },
+            font: {
+              color: { rgb: 'FFFFFF' },
+              bold: true,
+              sz: 11,
+            },
+            alignment: {
+              horizontal: 'center',
+              vertical: 'center',
+            },
+            border: {
+              top: { style: 'thin', color: { rgb: '1E4B63' } },
+              bottom: { style: 'medium', color: { rgb: '1E4B63' } },
+              left: { style: 'thin', color: { rgb: '1E4B63' } },
+              right: { style: 'thin', color: { rgb: '1E4B63' } },
+            },
+          };
+        } else {
+          cell.s = {
+            font: { sz: 10, color: { rgb: '333333' } },
+            alignment: {
+              horizontal: col === 2 || col === 9 ? 'left' : 'center',
+              vertical: 'center',
+            },
+            border: {
+              top: { style: 'thin', color: { rgb: 'E2E8F0' } },
+              bottom: { style: 'thin', color: { rgb: 'E2E8F0' } },
+              left: { style: 'thin', color: { rgb: 'E2E8F0' } },
+              right: { style: 'thin', color: { rgb: 'E2E8F0' } },
+            },
+          };
+
+          if (col === 8) {
+            cell.s.font.color = cell.v === 'Valid' ? { rgb: '10B981' } : { rgb: 'EF4444' };
+            cell.s.font.bold = true;
+          }
+        }
+      }
+    }
+
+    worksheet['!cols'] = [
+      { wch: 6 },
+      { wch: 12 },
+      { wch: 35 },
+      { wch: 15 },
+      { wch: 20 },
+      { wch: 15 },
+      { wch: 20 },
+      { wch: 12 },
+      { wch: 12 },
+      { wch: 55 },
+    ];
+
+    worksheet['!freeze'] = { xSplit: 0, ySplit: 1 };
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Groups List');
+
+    const today = new Date().toISOString().split('T')[0];
+    XLSX.writeFile(workbook, `Group_Management_List_${today}.xlsx`);
   }
 
   onSearch(): void {
-    this.fetchGroupData(1); // Always reset to page 1 on new search
+    this.fetchGroupData(1);
   }
 
   onPageChange(newPage: number): void {
