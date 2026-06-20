@@ -23,21 +23,37 @@ export class DataGrid {
 
   showCheckbox = input<boolean>(false);
   showAction = input<boolean>(false);
-
   actionTemplate = input<TemplateRef<any> | null>(null);
 
-  selectionChange = output<any[]>();
+  pageSize = input<number>(10);
+  isServerSide = input<boolean>(false);
+  serverTotalPages = input<number>(1);
+  serverCurrentPage = input<number>(1);
+  tableHeight = input<string>('auto');
 
-  pageSize = 10;
+  selectionChange = output<any[]>();
+  pageChange = output<number>();
+
   currentPage = signal(1);
 
-  totalPages = computed(() => Math.ceil(this.records().length / this.pageSize));
+  totalPages = computed(() => {
+    if (this.isServerSide()) {
+      return this.serverTotalPages();
+    }
+    return Math.ceil(this.records().length / this.pageSize());
+  });
 
-  pageNumbers = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1));
+  pageNumbers = computed(() => {
+    return Array.from({ length: this.totalPages() }, (_, i) => i + 1);
+  });
 
   pagedRecords = computed(() => {
-    const start = (this.currentPage() - 1) * this.pageSize;
-    const end = start + this.pageSize;
+    if (this.isServerSide()) {
+      return this.records();
+    }
+
+    const start = (this.currentPage() - 1) * this.pageSize();
+    const end = start + this.pageSize();
     return this.records().slice(start, end);
   });
 
@@ -49,7 +65,8 @@ export class DataGrid {
   });
 
   isAllSelected(): boolean {
-    return this.pagedRecords().length > 0 && this.pagedRecords().every((x) => x.isSelected);
+    const recordsToEvaluate = this.pagedRecords();
+    return recordsToEvaluate.length > 0 && recordsToEvaluate.every((x) => x.isSelected);
   }
 
   toggleAllRows(event: any): void {
@@ -66,9 +83,31 @@ export class DataGrid {
     this.selectionChange.emit(this.records().filter((x) => x.isSelected));
   }
 
-  changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages()) {
+  changePage(page: number | string): void {
+    if (typeof page === 'number' && page >= 1 && page <= this.totalPages()) {
       this.currentPage.set(page);
+
+      if (this.isServerSide()) {
+        this.pageChange.emit(page);
+      }
     }
   }
+
+  visiblePages = computed(() => {
+    const total = this.totalPages();
+    const current = this.currentPage();
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    if (current <= 4) {
+      return [1, 2, 3, 4, 5, '...', total];
+    }
+
+    if (current >= total - 3) {
+      return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+    }
+
+    return [1, '...', current - 1, current, current + 1, '...', total];
+  });
 }

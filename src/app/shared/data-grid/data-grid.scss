@@ -19,3 +19,62 @@
   background-color: #33708f;
   border-color: #33708f;
 }
+
+.table-fixed-header {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+
+  thead,
+  thead tr,
+  thead th {
+    border: none !important;
+  }
+
+  thead th {
+    position: sticky !important;
+    top: -1px !important;
+    z-index: 10 !important;
+    background-color: #33708f !important;
+    color: white !important;
+    box-shadow: 0 1px 0 #33708f !important;
+  }
+
+  thead th.sticky-action-th {
+    right: 0 !important;
+    z-index: 11 !important;
+  }
+
+  tbody td.sticky-action-td {
+    position: sticky !important;
+    right: 0 !important;
+    z-index: 5 !important;
+    background-color: #fff;
+    /* Normal row borders stay intact */
+    border-bottom: 1px solid #dee2e6 !important;
+  }
+}
+
+.custom-brand-pagination {
+  .page-link {
+    color: #33708f;
+    box-shadow: none !important;
+
+    &:hover {
+      color: #234e63;
+      background-color: #eef3f6;
+      border-color: #dee2e6;
+    }
+  }
+
+  .page-item.active .page-link {
+    background-color: #33708f !important;
+    border-color: #33708f !important;
+    color: #ffffff !important;
+  }
+
+  .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+  }
+}

@@ -1,12 +1,12 @@
-<div class="table-responsive rounded-3 border shadow-sm" style="overflow-x: auto">
-  <table class="table table-hover align-middle mb-0" style="min-width: 800px">
+<div
+  class="table-responsive rounded-3 border shadow-sm"
+  [style.max-height]="tableHeight()"
+  style="overflow: auto"
+>
+  <table class="table table-hover align-middle mb-0 table-fixed-header" style="min-width: 800px">
     <thead>
       <tr>
-        <th
-          *ngIf="showCheckbox()"
-          class="text-center"
-          style="width: 50px; background: #33708f; color: white"
-        >
+        <th *ngIf="showCheckbox()" class="text-center" style="width: 50px">
           <input
             type="checkbox"
             class="form-check-input"
@@ -19,24 +19,11 @@
           *ngFor="let col of columns()"
           [style.width]="col.width"
           [ngClass]="col.align ? 'text-' + col.align : ''"
-          style="background: #33708f; color: white"
         >
           {{ col.label }}
         </th>
 
-        <th
-          *ngIf="showAction()"
-          class="text-center"
-          style="
-            width: 150px;
-            background: #33708f;
-            color: white;
-            position: sticky;
-            right: 0;
-            z-index: 2;
-            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-          "
-        >
+        <th *ngIf="showAction()" class="text-center sticky-action-th" style="width: 150px">
           Actions
         </th>
       </tr>
@@ -60,17 +47,7 @@
           </ng-container>
         </td>
 
-        <td
-          *ngIf="showAction()"
-          class="text-center"
-          style="
-            position: sticky;
-            right: 0;
-            background-color: #fff;
-            z-index: 1;
-            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.05);
-          "
-        >
+        <td *ngIf="showAction()" class="text-center sticky-action-td">
           <ng-container
             *ngTemplateOutlet="actionTemplate(); context: { $implicit: row }"
           ></ng-container>
@@ -87,9 +64,11 @@
 </div>
 
 <div *ngIf="totalPages() > 1" class="d-flex justify-content-between align-items-center mt-3">
-  <div>Page {{ currentPage() }} of {{ totalPages() }}</div>
+  <div class="text-muted small">
+    Page <strong>{{ currentPage() }}</strong> of <strong>{{ totalPages() }}</strong>
+  </div>
 
-  <ul class="pagination pagination-sm mb-0">
+  <ul class="pagination pagination-sm mb-0 custom-brand-pagination">
     <li class="page-item" [class.disabled]="currentPage() === 1">
       <button type="button" class="page-link" (click)="changePage(currentPage() - 1)">
         &laquo;
@@ -97,9 +76,10 @@
     </li>
 
     <li
-      *ngFor="let page of pageNumbers()"
+      *ngFor="let page of visiblePages()"
       class="page-item"
       [class.active]="currentPage() === page"
+      [class.disabled]="page === '...'"
     >
       <button type="button" class="page-link" (click)="changePage(page)">
         {{ page }}
