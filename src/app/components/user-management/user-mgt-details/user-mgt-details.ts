@@ -3,24 +3,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LocationModalComponent } from './modals/location-modal/location-modal';
-import { OfficeModalComponent } from './modals/office-modal/office-modal';
 import { GroupModal } from './modals/group-modal/group-modal';
 import { UserMgtService } from '../user-mgt-service';
 import { Combobox } from '../../../shared/combobox/combobox';
+import { AlertService } from '../../../services/alertService/alert';
 
 @Component({
   selector: 'app-user-mgt-details',
   standalone: true,
   templateUrl: './user-mgt-details.html',
   styleUrls: ['./user-mgt-details.scss'],
-  imports: [
-    CommonModule,
-    FormsModule,
-    LocationModalComponent,
-    OfficeModalComponent,
-    GroupModal,
-    Combobox,
-  ],
+  imports: [CommonModule, FormsModule, LocationModalComponent, GroupModal, Combobox],
 })
 export class UserMgtDetails implements OnInit {
   loading: boolean = false;
@@ -32,9 +25,9 @@ export class UserMgtDetails implements OnInit {
     phone: '',
     email: '',
     defaultLocation: null,
-    defaultOffice: '',
-    password: 'password*1',
-    confirmPassword: 'password*1',
+    defaultOffice: null,
+    password: 'P@$$w0rd!123',
+    confirmPassword: 'P@$$w0rd!123',
     isValidToggle: true,
     createdBy: '',
     createDate: '',
@@ -42,65 +35,30 @@ export class UserMgtDetails implements OnInit {
     modifiedDate: '',
   };
 
-  locationRecords: any[] = [
-    { locationName: 'CHATTOGRAM', officeName: 'SAMUDERA CHITTAGONG', isDefault: false },
-    {
-      locationName: 'PALEMBANG',
-      officeName: 'PT. SAMUDERA INDONESIA TBK. - PALEMBANG',
-      isDefault: false,
-    },
-    {
-      locationName: 'SINGAPORE',
-      officeName: 'PT. SAMUDERA SHIPPING SERVICES - SINGAPORE',
-      isDefault: true,
-    },
-    { locationName: 'BANGKOK', officeName: 'SAMUDERA BANGKOK', isDefault: false },
-    { locationName: 'DANANG', officeName: 'SAMUDERA DANANG', isDefault: false },
-    { locationName: 'HOCHIMINH', officeName: 'SAMUDERA HOCHIMINH', isDefault: false },
-    { locationName: 'HAIPHONG', officeName: 'SAMUDERA HAIPHONG', isDefault: false },
-    { locationName: 'QUINHON', officeName: 'SAMUDERA QUINHON', isDefault: false },
-  ];
-
-  masterLocationRecords: any[] = [];
-
-  groupRecords: any[] = [{ groupName: 'GRP11431- KIEN - SINGAPORE' }];
-  activeLocationContext: string = 'SINGAPORE (Main Office)';
-  activeOfficeContext: string = 'SINGAPORE (PT. SAMUDERA SHIPPING SERVICES - SINGAPORE)';
   hidePassword: boolean = false;
   hideConfirmPassword: boolean = false;
+  locations: any[] = [];
+  allLocations: any[] = [];
+  selectedLocation: any = null;
+  selectedLocationIndex = -1;
+  groupsTemplates: any[] = [];
+  isDirty = false;
+  checkedLocations: any[] = [];
+  selectedOffice: any = null;
+  privilegeTemplates: any[] = [];
+
+  // Clone modal
+  showCloneGroupModal = false;
+  cloneTargetLocation: any = null;
+
+  submitted = false;
 
   constructor(
     private router: Router,
     public userService: UserMgtService,
     private cdr: ChangeDetectorRef,
+    private alert: AlertService,
   ) {}
-
-  availableGroups = [
-    {
-      groupName: 'GRP11431- KIEN - SINGAPORE',
-      selected: false,
-    },
-    {
-      groupName: 'GRP11432 - ADMIN',
-      selected: false,
-    },
-    {
-      groupName: 'GRP11433 - FINANCE',
-      selected: false,
-    },
-    {
-      groupName: 'GRP11434 - OPERATION',
-      selected: false,
-    },
-    {
-      groupName: 'GRP11435 - SALES',
-      selected: false,
-    },
-    {
-      groupName: 'GRP11436 - HR',
-      selected: false,
-    },
-  ];
 
   ngOnInit(): void {
     const stateData = history.state?.userRecord;
@@ -110,27 +68,38 @@ export class UserMgtDetails implements OnInit {
 
       this.userService.getUserInfo(stateData.userId).subscribe({
         next: (res: any) => {
-          console.log('User Info', res);
-
           this.formData = {
             ...res,
             password: '',
             isValidToggle: res?.isValid === 'Y',
-            defaultLocation: {
-              location_id: res?.locationId,
-              location_name: res?.locationName,
-            },
+            defaultLocation: { location_id: res?.locationId, location_name: res?.locationName },
+            defaultOffice: { officeId: res?.officeId, officeName: res?.officeName },
           };
 
           // Location grid
-          this.locationRecords = (res.assignedLocations || []).map((loc: any) => ({
+          this.locations = (res.assignedLocations || []).map((loc: any) => ({
             locationId: loc.locationId,
             locationName: loc.locationName,
             officeId: loc.officeId,
             officeName: loc.officeName,
-            isDefault: loc.isDefault,
-            isSelected: loc.isDefault === 'Y',
+            isDefault: loc.isDefault === 'Y',
+            assignedGroups: loc.assignedGroups || [],
           }));
+
+          // Default location find
+          const defaultLocation = this.locations.find((x) => x.isDefault);
+
+          // Auto select default location
+          if (defaultLocation) {
+            this.selectedLocation = defaultLocation;
+            this.selectedLocationIndex = this.locations.findIndex(
+              (x) =>
+                x.locationId === defaultLocation.locationId &&
+                x.officeId === defaultLocation.officeId,
+            );
+            this.groupsTemplates = [...(defaultLocation.assignedGroups || [])];
+          }
+
           this.cdr.detectChanges();
         },
         error: (err) => {
@@ -140,8 +109,21 @@ export class UserMgtDetails implements OnInit {
     }
   }
 
-  onLocationChange(event: any) {
-    console.log('event', event);
+  onOfficeChange(value: any, item: any): void {
+    this.selectedOffice = item;
+  }
+
+  selectLocation(loc: any, index: number): void {
+    this.selectedLocation = loc;
+    this.selectedLocationIndex = index;
+    this.groupsTemplates = [...(loc.assignedGroups || [])];
+  }
+
+  onLocationSelected(loc: any, index: number): void {
+    this.selectedLocation = loc;
+    this.selectedLocationIndex = index;
+    this.groupsTemplates = [...(loc.assignedGroups || [])];
+    this.loadPrivilegesFromGroups(this.groupsTemplates);
   }
 
   allowNumbersOnly(event: KeyboardEvent): void {
@@ -153,32 +135,74 @@ export class UserMgtDetails implements OnInit {
   }
 
   onSaveUser(form: NgForm): void {
-    if (form.invalid) return;
-    this.loading = true;
-    this.formData.valid = this.formData.isValidToggle ? 'Y' : 'N';
+    this.submitted = true;
 
-    setTimeout(() => {
-      this.loading = false;
-      console.log('Saved Object:', this.formData);
-      this.router.navigate(['/home/user-mgt-list']);
-    }, 1000);
+    if (form.invalid || !this.formData.defaultLocation || !this.formData.defaultOffice) {
+      form.form.markAllAsTouched();
+      return;
+    }
+
+    if (!this.isEditMode && this.formData.password !== this.formData.confirmPassword) {
+      this.alert.showAlert('Error', 'Password and Confirm Password mismatch', 'error');
+      return;
+    }
+
+    const payload = {
+      userId: this.formData.userId || null,
+      userName: this.formData.userName,
+      fullName: this.formData.fullName,
+      phone: this.formData.phone,
+      email: this.formData.email,
+      password: this.isEditMode ? null : this.formData.password,
+      isValid: this.formData.isValidToggle ? 'Y' : 'N',
+
+      assignedLocations: this.locations.map((loc) => ({
+        locationId: loc.locationId,
+        locationName: loc.locationName,
+        officeId: loc.officeId,
+        officeName: loc.officeName,
+        isDefault: loc.isDefault ? 'Y' : 'N',
+        assignedGroups: loc.assignedGroups || [],
+      })),
+    };
+
+    if (this.isEditMode) {
+      console.log('UPDATE USER', payload);
+
+      // this.userService.updateUser(payload).subscribe({
+      //   next: () => {
+      //     this.router.navigate(['/home/user-mgt-list']);
+      //   }
+      // });
+    } else {
+      console.log('CREATE USER', payload);
+
+      // this.userService.createUser(payload).subscribe({
+      //   next: () => {
+      //     this.router.navigate(['/home/user-mgt-list']);
+      //   }
+      // });
+    }
   }
 
-  setDefaultLocation(selectedLoc: any): void {
-    this.locationRecords.forEach((l) => (l.isDefault = l === selectedLoc));
-    this.activeLocationContext = `${selectedLoc.locationName} (Main Office)`;
-    this.activeOfficeContext = `${selectedLoc.locationName} (${selectedLoc.officeName})`;
+  setDefaultLocation(loc: any, event: Event): void {
+    event.stopPropagation();
+
+    this.locations.forEach((x) => (x.isDefault = false));
+    loc.isDefault = true;
+
+    this.selectedLocation = loc;
   }
 
   onSearchLocation(event: any): void {
     const query = event.target.value ? event.target.value.trim().toLowerCase() : '';
 
     if (!query) {
-      this.locationRecords = [...this.masterLocationRecords];
+      this.locations = [...this.allLocations];
       return;
     }
 
-    this.locationRecords = this.masterLocationRecords.filter((loc) => {
+    this.locations = this.allLocations.filter((loc) => {
       const matchLocation = loc.locationName
         ? loc.locationName.toLowerCase().includes(query)
         : false;
@@ -192,7 +216,19 @@ export class UserMgtDetails implements OnInit {
   }
 
   removeLocation(loc: any): void {
-    console.log('Remove location targeted event hit:', loc);
+    this.locations = this.locations.filter((item) => item.locationId !== loc.locationId);
+
+    this.selectedLocations = this.selectedLocations.filter(
+      (item: any) => item.location_id !== loc.locationId,
+    );
+
+    if (this.selectedLocation?.locationId === loc.locationId) {
+      this.selectedLocation = null;
+      this.selectedLocationIndex = -1;
+
+      this.groupsTemplates = [];
+      this.privilegeTemplates = [];
+    }
   }
 
   showLocationModal = false;
@@ -201,6 +237,18 @@ export class UserMgtDetails implements OnInit {
   selectedLocations: any[] = [];
 
   addLocation() {
+    if (!this.formData.defaultLocation) {
+      // alert('Please select Default Location');
+      this.alert.showAlert('Error!', 'Please select Default Location', 'error');
+      return;
+    }
+
+    if (!this.formData.defaultOffice) {
+      // alert('Please select Default Office');
+      this.alert.showAlert('Error!', 'Please select Default Office', 'error');
+      return;
+    }
+
     this.showLocationModal = true;
   }
 
@@ -209,14 +257,33 @@ export class UserMgtDetails implements OnInit {
   }
 
   openOfficeModal(locations: any[]) {
-    this.selectedLocations = locations;
+    locations.forEach((loc) => {
+      const exists = this.locations.some((x) => x.locationId === loc.location_id);
 
-    if (this.selectedLocations.length) {
-      this.selectedLocations[0].isDefault = true;
-    }
+      if (!exists) {
+        const newLocation = {
+          locationId: loc.location_id,
+          locationName: loc.location_name,
+          officeId: this.selectedOffice?.officeId,
+          officeName: this.selectedOffice?.officeName,
+          isDefault: this.locations.length === 0,
+          assignedGroups: [],
+        };
 
+        this.locations.push(newLocation);
+
+        if (this.locations.length === 1) {
+          this.selectedLocation = newLocation;
+          this.selectedLocationIndex = 0;
+          this.groupsTemplates = [];
+          this.privilegeTemplates = [];
+        }
+      }
+    });
+    console.log('selectedOffice', this.selectedOffice);
     this.showLocationModal = false;
-    this.showOfficeModal = true;
+
+    console.log('Location Table', this.locations);
   }
 
   closeOfficeModal() {
@@ -229,9 +296,7 @@ export class UserMgtDetails implements OnInit {
   }
 
   saveSelectedLocations(data: any[]) {
-    console.log('Selected Locations:', data);
-
-    this.locationRecords = data.map((x) => ({
+    this.locations = data.map((x) => ({
       locationName: x.code,
       officeName: x.office || '',
       isDefault: x.isDefault || false,
@@ -249,17 +314,78 @@ export class UserMgtDetails implements OnInit {
     this.showGroupModal = false;
   }
 
-  onGroupsSelected(groups: any[]) {
-    this.groupRecords.push(...groups);
+  onGroupsSelected(groups: any[]): void {
+    this.groupsTemplates = groups.map((x) => ({ ...x }));
+
+    if (this.selectedLocation) {
+      this.selectedLocation.assignedGroups = [...this.groupsTemplates];
+    }
+
+    this.loadPrivilegesFromGroups(this.groupsTemplates);
 
     this.showGroupModal = false;
   }
 
-  cloneGroups() {
-    console.log('Clone Groups');
+  removeGroup(grp: any): void {
+    this.groupsTemplates = this.groupsTemplates.filter((g) => g.groupId !== grp.groupId);
+
+    if (this.selectedLocation) {
+      this.selectedLocation.assignedGroups = [...this.groupsTemplates];
+    }
+
+    this.loadPrivilegesFromGroups(this.groupsTemplates);
+
+    if (this.groupsTemplates.length === 0) {
+      this.privilegeTemplates = [];
+    }
   }
 
-  removeGroup(grp: any) {
-    this.groupRecords = this.groupRecords.filter((g) => g !== grp);
+  // Privilege Functions
+
+  loadPrivilegesFromGroups(groups: any[]): void {
+    const privileges = groups.flatMap((grp) => grp.privilegePreview || []);
+
+    this.privilegeTemplates = privileges.filter(
+      (item, index, self) => index === self.findIndex((x) => x.menuId === item.menuId),
+    );
+  }
+
+  // Clone Group Functions
+  cloneGroups(): void {
+    if (!this.selectedLocation) {
+      this.alert.showAlert('Error!', 'Please select a location first', 'error');
+      return;
+    }
+
+    if (!this.groupsTemplates.length) {
+      this.alert.showAlert('Error!', 'No groups available to clone', 'error');
+      return;
+    }
+
+    this.cloneTargetLocation = null;
+    this.showCloneGroupModal = true;
+  }
+
+  availableCloneLocations(): any[] {
+    return this.locations.filter((x) => x.locationId !== this.selectedLocation.locationId);
+  }
+
+  confirmCloneGroups(): void {
+    if (!this.cloneTargetLocation) {
+      this.alert.showAlert('Error!', 'Please select a target location', 'error');
+      return;
+    }
+
+    this.cloneTargetLocation.assignedGroups = this.groupsTemplates.map((grp) => ({ ...grp }));
+    this.alert.showAlert('Groups cloned successfully', '', 'success');
+    this.showCloneGroupModal = false;
+  }
+
+  onCloneLocationChange(loc: any, event: any): void {
+    if (event.target.checked) {
+      this.cloneTargetLocation = loc;
+    } else {
+      this.cloneTargetLocation = null;
+    }
   }
 }

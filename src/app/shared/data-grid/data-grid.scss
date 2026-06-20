@@ -54,6 +54,19 @@
   }
 }
 
+.table-fixed-header tbody td {
+  font-size: 12px;
+}
+
+.table-fixed-header thead th {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.table-fixed-header tbody td {
+  font-size: 12px;
+}
+
 .custom-brand-pagination {
   .page-link {
     color: #33708f;

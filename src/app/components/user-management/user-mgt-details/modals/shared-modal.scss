@@ -17,7 +17,7 @@
 .modal-card-flat {
   width: 500px;
   max-width: 95vw;
-  height: 450px;
+  height: 665px;
 
   background: #fff;
   border-radius: 6px;
@@ -47,8 +47,9 @@
 .modal-close-btn,
 .modal-close-flat {
   border: 0;
-  width: 32px;
-  height: 32px;
+  width: 25px;
+  height: 25px;
+  font-size: 10px;
 
   background: rgba(255, 255, 255, 0.2);
   color: white;
@@ -109,6 +110,7 @@
 .flat-inner-table tbody td {
   padding: 10px !important;
   border-bottom: 1px solid #e5e7eb !important;
+  font-size: 0.78rem !important;
 }
 
 .flat-inner-row:hover {
@@ -188,4 +190,58 @@
     background: #fef2f2 !important;
     border-color: #fca5a5 !important;
   }
+}
+
+.table-scroll-wrapper {
+  height: 433px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: #33708f;
+  border-radius: 10px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #27566f;
+}
+
+.flat-inner-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+
+  background: #f1f5f9 !important;
+}
+
+.form-check-input:checked {
+  background-color: #33708f !important;
+  border-color: #33708f !important;
+}
+.form-check-input {
+  border-color: #33708f !important;
+}
+
+.form-check-input:focus {
+  border-color: #33708f !important;
+  box-shadow: 0 0 0 0.2rem rgba(51, 112, 143, 0.25) !important;
+}
+
+.form-check-input {
+  cursor: pointer;
+}
+
+.pageNum {
+  font-size: small;
+  text-align: center;
+  margin-bottom: 2px;
 }

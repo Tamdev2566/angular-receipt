@@ -1,27 +1,18 @@
 <div class="user-management-flat-wrapper animate-fade-in">
-  <!-- INNER STRICT SCROLL CONTAINER FRAME -->
   <div class="main-scrollable-content-fluid p-4">
-    <!-- Top Header Title Area -->
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom-flat pb-3">
-      <div>
-        <h4 class="text-header-title m-0 fw-bold">User Management</h4>
-      </div>
-      <div></div>
+    <div class="page-header-section">
+      <h4 class="text-header-title m-0 fw-bold">User Management</h4>
+      <button class="btn btn-flat-action-secondary" (click)="onCreateNewUser()">
+        <i class="fa-solid fa-plus small"></i> Create
+      </button>
     </div>
 
-    <!-- Action Toolbar (Buttons & Search Layout Matching Theme Rule) -->
-    <div
-      class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 px-3 py-2.5 rounded-2"
-    >
-      <div class="d-flex flex-wrap gap-2">
-        <button class="btn btn-flat-action-primary" (click)="onCreateNewUser()">
-          <i class="fa-solid fa-plus small"></i> Create
-        </button>
-
+    <div class="action-toolbar">
+      <div class="action-buttons-group">
         <button
           class="btn btn-flat-action-secondary"
           [disabled]="!selectedRecord || selectedRecord.length > 0"
-          (click)="openEditModal(selectedRecord)"
+          (click)="editUser(selectedRecord)"
         >
           <i class="fa-solid fa-pencil small"></i> Update
         </button>
@@ -55,16 +46,22 @@
         <button class="btn-search-flat-go" (click)="searchUsers()">Go</button>
       </div>
     </div>
+  </div>
 
-    <!-- Datatable Workspace Section -->
-    <div class="container-fluid p-4 bg-light">
-      <app-data-grid
-        [records]="paginatedRecords"
-        [columns]="tableHeaders"
-        [showCheckbox]="true"
-        (selectionChange)="onRowSelect($event)"
-      >
-      </app-data-grid>
-    </div>
+  <!-- Datatable Workspace Section -->
+  <div class="main-container">
+    <app-data-grid
+      [records]="paginatedRecords"
+      [columns]="tableHeaders"
+      [showCheckbox]="true"
+      [showAction]="false"
+      [isServerSide]="true"
+      [serverTotalPages]="totalPages"
+      [serverCurrentPage]="currentPage"
+      (pageChange)="changePage($event)"
+      (selectionChange)="onRowSelect($event)"
+      [tableHeight]="'535px'"
+    >
+    </app-data-grid>
   </div>
 </div>

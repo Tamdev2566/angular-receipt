@@ -29,12 +29,6 @@ export class UserMgtList implements OnInit {
   searchText = '';
   tableHeaders: ColumnDef[] = [
     {
-      label: 'No',
-      field: 'no',
-      width: '60px',
-      align: 'center',
-    },
-    {
       label: 'User ID',
       field: 'userId',
       width: '100px',
@@ -73,7 +67,7 @@ export class UserMgtList implements OnInit {
     {
       label: 'Created By',
       field: 'createdBy',
-      width: '170px',
+      width: '150px',
     },
     {
       label: 'Date Created',
@@ -229,10 +223,18 @@ export class UserMgtList implements OnInit {
     this.router.navigate(['/home/user-mgt-details']);
   }
 
-  openEditModal(user: any): void {
-    console.log('Opening edit modal for user:', user);
-    this.router.navigate(['/home/user-mgt-details'], { state: { userRecord: user } });
+  // openEditModal(user: any): void {
+  //   console.log('Opening edit modal for user:', user);
+  //   this.router.navigate(['/home/user-mgt-details'], { state: { userRecord: user } });
+  // }
+
+  editUser(row: any) {
+    this.router.navigate(['/home/user-mgt-details'], { state: { userRecord: row } });
   }
+
+  // deleteUser(id: number) {
+  //   console.log('Deleting user ID:', id);
+  // }
 
   isAllSelected(): boolean {
     if (!this.paginatedRecords.length) return false;

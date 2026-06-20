@@ -44,6 +44,8 @@ export class Combobox implements OnInit, OnChanges {
   @Input() onChange?: (value: any, item: any) => void;
   @Input() handleChange?: (value: any, item: any) => void;
 
+  formData = {};
+
   isOpen = false;
   isDataLoaded = false;
   isLoading = false;
@@ -53,6 +55,8 @@ export class Combobox implements OnInit, OnChanges {
 
   selectedItem: any = null;
   searchText = '';
+
+  private isTyping = false;
 
   constructor(
     private http: HttpClient,
@@ -89,6 +93,7 @@ export class Combobox implements OnInit, OnChanges {
   }
 
   onSearchInput(term: string): void {
+    this.isTyping = true;
     this.searchText = term;
 
     if (!term?.trim()) {
@@ -143,7 +148,11 @@ export class Combobox implements OnInit, OnChanges {
           this.isOpen = true;
           this.isDataLoaded = true;
 
-          this.syncDisplayLabel();
+          // IMPORTANT
+          if (!this.isTyping) {
+            this.syncDisplayLabel();
+          }
+
           this.cdr.detectChanges();
         },
         error: () => {
@@ -154,11 +163,16 @@ export class Combobox implements OnInit, OnChanges {
       });
   }
 
+  private getNestedValue(obj: any, path: string): any {
+    return path.split('.').reduce((acc, key) => acc?.[key], obj);
+  }
+
   private syncDisplayLabel(): void {
     const lookupPool = Array.isArray(this.items) ? this.items : [];
 
     if (this.value === null || this.value === undefined) {
       this.selectedItem = null;
+      this.searchText = '';
       return;
     }
 
@@ -166,13 +180,17 @@ export class Combobox implements OnInit, OnChanges {
 
     if (match) {
       this.selectedItem = match;
-      this.searchText = match[this.displayExpr];
+
+      this.searchText = this.codeExpr
+        ? `${match[this.codeExpr]} - ${match[this.displayExpr]}`
+        : match[this.displayExpr];
+
       return;
     }
 
     // Edit mode fallback
-    if (typeof this.value === 'object' && this.value?.location_name) {
-      this.searchText = this.value.location_name;
+    if (typeof this.value === 'object') {
+      this.searchText = this.getNestedValue(this.value, this.displayExpr) || '';
     }
   }
 
@@ -193,14 +211,17 @@ export class Combobox implements OnInit, OnChanges {
 
     if (!item) return;
 
+    this.isTyping = false;
+
     this.selectedItem = item;
 
-    this.searchText = item[this.displayExpr];
+    this.searchText = this.codeExpr
+      ? `${item[this.codeExpr]} - ${item[this.displayExpr]}`
+      : item[this.displayExpr];
 
     const finalValue = item[this.valueExpr];
 
     this.value = finalValue;
-
     this.valueChange.emit(finalValue);
 
     if (this.onChange) {
@@ -216,6 +237,8 @@ export class Combobox implements OnInit, OnChanges {
 
   clearSelection(event: Event): void {
     event.stopPropagation();
+
+    this.isTyping = false;
 
     this.value = null;
     this.selectedItem = null;

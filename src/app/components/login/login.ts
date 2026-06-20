@@ -119,7 +119,7 @@ export class LoginPage {
                 localStorage.setItem('locationList', JSON.stringify(userInfo.masterLocations));
               }
 
-              this.alertService.showAlert('Logged In Successfully!', '', 'success');
+              this.alertService.showAlert('Success', 'Logged In Successfully!', 'success');
 
               this.router.navigate(['/home']);
             },
@@ -128,8 +128,8 @@ export class LoginPage {
               console.error('/info error', err);
 
               this.alertService.showAlert(
+                'Error',
                 err?.error?.message || 'Unable to fetch user information',
-                '',
                 'error',
               );
             },
@@ -139,7 +139,7 @@ export class LoginPage {
         error: (err) => {
           console.log('ERROR', err);
 
-          this.alertService.showAlert(err?.error, '', 'error');
+          this.alertService.showAlert('Error', err?.error, 'error');
         },
       });
   }

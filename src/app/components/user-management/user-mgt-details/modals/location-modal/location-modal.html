@@ -1,7 +1,7 @@
 <div class="location-modal-backdrop">
   <div class="location-modal-card">
     <div class="location-modal-header">
-      <span>Step 1 of 2: Select Locations</span>
+      <span>Select Locations</span>
 
       <button type="button" class="modal-close-btn" (click)="closeModal()">
         <i class="fa-solid fa-xmark"></i>
@@ -20,27 +20,33 @@
       </div>
 
       <!-- SAME TABLE STYLE AS LOCATION CARD -->
-      <div class="table-responsive rounded-2 flat-inner-table-border">
+
+      <div class="table-responsive rounded-2 flat-inner-table-border table-scroll-wrapper">
         <table class="table align-middle m-0 flat-inner-table">
           <thead>
             <tr>
               <th class="text-center" style="width: 60px">Select</th>
-              <th>Location</th>
+              <th>Location Name</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr *ngFor="let loc of paginatedLocations" class="flat-inner-row">
+            <tr *ngFor="let loc of filteredLocations" class="flat-inner-row">
               <td class="text-center">
-                <input type="checkbox" [(ngModel)]="loc.selected" />
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  [(ngModel)]="loc.selected"
+                  (change)="onLocationSelectionChange(loc)"
+                />
               </td>
 
               <td class="fw-bold text-dark">
-                {{ loc.code }}
+                {{ loc.location_name }}
               </td>
             </tr>
 
-            <tr *ngIf="paginatedLocations.length === 0">
+            <tr *ngIf="filteredLocations.length === 0">
               <td colspan="2" class="text-center p-4 text-muted small">No locations found.</td>
             </tr>
           </tbody>
@@ -50,8 +56,7 @@
       <!-- Pagination -->
       <div class="d-flex justify-content-between align-items-center mt-3">
         <small class="meta-flat-text text-secondary">
-          Displaying {{ paginatedLocations.length }} of {{ filteredLocations.length }}
-          locations
+          Showing {{ filteredLocations.length }} of {{ totalRecords }} locations
         </small>
 
         <div class="d-flex gap-2 align-items-center">
@@ -63,10 +68,10 @@
             Prev
           </button>
 
-          <span class="small"> Page {{ currentPage }} of {{ totalPages }} </span>
+          <span class="pageNum"> Page {{ currentPage }} of {{ totalPages }} </span>
 
           <button
-            class="btn btn-flat-action-primary btn-sm compact-btn"
+            class="btn btn-flat-action-secondary btn-sm compact-btn"
             (click)="nextPage()"
             [disabled]="currentPage === totalPages"
           >
@@ -79,8 +84,12 @@
     <div class="location-modal-footer">
       <button class="btn btn-flat-action-secondary" (click)="closeModal()">Cancel</button>
 
-      <button class="btn btn-flat-action-primary" (click)="proceedToOffice()">
+      <!-- <button class="btn btn-flat-action-primary" (click)="proceedToOffice()">
         Next <i class="fa-solid fa-arrow-right me-1 mt-1"></i>
+      </button> -->
+      <button class="btn btn-flat-action-primary" (click)="saveLocations()">
+        <i class="fa-solid fa-floppy-disk me-1"></i>
+        Save Location
       </button>
     </div>
   </div>

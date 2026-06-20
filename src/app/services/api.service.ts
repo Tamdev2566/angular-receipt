@@ -7,6 +7,7 @@ import { environment } from '../../environment/environment';
 })
 export class ApiService {
   private baseUrl = environment.apiUrl;
+  private loginUrl = environment.loginUrl;
 
   private http = inject(HttpClient);
 
@@ -24,5 +25,11 @@ export class ApiService {
 
   delete(endpoint: string, options?: any) {
     return this.http.delete(`${this.baseUrl}/${endpoint}`, options);
+  }
+  loginPost(endpoint: string, data: any, options?: any) {
+    return this.http.post(`${this.loginUrl}/${endpoint}`, data, options);
+  }
+  infoGet(endpoint: string, options?: any) {
+    return this.http.get(`${this.loginUrl}/${endpoint}`, options);
   }
 }

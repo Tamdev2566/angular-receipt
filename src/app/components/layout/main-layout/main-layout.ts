@@ -34,7 +34,7 @@ export class MainLayout {
       localStorage.removeItem('angular_token');
       localStorage.removeItem('user');
       this.router.navigate(['/login']);
-      this.alertService.showAlert('You have been Logged Out Successfully!', '', 'success');
+      this.alertService.showAlert('Success', 'You have been Logged Out Successfully!', 'success');
     }, 1000);
   }
 }

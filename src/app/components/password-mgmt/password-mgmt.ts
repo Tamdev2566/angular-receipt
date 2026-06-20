@@ -80,9 +80,9 @@ export class PasswordMgmt implements OnInit {
     setTimeout(() => {
       this.isLoading = false;
       if (this.currentStep === 'change-password') {
-        this.alertService.showAlert('Sueccess', 'Password has been changed.', 'success');
+        this.alertService.showAlert('Success', 'Password has been changed.', 'success');
       } else {
-        this.alertService.showAlert('Sueccess', 'Password has been reset.', 'success');
+        this.alertService.showAlert('Success', 'Password has been reset.', 'success');
       }
       this.closeModal();
     }, 2000);

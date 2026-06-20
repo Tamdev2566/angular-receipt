@@ -1,7 +1,12 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpContext } from '@angular/common/http';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { AlertService } from '../../../../../services/alertService/alert';
+import { ApiService } from '../../../../../services/api.service';
+import { UserMgtService } from '../../../user-mgt-service';
+import { SKIP_LOADER } from '../../../../../core/interceptors/loaderInterceptor/loader-interceptor-interceptor';
 
 @Component({
   selector: 'app-location-modal',
@@ -11,71 +16,83 @@ import { AlertService } from '../../../../../services/alertService/alert';
   styleUrls: ['../shared-modal.scss'],
 })
 export class LocationModalComponent implements OnInit {
+  @Input() selectedLocations: any[] = [];
   @Output() close = new EventEmitter<void>();
-
   @Output() next = new EventEmitter<any[]>();
 
-  constructor(private alertMessage: AlertService) {}
+  constructor(
+    private alertMessage: AlertService,
+    private cdr: ChangeDetectorRef,
+    private userService: UserMgtService,
+  ) {}
 
   locationSearch = '';
 
   currentPage = 1;
+  pageSize = 10;
 
-  pageSize = 5;
+  totalRecords = 0;
+  totalPages = 0;
 
-  locations = [
-    { code: '2ASSINIE', selected: false },
-    { code: 'AABENRAA', selected: false },
-    { code: 'AACHEN', selected: false },
-    { code: 'AALBORG', selected: false },
-    { code: 'AARHUS', selected: false },
-    { code: 'ABADAN', selected: false },
-    { code: 'ABASHIRI, HOKKAIDO', selected: false },
-    { code: 'ABAU', selected: false },
-    { code: 'ABBEHAUSEN', selected: false },
-    { code: 'ABBENFLETH', selected: false },
-    { code: 'ABBEVILLE', selected: false },
-    { code: 'ABBSE', selected: false },
-    { code: 'ABEMAMA', selected: false },
-    { code: 'ABENGOUROU', selected: false },
-    { code: 'ABERDEEN', selected: false },
-    { code: 'ABERDEEN-DYCE APT', selected: false },
-  ];
-
+  locations: any[] = [];
   filteredLocations: any[] = [];
 
+  private searchSubject = new Subject<string>();
+
   ngOnInit(): void {
-    this.filteredLocations = [...this.locations];
+    this.loadLocations('*', 1);
+
+    this.searchSubject.pipe(debounceTime(300), distinctUntilChanged()).subscribe((term) => {
+      this.loadLocations(term, 1);
+    });
   }
 
-  get paginatedLocations() {
-    const start = (this.currentPage - 1) * this.pageSize;
-
-    return this.filteredLocations.slice(start, start + this.pageSize);
-  }
-
-  get totalPages() {
-    return Math.ceil(this.filteredLocations.length / this.pageSize) || 1;
-  }
-
-  nextPage() {
+  nextPage(): void {
     if (this.currentPage < this.totalPages) {
-      this.currentPage++;
+      this.loadLocations(this.locationSearch || '*', this.currentPage + 1);
     }
   }
 
-  prevPage() {
+  prevPage(): void {
     if (this.currentPage > 1) {
-      this.currentPage--;
+      this.loadLocations(this.locationSearch || '*', this.currentPage - 1);
     }
   }
 
-  filterLocations() {
-    const search = this.locationSearch.toLowerCase();
+  loadLocations(searchTerm: string = '*', page: number = 1): void {
+    this.currentPage = page;
 
-    this.filteredLocations = this.locations.filter((x) => x.code.toLowerCase().includes(search));
+    this.userService.getDefaultLocations(searchTerm, page, this.pageSize).subscribe({
+      next: (response: any) => {
+        this.locations = response?.content || [];
 
-    this.currentPage = 1;
+        this.locations.forEach((location: any) => {
+          location.selected = this.selectedLocations.some(
+            (selected: any) => selected.location_id === location.location_id,
+          );
+        });
+
+        this.filteredLocations = [...this.locations];
+
+        this.totalPages = response?.totalPages || 0;
+        this.totalRecords = response?.totalElements || 0;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error(error);
+
+        this.alertMessage.showAlert('Error', 'Failed to load locations', 'error');
+      },
+    });
+  }
+
+  filterLocations(): void {
+    if (!this.locationSearch?.trim()) {
+      this.loadLocations();
+      return;
+    }
+
+    this.searchSubject.next(this.locationSearch);
   }
 
   closeModal() {
@@ -86,10 +103,33 @@ export class LocationModalComponent implements OnInit {
     const selectedLocations = this.locations.filter((x) => x.selected);
 
     if (!selectedLocations.length) {
-      this.alertMessage.showAlert('Please select at least one location', '', 'error');
+      this.alertMessage.showAlert('Error', 'Please select at least one location', 'error');
       return;
     }
 
     this.next.emit(selectedLocations);
+  }
+
+  saveLocations(): void {
+    if (!this.selectedLocations.length) {
+      this.alertMessage.showAlert('Error', 'Please select at least one location', 'error');
+      return;
+    }
+
+    this.next.emit(this.selectedLocations);
+  }
+
+  onLocationSelectionChange(location: any): void {
+    if (location.selected) {
+      const exists = this.selectedLocations.some((x) => x.location_id === location.location_id);
+
+      if (!exists) {
+        this.selectedLocations.push({ ...location });
+      }
+    } else {
+      this.selectedLocations = this.selectedLocations.filter(
+        (x) => x.location_id !== location.location_id,
+      );
+    }
   }
 }
