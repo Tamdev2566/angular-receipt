@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
+import { ApiService } from '../../../services/api.service';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { IconButton } from '../../../shared/icon-button/icon-button';
 
@@ -15,143 +17,139 @@ import { IconButton } from '../../../shared/icon-button/icon-button';
 export class GroupMgtList implements OnInit {
   loading = false;
   searchQuery = '';
+
+  currentPage = 1;
+  totalPages = 1;
+  pageSize = 20;
+  validFilterMode: 'ALL' | 'INVALID' | 'VALID' = 'ALL';
+
   gridColumns: ColumnDef[] = [
-    { label: 'Group ID', field: 'id', align: 'center' },
+    { label: 'Group ID', field: 'id', align: 'center', width: '120px' },
     { label: 'Profile Name', field: 'name' },
-    { label: 'Created By', field: 'createdBy', align: 'center' },
-    { label: 'Date Created', field: 'dateCreated', align: 'center' },
-    { label: 'Modified By', field: 'modifiedBy', align: 'center' },
-    { label: 'Total Users', field: 'totalUsers', align: 'center', type: 'badge' },
-    { label: 'Valid', field: 'valid', align: 'center' },
+    { label: 'Created By', field: 'createdBy', align: 'center', width: '130px' },
+    { label: 'Date Created', field: 'dateCreated', align: 'center', width: '160px' },
+    { label: 'Modified By', field: 'modifiedBy', align: 'center', width: '130px' },
+    { label: 'Total Users', field: 'totalUsers', align: 'center', type: 'badge', width: '110px' },
+    { label: 'Valid', field: 'valid', align: 'center', width: '80px' },
   ];
 
-  gridData = [
-    {
-      id: 'G00001',
-      name: 'BILL OF LADING (OUTWARD) CENTRIC PROFILE',
-      createdBy: '',
-      dateCreated: '',
-      modifiedBy: 'NOVYAN',
-      dateModified: '2023-07-17 12:40:33',
-      valid: 'Y',
-      totalUsers: 4,
-      isSelected: false,
-      privileges: [
-        'ACTUAL FREIGHT LIST: FULL ACCESS',
-        'ACTUAL INVOICE: FULL ACCESS',
-        'APPROVED RATE SUMMARY: FULL ACCESS',
-        '+ 120 MORE MENUS...',
-      ],
-    },
-    {
-      id: 'G00037',
-      name: 'GENERAL ACCESS PROFILE (VAR 1)',
-      createdBy: 'NOVYAN',
-      dateCreated: '2025-12-15 19:49:58',
-      modifiedBy: 'NOVYAN',
-      dateModified: '2025-12-15 19:51:37',
-      valid: 'Y',
-      totalUsers: 1,
-      isSelected: false,
-      privileges: ['HOME: FULL ACCESS'],
-    },
-    {
-      id: 'G20001',
-      name: 'VESSEL SCHEDULE',
-      createdBy: 'SYSTEM_DEPLOY',
-      dateCreated: '2026-06-10 12:00:59.284713+07',
-      modifiedBy: 'SYSTEM_DEPLOY',
-      dateModified: '2026-06-10 12:00:59.284713+07',
-      valid: 'Y',
-      totalUsers: 0,
-      isSelected: false,
-      privileges: [
-        'SCHEDULE: FULL ACCESS',
-        'SERVICE: FULL ACCESS',
-        'VESSEL: FULL ACCESS',
-        '+ 1 MORE MENU...',
-      ],
-    },
-    {
-      id: 'G20002',
-      name: 'VESSEL CODE',
-      createdBy: 'SYSTEM_DEPLOY',
-      dateCreated: '2026-06-10 12:00:59.284713+07',
-      modifiedBy: 'SYSTEM_DEPLOY',
-      dateModified: '2026-06-10 12:00:59.284713+07',
-      valid: 'Y',
-      totalUsers: 0,
-      isSelected: false,
-      privileges: ['VESSEL CODE: FULL ACCESS'],
-    },
-    {
-      id: 'G20003',
-      name: 'CENTRAL MASTER',
-      createdBy: 'SYSTEM_DEPLOY',
-      dateCreated: '2026-06-10 12:00:59.284713+07',
-      modifiedBy: 'SYSTEM_DEPLOY',
-      dateModified: '2026-06-10 12:00:59.284713+07',
-      valid: 'Y',
-      totalUsers: 0,
-      isSelected: false,
-      privileges: [
-        'ACCOUNT PIC: FULL ACCESS',
-        'CHARGE: FULL ACCESS',
-        'COMMODITY: FULL ACCESS',
-        '+ 13 MORE MENUS...',
-      ],
-    },
-    {
-      id: 'G20004',
-      name: 'LOCAL MASTER GENERIC',
-      createdBy: 'SYSTEM_DEPLOY',
-      dateCreated: '2026-06-10 12:00:59.284713+07',
-      modifiedBy: 'SYSTEM_DEPLOY',
-      dateModified: '2026-06-10 12:00:59.284713+07',
-      valid: 'Y',
-      totalUsers: 0,
-      isSelected: false,
-      privileges: [
-        'CLAUSES: FULL ACCESS',
-        'EXCHANGE RATE: FULL ACCESS',
-        'FREIGHT GROUP: FULL ACCESS',
-      ],
-    },
-    {
-      id: 'G20005',
-      name: 'LOCAL MASTER (SIN)',
-      createdBy: 'SYSTEM_DEPLOY',
-      dateCreated: '2026-06-10 12:00:59.284713+07',
-      modifiedBy: 'SYSTEM_DEPLOY',
-      dateModified: '2026-06-10 12:00:59.284713+07',
-      valid: 'Y',
-      totalUsers: 0,
-      isSelected: false,
-      privileges: ['BANK DETAILS: FULL ACCESS', 'CHARGE CODE(GST/ZERO-RATED)...'],
-    },
-  ];
+  gridData: any[] = [];
+  selectedRows: any[] = [];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private apiService: ApiService,
+  ) {}
 
-  ngOnInit(): void {}
-
-  isAllSelected(): boolean {
-    return this.gridData.every((r) => r.isSelected);
+  ngOnInit(): void {
+    this.fetchGroupData(1);
   }
 
-  toggleAllRows(event: any): void {
-    const checked = event.target.checked;
-    this.gridData.forEach((r) => (r.isSelected = checked));
+  private get currentApiPayload(): any {
+    if (this.validFilterMode === 'ALL') {
+      return {
+        search: this.searchQuery.trim(),
+      };
+    }
+    return {
+      isValid: this.validFilterMode === 'VALID' ? 'Y' : 'N',
+    };
   }
+
+  fetchGroupData(targetPage: number = 1): void {
+    this.loading = true;
+    const endpoint = `?q=/GroupManagements/groups/${targetPage}/${this.pageSize}/ASC/groupId`;
+
+    this.apiService
+      .post(endpoint, this.currentApiPayload)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: (response: any) => {
+          const dataList = response?.content || response?.data || response || [];
+
+          this.totalPages = response?.totalPages || 1;
+          this.currentPage = targetPage;
+
+          this.gridData = dataList.map((item: any) => {
+            let formattedPrivileges: string[] = [];
+
+            if (item.privilegePreview && Array.isArray(item.privilegePreview)) {
+              const previewItems = item.privilegePreview.slice(0, 3);
+              formattedPrivileges = previewItems.map(
+                (priv: any) =>
+                  `${priv.menuName ? priv.menuName.toUpperCase() : ''}: ${priv.accessSummary ? priv.accessSummary.toUpperCase() : 'FULL ACCESS'}`,
+              );
+
+              const totalMenus = item.totalMenuCount || 0;
+              if (totalMenus > 3) {
+                const moreCount = totalMenus - 3;
+                formattedPrivileges.push(`+ ${moreCount} MORE MENU${moreCount > 1 ? 'S' : ''}...`);
+              }
+            }
+
+            return {
+              id: item.groupId,
+              name: item.groupName,
+              createdBy: item.userCreated ? item.userCreated.toUpperCase() : '',
+              dateCreated: this.formatDate(item.dateCreated),
+              modifiedBy: item.userModified ? item.userModified.toUpperCase() : '',
+              dateModified: this.formatDate(item.dateModified),
+              valid: item.isValid,
+              totalUsers: item.totalUsers,
+              isSelected: false,
+              privileges: formattedPrivileges,
+            };
+          });
+        },
+        error: (error: any) => {
+          console.error('Error fetching group data:', error);
+          this.gridData = [];
+        },
+      });
+  }
+
+  // ==================== UI STATE GETTERS ====================
+
+  get validButtonText(): string {
+    if (this.validFilterMode === 'INVALID') return 'Invalid';
+    if (this.validFilterMode === 'VALID') return 'Valid';
+    return 'All';
+  }
+
+  get validButtonIcon(): string {
+    if (this.validFilterMode === 'INVALID') return 'fa-xmark';
+    if (this.validFilterMode === 'VALID') return 'fa-check';
+    return 'fa-check-double';
+  }
+
+  // ==================== EVENT TRIGGERS ====================
+
+  onToggleValidClick(): void {
+    if (this.validFilterMode === 'ALL') this.validFilterMode = 'INVALID';
+    else if (this.validFilterMode === 'INVALID') this.validFilterMode = 'VALID';
+    else this.validFilterMode = 'ALL';
+
+    this.fetchGroupData(1); // Always reset to page 1 on filter change
+  }
+
+  onSearch(): void {
+    this.fetchGroupData(1); // Always reset to page 1 on new search
+  }
+
+  onPageChange(newPage: number): void {
+    this.fetchGroupData(newPage);
+  }
+
   onGridSelectionChange(selectedRows: any[]): void {
-    console.log('Currently selected rows:', selectedRows);
+    this.selectedRows = selectedRows;
+    console.log('Selected items count:', this.selectedRows.length);
   }
 
-  viewDetails(row: any) {
+  viewDetails(row: any): void {
     console.log('Viewing details for:', row);
   }
 
-  deleteUser(id: number) {
+  deleteUser(id: string): void {
     console.log('Deleting user ID:', id);
   }
 
@@ -161,5 +159,10 @@ export class GroupMgtList implements OnInit {
 
   onClickHistory(): void {
     this.router.navigate(['/home/group-mgt-history']);
+  }
+
+  private formatDate(dateStr: string): string {
+    if (!dateStr) return '';
+    return dateStr.includes(':') ? dateStr : `${dateStr} 00:00:00`;
   }
 }

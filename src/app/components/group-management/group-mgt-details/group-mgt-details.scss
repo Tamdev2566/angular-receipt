@@ -2,6 +2,7 @@ $samudera-dark-blue: #33708f;
 $samudera-hover-blue: #27566f;
 $border-color-muted: #cbd5e1;
 $bg-workspace-canvas: #f1f5f9;
+
 .page-canvas-wrapper {
   padding: 1.5rem 0;
   min-height: 100%;
@@ -18,7 +19,7 @@ $bg-workspace-canvas: #f1f5f9;
   margin-bottom: 1.5rem;
 
   .card-header-accent {
-    background-color: $samudera-dark-blue !important;
+    background-color: #b03060 !important;
   }
   .panel-title-txt {
     font-size: 0.8rem !important;
