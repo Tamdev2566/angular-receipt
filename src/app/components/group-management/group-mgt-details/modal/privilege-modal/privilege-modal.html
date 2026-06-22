@@ -1,0 +1,29 @@
+<div class="modal-overlay">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h5>Select Privileges</h5>
+      <button class="btn-close" (click)="close.emit()"></button>
+    </div>
+
+    <div class="modal-body">
+      <app-data-grid
+        [records]="gridData"
+        [columns]="gridColumns"
+        [showCheckbox]="true"
+        [isServerSide]="true"
+        [serverTotalPages]="totalPages"
+        [serverCurrentPage]="currentPage"
+        (pageChange)="onPageChange($event)"
+        (selectionChange)="onGridSelectionChange($event)"
+        [tableHeight]="'500px'"
+      >
+      </app-data-grid>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="close.emit()">Cancel</button>
+
+      <button class="btn btn-primary" (click)="save()">Add Selected</button>
+    </div>
+  </div>
+</div>

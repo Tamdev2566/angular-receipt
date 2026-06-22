@@ -74,10 +74,11 @@
         </app-icon-button>
 
         <app-icon-button
-          iconClass="bi bi-trash3-fill"
-          colorClass="color-danger"
-          title="Delete"
-          (onClick)="deleteUser(row.id)"
+          [iconClass]="row.isActive ? 'bi bi-toggle-on' : 'bi bi-toggle-off'"
+          [colorClass]="row.isActive ? 'color-success' : 'color-error'"
+          [title]="row.isActive ? 'Deactivate' : 'Activate'"
+          [customStyle]="{ 'margin-right': '8px' }"
+          (onClick)="toggleStatus(row)"
         >
         </app-icon-button>
       </ng-template>

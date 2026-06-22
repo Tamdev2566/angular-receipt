@@ -104,7 +104,7 @@
           <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
             <button
               class="btn btn-flat-action-primary py-1.5 px-3 fs-7.5"
-              (click)="addPrivilegeRow()"
+              (click)="openPrivilegeModal()"
             >
               <i class="fa-solid fa-plus small me-1"></i> Add Privilege
             </button>
@@ -123,8 +123,8 @@
           </div>
 
           <div
-            class="table-responsive rounded-2 border table-nested-frame flex-grow-1"
-            style="min-height: 250px"
+            class="table-responsive rounded-2 border table-nested-frame"
+            style="height: 350px; overflow-y: auto"
           >
             <table class="table align-middle m-0 corporate-flat-table text-nowrap">
               <thead>
@@ -187,3 +187,11 @@
     </div>
   </div>
 </div>
+
+<app-privilege-modal
+  *ngIf="showPrivilegeModal"
+  [menus]="masterMenus"
+  (close)="showPrivilegeModal = false"
+  (selectedMenus)="onMenusSelected($event)"
+>
+</app-privilege-modal>

@@ -1,13 +1,20 @@
 <div class="form-group">
+  <label *ngIf="label" class="combo-label">
+    {{ label }}
+    <span *ngIf="required" class="required">*</span>
+  </label>
+
   <div class="combo-box">
     <div class="input-wrapper">
       <input
         type="text"
         class="combo-input"
+        [class.input-error]="errorText"
         [(ngModel)]="searchText"
         [placeholder]="extraProp?.placeholder || 'Select'"
         [disabled]="disabled"
         (focus)="onComboBoxInteract()"
+        (blur)="onBlur()"
         (ngModelChange)="onSearchInput($event)"
       />
 
@@ -16,6 +23,7 @@
         class="clear-btn fa fa-times"
         (click)="clearSelection($event)"
       ></i>
+
       <i class="dropdown-arrow fa fa-angle-down" (click)="toggleDropdown($event)"></i>
     </div>
 
@@ -28,6 +36,7 @@
 
       <div *ngIf="!isLoading && filteredItems.length > 0">
         <div class="combo-count-header">Count: {{ filteredItems.length }}</div>
+
         <div
           *ngFor="let item of filteredItems"
           class="combo-item"
@@ -37,5 +46,14 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div *ngIf="helperText && !errorText" class="helper-text">
+    {{ helperText }}
+  </div>
+
+  <div *ngIf="errorText" class="error-text">
+    <i class="fa fa-circle-exclamation me-1"></i>
+    {{ errorText }}
   </div>
 </div>

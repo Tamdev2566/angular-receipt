@@ -203,6 +203,14 @@ $bg-workspace-canvas: #f1f5f9;
   }
 }
 
+.corporate-flat-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #33708f;
+  color: #fff;
+}
+
 .inner-table-input {
   height: 30px;
   font-size: 0.78rem;

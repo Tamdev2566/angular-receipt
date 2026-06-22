@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -39,10 +40,35 @@ export class GroupMgtList implements OnInit {
   constructor(
     private router: Router,
     private apiService: ApiService,
+    private http: HttpClient,
   ) {}
 
   ngOnInit(): void {
     this.fetchGroupData(1);
+    this.quickTestAPI();
+  }
+  quickTestAPI() {
+    const search = '%';
+    const isValid = '%';
+    const page = 1;
+    const size = 10;
+    const direction = 'ASC';
+    const columnSort = 'id';
+
+    // const testUrl = `${baseUrl}/applications/lightweight`;
+    // const testUrl = `${baseUrl}/applications/APP001/groups`;
+    const testUrl = 'http://localhost:22000/ApplicationManagements/applications/lightweight';
+
+    console.log('Calling this URL ->', testUrl);
+
+    this.http.get(testUrl).subscribe({
+      next: (data) => {
+        console.log('✅ SUPER! DATA:', data);
+      },
+      error: (err) => {
+        console.error('❌ ERROR ADIKITHU:', err);
+      },
+    });
   }
 
   private get currentApiPayload(): any {
@@ -58,7 +84,7 @@ export class GroupMgtList implements OnInit {
 
   fetchGroupData(targetPage: number = 1): void {
     this.loading = true;
-    const endpoint = `?q=/GroupManagements/groups/${targetPage}/${this.pageSize}/ASC/groupId`;
+    const endpoint = `?q=/GroupManagements/groups/${targetPage}/${this.pageSize}/DESC/groupId`;
 
     this.apiService
       .post(endpoint, this.currentApiPayload)
@@ -238,10 +264,12 @@ export class GroupMgtList implements OnInit {
   }
 
   viewDetails(row: any): void {
-    console.log('Viewing details for:', row);
+    this.router.navigate(['home/group-mgt-details'], {
+      state: { row },
+    });
   }
 
-  deleteUser(id: string): void {
+  toggleStatus(id: string): void {
     console.log('Deleting user ID:', id);
   }
 

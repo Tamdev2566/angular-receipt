@@ -41,8 +41,16 @@ export class Combobox implements OnInit, OnChanges {
   @Output() valueChange = new EventEmitter<any>();
 
   @Input() extraProp: any = { placeholder: 'Select Option' };
+
+  @Input() label = '';
+  @Input() helperText = '';
+  @Input() errorText = '';
+  @Input() required = false;
+
   @Input() onChange?: (value: any, item: any) => void;
   @Input() handleChange?: (value: any, item: any) => void;
+
+  isTouched = false;
 
   formData = {};
 
@@ -90,6 +98,10 @@ export class Combobox implements OnInit, OnChanges {
 
       this.syncDisplayLabel();
     }
+  }
+
+  onBlur(): void {
+    this.isTouched = true;
   }
 
   onSearchInput(term: string): void {
@@ -148,7 +160,6 @@ export class Combobox implements OnInit, OnChanges {
           this.isOpen = true;
           this.isDataLoaded = true;
 
-          // IMPORTANT
           if (!this.isTyping) {
             this.syncDisplayLabel();
           }
@@ -188,7 +199,6 @@ export class Combobox implements OnInit, OnChanges {
       return;
     }
 
-    // Edit mode fallback
     if (typeof this.value === 'object') {
       this.searchText = this.getNestedValue(this.value, this.displayExpr) || '';
     }
@@ -209,8 +219,6 @@ export class Combobox implements OnInit, OnChanges {
   selectItem(item: any, event: Event): void {
     event.stopPropagation();
 
-    if (!item) return;
-
     this.isTyping = false;
 
     this.selectedItem = item;
@@ -222,15 +230,11 @@ export class Combobox implements OnInit, OnChanges {
     const finalValue = item[this.valueExpr];
 
     this.value = finalValue;
+
     this.valueChange.emit(finalValue);
 
-    if (this.onChange) {
-      this.onChange(finalValue, item);
-    }
-
-    if (this.handleChange) {
-      this.handleChange(finalValue, item);
-    }
+    this.onChange?.(finalValue, item);
+    this.handleChange?.(finalValue, item);
 
     this.isOpen = false;
   }
