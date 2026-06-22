@@ -1,0 +1,72 @@
+<div class="date-picker-wrapper">
+  <label *ngIf="label" class="date-label">
+    {{ label }}
+
+    <span *ngIf="required" class="required">*</span>
+  </label>
+
+  <div class="date-input-container">
+    <input
+      type="text"
+      readonly
+      class="date-input"
+      [value]="value || ''"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      (click)="togglePicker($event)"
+    />
+
+    <i *ngIf="value && !disabled" class="fa fa-times clear-icon" (click)="clear()"></i>
+
+    <i class="fa fa-calendar calendar-icon" (click)="togglePicker($event)"></i>
+  </div>
+
+  <div *ngIf="helperText && !errorText" class="helper-text">
+    {{ helperText }}
+  </div>
+
+  <div *ngIf="errorText" class="error-text">
+    {{ errorText }}
+  </div>
+
+  <div *ngIf="isOpen" class="calendar-dropdown">
+    <div class="calendar-header">
+      <span>{{ monthLabel }}</span>
+
+      <div class="calendar-nav">
+        <button type="button" class="nav-btn" (click)="changeMonth(-1)">
+          <i class="fa fa-chevron-left"></i>
+        </button>
+
+        <button type="button" class="nav-btn" (click)="changeMonth(1)">
+          <i class="fa fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="calendar-weekdays">
+      <span>Su</span>
+      <span>Mo</span>
+      <span>Tu</span>
+      <span>We</span>
+      <span>Th</span>
+      <span>Fr</span>
+      <span>Sa</span>
+    </div>
+
+    <div class="calendar-grid">
+      <ng-container *ngFor="let item of calendarDays">
+        <div *ngIf="item.empty" class="empty-cell"></div>
+
+        <button
+          *ngIf="!item.empty"
+          class="day-btn"
+          [class.selected]="item.selected"
+          (click)="selectDate(item.day)"
+        >
+          {{ item.day }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</div>
