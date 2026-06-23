@@ -4,21 +4,19 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ApiService } from '../../../services/api.service';
+import { Combobox } from '../../../shared/combobox/combobox';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { DatepickerComponent } from '../../../shared/date-picker/date-picker';
 
 @Component({
   selector: 'app-group-mgt-history',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatepickerComponent, DataGrid],
+  imports: [CommonModule, FormsModule, DatepickerComponent, DataGrid, Combobox],
   templateUrl: './group-mgt-history.html',
   styleUrls: ['./group-mgt-history.scss'],
 })
 export class GroupMgtHistoryComponent implements OnInit {
   loading = false;
-
-  dateFrom = '2026-05-12';
-  dateTo = '2026-06-11';
   selectedAction = 'ALL';
   selectedCategory = 'ALL Categories';
   selectedRoleGroup = 'ALL Roles';
@@ -29,6 +27,29 @@ export class GroupMgtHistoryComponent implements OnInit {
   pageSize = 20;
 
   gridData = [];
+
+  formData: any = {
+    action: null,
+    categoryValue: null,
+    role: null,
+    menu: null,
+
+    actions: [
+      { id: 1, name: 'ALL' },
+      { id: 2, name: 'GROUP_CREATE' },
+      { id: 3, name: 'GROUP_UPDATE' },
+      { id: 4, name: 'GROUP_ENABLE' },
+      { id: 5, name: 'GROUP_DISABLE' },
+      { id: 6, name: 'MENU_ADD' },
+      { id: 7, name: 'MENU_DELETE' },
+    ],
+
+    category: [
+      { id: 1, name: 'ALL Category' },
+      { id: 2, name: 'Group Profiles' },
+      { id: 3, name: 'Menu Privileges' },
+    ],
+  };
 
   gridColumns: ColumnDef[] = [
     {
@@ -137,12 +158,20 @@ export class GroupMgtHistoryComponent implements OnInit {
       });
   }
   onRunQuery(): void {
-    console.log('Fetching RBAC engine trace audits configuration panel...');
-  }
+    const payload = {
+      dateFrom: this.formData.dateFrom,
+      dateTo: this.formData.dateTo,
+      action: this.formData.action,
+      category: this.formData.categoryValue,
+      roleId: this.formData.role,
+      menuId: this.formData.menu,
+    };
 
+    console.log(payload);
+
+    this.fetchGroupData(1);
+  }
   onResetFilters(): void {
-    this.dateFrom = '2026-05-12';
-    this.dateTo = '2026-06-11';
     this.selectedAction = 'ALL';
     this.selectedCategory = 'ALL Categories';
     this.selectedRoleGroup = 'ALL Roles';

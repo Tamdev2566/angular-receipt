@@ -1,5 +1,4 @@
 <div class="rbac-page">
-  <!-- Header Card -->
   <div class="page-header-card">
     <div class="title-section">
       <h3>RBAC Change Logs</h3>
@@ -24,7 +23,6 @@
     </div>
   </div>
 
-  <!-- Filter Card -->
   <div class="filter-card">
     <div class="filter-header">
       <i class="fa-solid fa-filter"></i>
@@ -35,7 +33,7 @@
       <div class="col-md-2">
         <app-date-picker
           label="Date From"
-          [(value)]="dateFrom"
+          [(value)]="formData.dateFrom"
           [required]="true"
           helperText="Select transaction start date"
         >
@@ -45,7 +43,7 @@
       <div class="col-md-2">
         <app-date-picker
           label="Date To"
-          [(value)]="dateTo"
+          [(value)]="formData.dateTo"
           [required]="true"
           helperText="Select transaction start date"
         >
@@ -53,31 +51,49 @@
       </div>
 
       <div class="col-md-2">
-        <label>Action</label>
-        <select class="form-select">
-          <option>ALL</option>
-        </select>
+        <app-combobox
+          label="Action"
+          [data]="formData.actions"
+          displayExpr="name"
+          valueExpr="id"
+          [(value)]="formData.action"
+        >
+        </app-combobox>
       </div>
 
       <div class="col-md-2">
-        <label>Category</label>
-        <select class="form-select">
-          <option>ALL Categories</option>
-        </select>
+        <app-combobox
+          label="Category"
+          [data]="formData.category"
+          displayExpr="name"
+          valueExpr="id"
+          [(value)]="formData.categoryValue"
+        >
+        </app-combobox>
       </div>
 
       <div class="col-md-2">
-        <label>Role / Group</label>
-        <select class="form-select">
-          <option>ALL Roles</option>
-        </select>
+        <app-combobox
+          label="Role"
+          [url]="'?q=/GroupManagements/groups/dropdown'"
+          responsePath="content"
+          displayExpr="groupName"
+          valueExpr="groupId"
+          [(value)]="formData.role"
+        >
+        </app-combobox>
       </div>
 
       <div class="col-md-2">
-        <label>Menu Affected</label>
-        <select class="form-select">
-          <option>ALL Menus</option>
-        </select>
+        <app-combobox
+          label="Menu"
+          [url]="'?q=/GroupManagements/menus'"
+          responsePath="content"
+          displayExpr="menuName"
+          valueExpr="menuId"
+          [(value)]="formData.menu"
+        >
+        </app-combobox>
       </div>
     </div>
 

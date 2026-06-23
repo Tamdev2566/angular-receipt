@@ -24,6 +24,16 @@ export class ModuleService {
       hasSubmenu: false,
     },
     {
+      title: 'Administrative',
+      icon: 'fa-solid fa-user',
+      hasSubmenu: true,
+      isExpanded: false,
+      submodules: [
+        { title: 'User Creation', link: '/home/user-mgt-list' },
+        { title: 'Group Management', link: '/home/group-mgt-list' },
+      ],
+    },
+    {
       title: 'Receipts',
       icon: 'fa-solid fa-receipt',
       hasSubmenu: true,
@@ -45,17 +55,6 @@ export class ModuleService {
         { title: 'Cheque', link: '/home/receipt-cheque' },
         { title: 'Remove Cheque', link: '/home/remove-cheque' },
         { title: 'Update Cheque', link: '/home/update-cheque' },
-      ],
-    },
-    {
-      title: 'Administrative',
-      icon: 'fa-solid fa-user',
-      hasSubmenu: true,
-      isExpanded: false,
-      submodules: [
-        { title: 'User Creation', link: '/home/user-mgt-list' },
-        { title: 'Group Management', link: '/home/group-mgt-list' },
-        // { title: 'Update Cheque', link: '/home/update-cheque' },
       ],
     },
   ];

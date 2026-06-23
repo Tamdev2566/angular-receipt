@@ -9,10 +9,6 @@
 
     <div class="action-toolbar">
       <div class="action-buttons-group">
-        <button class="btn btn-flat-action-secondary">
-          <i class="fa-solid fa-arrows-rotate small"></i> Activate/Deactivate
-        </button>
-
         <button
           type="button"
           class="btn btn-flat-action-secondary btn-flat-active"
@@ -30,7 +26,7 @@
           <i class="fa-solid fa-history small"></i> History
         </button>
 
-        <button class="btn btn-flat-action-secondary">
+        <button class="btn btn-flat-action-secondary" (click)="bulkToggleStatus()">
           <i class="fa-solid fa-bars-progress small"></i> Bulk Assign Menu
         </button>
       </div>

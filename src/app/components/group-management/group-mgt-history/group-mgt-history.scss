@@ -237,6 +237,16 @@ label {
 }
 
 .btn-outline-primary {
-  border-color: $primary;
-  color: $primary;
+  border-color: $bg;
+  color: $bg;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &.active {
+    border-color: $bg !important;
+    color: $bg !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
 }

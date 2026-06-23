@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import * as XLSX from 'xlsx-js-style';
 import { ApiService } from '../../../services/api.service';
+
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { IconButton } from '../../../shared/icon-button/icon-button';
 @Component({
@@ -79,12 +80,13 @@ export class GroupMgtList implements OnInit {
     }
     return {
       isValid: this.validFilterMode === 'VALID' ? 'Y' : 'N',
+      ...(this.searchQuery && { search: this.searchQuery.trim() }),
     };
   }
 
-  fetchGroupData(targetPage: number = 1): void {
+  fetchGroupData(targetPage: number = 1, sort: string = 'DESC'): void {
     this.loading = true;
-    const endpoint = `?q=/GroupManagements/groups/${targetPage}/${this.pageSize}/DESC/groupId`;
+    const endpoint = `?q=/GroupManagements/groups/${targetPage}/${this.pageSize}/${sort}/groupId`;
 
     this.apiService
       .post(endpoint, this.currentApiPayload)
@@ -251,7 +253,7 @@ export class GroupMgtList implements OnInit {
   }
 
   onSearch(): void {
-    this.fetchGroupData(1);
+    this.fetchGroupData(1, 'ASC');
   }
 
   onPageChange(newPage: number): void {
@@ -269,8 +271,66 @@ export class GroupMgtList implements OnInit {
     });
   }
 
-  toggleStatus(id: string): void {
-    console.log('Deleting user ID:', id);
+  toggleStatus(row: any): void {
+    const newStatus = row.valid === 'Y' ? 'N' : 'Y';
+
+    const payload = {
+      groupId: row.id,
+      isValid: newStatus,
+    };
+
+    this.loading = true;
+
+    this.apiService
+      .post('?q=/GroupManagements/updateStatus', payload)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: () => {
+          row.valid = newStatus;
+
+          alert(
+            newStatus === 'Y' ? 'Group Activated Successfully' : 'Group Deactivated Successfully',
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Failed to update status');
+        },
+      });
+  }
+
+  bulkToggleStatus(): void {
+    if (!this.selectedRows.length) {
+      alert('Please select at least one group');
+      return;
+    }
+
+    const payload = {
+      groups: this.selectedRows.map((x) => ({
+        groupId: x.id,
+        isValid: x.valid === 'Y' ? 'N' : 'Y',
+      })),
+    };
+
+    this.loading = true;
+
+    this.apiService
+      .post('?q=/GroupManagements/bulkUpdateStatus', payload)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: () => {
+          this.selectedRows.forEach((row) => {
+            row.valid = row.valid === 'Y' ? 'N' : 'Y';
+          });
+
+          alert('Status Updated Successfully');
+          this.fetchGroupData(this.currentPage);
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Failed to update status');
+        },
+      });
   }
 
   onCreateButtonClick(): void {

@@ -17,8 +17,8 @@ export class DatepickerComponent {
   @Input() disabled = false;
 
   @Input() helperText = '';
-  @Input() errorText = '';
   @Input() required = false;
+  @Input() error = false;
 
   isOpen = false;
 
