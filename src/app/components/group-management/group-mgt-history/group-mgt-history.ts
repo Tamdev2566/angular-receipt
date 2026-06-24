@@ -121,13 +121,28 @@ export class GroupMgtHistoryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const today = new Date();
+
+    const fromDate = new Date();
+    fromDate.setDate(today.getDate() - 29);
+
+    this.formData.dateTo = this.formatDate(today);
+    this.formData.dateFrom = this.formatDate(fromDate);
     this.fetchGroupData(1);
+  }
+
+  private formatDate(date: Date): string {
+    return date.toISOString().split('T')[0];
   }
 
   private get currentApiPayload(): any {
     return {
-      dateFrom: '2026-05-23',
-      dateTo: '2026-06-22',
+      dateFrom: this.formData.dateFrom,
+      dateTo: this.formData.dateTo,
+      ...(this.formData.action && { action: this.formData.action }),
+      ...(this.formData.categoryValuen && { category: this.formData.categoryValue }),
+      ...(this.formData.role && { roleId: this.formData.role }),
+      ...(this.formData.menu && { menuId: this.formData.menu }),
     };
   }
 
@@ -157,25 +172,28 @@ export class GroupMgtHistoryComponent implements OnInit {
         },
       });
   }
+
   onRunQuery(): void {
-    const payload = {
-      dateFrom: this.formData.dateFrom,
-      dateTo: this.formData.dateTo,
-      action: this.formData.action,
-      category: this.formData.categoryValue,
-      roleId: this.formData.role,
-      menuId: this.formData.menu,
-    };
-
-    console.log(payload);
-
     this.fetchGroupData(1);
   }
+
   onResetFilters(): void {
-    this.selectedAction = 'ALL';
-    this.selectedCategory = 'ALL Categories';
-    this.selectedRoleGroup = 'ALL Roles';
-    this.selectedMenuAffected = 'ALL Menus';
+    const today = new Date();
+
+    const fromDate = new Date();
+    fromDate.setDate(today.getDate() - 29);
+
+    this.formData = {
+      ...this.formData,
+      dateFrom: this.formatDate(fromDate),
+      dateTo: this.formatDate(today),
+      action: null,
+      categoryValue: null,
+      role: null,
+      menu: null,
+    };
+
+    this.fetchGroupData(1);
   }
 
   onExportExcel(): void {
@@ -185,6 +203,7 @@ export class GroupMgtHistoryComponent implements OnInit {
   onBack(): void {
     this.router.navigate(['/home/group-mgt-list']);
   }
+
   onPageChange(newPage: number): void {
     this.fetchGroupData(newPage);
   }
