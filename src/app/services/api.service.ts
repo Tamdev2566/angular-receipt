@@ -19,7 +19,7 @@ export class ApiService {
     return this.http.get(`${this.baseUrl}/${endpoint}`, options);
   }
 
-  post(endpoint: string, data: any, options?: any, config: boolean = false) {
+  post(endpoint: string, data: any, config: boolean = false, options?: any) {
     if (config) {
       return this.http.post(`${this.appUrl}/${endpoint}`, data, options);
     }
@@ -27,7 +27,7 @@ export class ApiService {
     return this.http.post(`${this.baseUrl}/${endpoint}`, data, options);
   }
 
-  put(endpoint: string, data: any, options?: any, config: boolean = false) {
+  put(endpoint: string, data: any, config: boolean = false, options?: any) {
     if (config) {
       return this.http.put(`${this.appUrl}/${endpoint}`, data, options);
     }
@@ -35,7 +35,7 @@ export class ApiService {
     return this.http.put(`${this.baseUrl}/${endpoint}`, data, options);
   }
 
-  patch(endpoint: string, data: any, options?: any, config: boolean = false) {
+  patch(endpoint: string, data: any, config: boolean = false, options?: any) {
     if (config) {
       return this.http.patch(`${this.appUrl}/${endpoint}`, data, options);
     }
