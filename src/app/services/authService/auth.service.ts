@@ -9,14 +9,14 @@ export class AuthService {
   private apiService = inject(ApiService);
 
   login(payload: any): Observable<any> {
-    return this.apiService.loginPost('login/glosys', {
+    return this.apiService.post('login/glosys', {
       email: payload.email,
       password: payload.password,
     });
   }
 
   getUserInfo(): Observable<any> {
-    return this.apiService.infoGet('info');
+    return this.apiService.get('info');
   }
 
   logout(): void {

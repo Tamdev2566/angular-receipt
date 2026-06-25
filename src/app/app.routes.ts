@@ -110,6 +110,13 @@ export const routes: Routes = [
             (m) => m.GroupMgtHistoryComponent,
           ),
       },
+      {
+        path: 'app-management',
+        loadComponent: () =>
+          import('./components/application-management/app-management/app-management').then(
+            (m) => m.AppManagement,
+          ),
+      },
     ],
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },

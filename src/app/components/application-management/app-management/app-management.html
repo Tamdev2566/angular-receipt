@@ -1,0 +1,171 @@
+<div class="container-fluid py-4 bg-light-blue-theme">
+  <div
+    class="card border-0 rounded-3 shadow-sm mb-3 main-master-header text-white"
+    style="background-color: #2b6782"
+  >
+    <div class="card-body d-flex justify-content-between align-items-center py-3 px-4">
+      <h4 class="mb-0 fw-semibold tracking-wide">Master Application Management</h4>
+      <button
+        class="btn btn-light btn-sm px-3 fw-medium text-dark shadow-sm d-flex align-items-center gap-1 rounded-2"
+        data-bs-toggle="modal"
+        data-bs-target="#appModal"
+        (click)="openCreateModal()"
+      >
+        <span class="fs-5 lh-1">+</span> Create
+      </button>
+    </div>
+  </div>
+
+  <div class="card border-0 rounded-3 shadow-sm mb-4 bg-white">
+    <div
+      class="card-body d-flex flex-wrap align-items-center justify-content-between py-3 px-4 gap-3"
+    >
+      <div class="d-flex align-items-center gap-2 ms-auto layout-search-box">
+        <select
+          class="form-select form-select-sm border-light-dark text-muted rounded-2"
+          style="width: 140px"
+          [(ngModel)]="isValidFilter"
+          (change)="onSearch()"
+        >
+          <option value="%">All Statuses</option>
+          <option value="Y">Active Only</option>
+          <option value="N">Inactive Only</option>
+        </select>
+
+        <div class="input-group input-group-sm rounded-2" style="width: 260px">
+          <input
+            type="text"
+            class="form-control border-light-dark py-2"
+            placeholder="Search..."
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="onSearch()"
+          />
+          <button
+            class="btn text-white px-3"
+            style="background-color: #dc3545"
+            type="button"
+            (click)="onSearch()"
+          >
+            Go
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 rounded-3 shadow-sm bg-white overflow-hidden">
+    <app-data-grid
+      [records]="gridData"
+      [columns]="gridColumns"
+      [showAction]="true"
+      [isServerSide]="true"
+      [serverTotalPages]="totalPages"
+      [serverCurrentPage]="currentPage"
+      (pageChange)="onPageChange($event)"
+      (selectionChange)="onGridSelectionChange($event)"
+      [actionTemplate]="myCustomActionDesign"
+      [tableHeight]="'500px'"
+    >
+    </app-data-grid>
+
+    <ng-template #myCustomActionDesign let-row>
+      <app-icon-button
+        iconClass="bi bi-pencil-fill"
+        colorClass="color-info"
+        title="View"
+        [customStyle]="{ 'margin-right': '8px' }"
+        (onClick)="viewDetails(row)"
+      >
+      </app-icon-button>
+
+      <app-icon-button
+        [iconClass]="row.isActive ? 'bi bi-toggle-on' : 'bi bi-toggle-off'"
+        [colorClass]="row.isActive ? 'color-success' : 'color-error'"
+        [title]="row.isActive ? 'Deactivate' : 'Activate'"
+        [customStyle]="{ 'margin-right': '8px' }"
+        (onClick)="toggleStatus(row)"
+      >
+      </app-icon-button>
+    </ng-template>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="appModal"
+  tabindex="-1"
+  aria-labelledby="appModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-3">
+      <div
+        class="modal-header text-white"
+        [style.background-color]="isEditMode ? '#f0ad4e' : '#337ab7'"
+      >
+        <h5 class="modal-title fw-medium" id="appModalLabel">
+          {{ isEditMode ? 'Modify Application' : 'Add New Application' }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body p-4 bg-white">
+        <form #appFormRef="ngForm">
+          <div class="mb-3">
+            <label for="appId" class="form-label text-secondary small fw-medium"
+              >Application ID</label
+            >
+            <input
+              type="text"
+              class="form-control border-light-dark py-2"
+              id="appId"
+              name="appId"
+              [(ngModel)]="appForm.appId"
+              required
+              maxlength="50"
+              [disabled]="isEditMode"
+              placeholder="e.g., APP003"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="appName" class="form-label text-secondary small fw-medium"
+              >Application Name</label
+            >
+            <input
+              type="text"
+              class="form-control border-light-dark py-2"
+              id="appName"
+              name="appName"
+              [(ngModel)]="appForm.appName"
+              required
+              maxlength="100"
+              placeholder="e.g., Logistics Matrix Panel"
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer bg-light border-top-0 py-2">
+        <button
+          type="button"
+          class="btn btn-light border-secondary-subtle btn-sm px-3 rounded-2 text-secondary"
+          data-bs-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn text-white btn-sm px-4 rounded-2"
+          [style.background-color]="isEditMode ? '#f0ad4e' : '#337ab7'"
+          [disabled]="!appFormRef.form.valid"
+          (click)="saveApplication()"
+        >
+          {{ isEditMode ? 'Save Changes' : 'Submit' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

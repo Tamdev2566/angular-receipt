@@ -24,6 +24,12 @@ export class ModuleService {
       hasSubmenu: false,
     },
     {
+      title: 'Application Management',
+      icon: 'fa-solid fa-chart-line',
+      link: '/home/app-management',
+      hasSubmenu: false,
+    },
+    {
       title: 'Administrative',
       icon: 'fa-solid fa-user',
       hasSubmenu: true,

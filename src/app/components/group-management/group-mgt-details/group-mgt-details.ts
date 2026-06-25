@@ -107,27 +107,87 @@ export class GroupMgtDetails implements OnInit {
   }
 
   onSave(): void {
-    const payload = {
-      groupName: this.groupName,
-      valid: this.isValid ? 'Y' : 'N',
-      privileges: this.assignedPrivileges,
+    if (!this.groupName?.trim()) {
+      alert('Group Name is required');
+      return;
+    }
+
+    if (!this.assignedPrivileges.length) {
+      alert('Please assign at least one privilege');
+      return;
+    }
+
+    this.loading = true;
+
+    const payload: any = {
+      groupName: this.groupName.trim().toUpperCase(),
+      isValid: this.isValid ? 'Y' : 'N',
+      assignedPrivileges: this.assignedPrivileges.map((p) => ({
+        menuId: p.menuId,
+        menuName: p.menuName,
+        accessLevel: p.accessLevel === 'FULL ACCESS' ? 'full' : 'read',
+      })),
     };
-    console.log('Committing Group Management Profile Matrix:', payload);
+
+    if (this.groupId && this.groupId !== 'Disabled/Auto-generated') {
+      payload.groupId = this.groupId;
+    }
+
+    const endpoint = '?q=/GroupManagements/groupSave';
+
+    this.apiService.post(endpoint, payload).subscribe({
+      next: (res) => {
+        this.loading = false;
+        alert(`Group ${this.groupName} saved successfully`);
+        this.router.navigate(['/home/group-mgt-list']);
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error(err);
+        alert(err?.error?.message || 'Failed to save group');
+      },
+    });
+  }
+
+  onDeepClone(): void {
+    const sourceGroupId = prompt('Enter Source Group ID');
+
+    if (!sourceGroupId?.trim()) {
+      return;
+    }
+
+    this.loading = true;
+
+    const endpoint = `?q=/GroupManagements/findGroupDetail/${sourceGroupId}`;
+
+    this.apiService.get(endpoint).subscribe({
+      next: (response: any) => {
+        const details = response.content?.[0];
+
+        if (!details) {
+          this.loading = false;
+          return;
+        }
+
+        this.assignedPrivileges = (details.assignedPrivileges || []).map((item: any) => ({
+          menuId: item.menuId,
+          menuName: item.menuName,
+          accessLevel: item.accessLevel?.toLowerCase() === 'full' ? 'FULL ACCESS' : 'READ ONLY',
+        }));
+
+        this.loading = false;
+        alert('Privileges cloned successfully');
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error(err);
+        alert('Failed to clone privileges');
+      },
+    });
   }
 
   onCancel(): void {
     this.router.navigate(['/home/group-mgt-list']);
-  }
-
-  onDeepClone(): void {
-    console.log('Cloning matrix structure profiles routing configuration routine...');
-  }
-
-  addPrivilegeRow(): void {
-    this.assignedPrivileges.push({
-      menuName: '',
-      accessLevel: 'FULL ACCESS',
-    });
   }
 
   removePrivilegeRow(index: number): void {
