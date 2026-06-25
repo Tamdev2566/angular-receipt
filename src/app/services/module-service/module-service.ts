@@ -23,12 +23,7 @@ export class ModuleService {
       link: '/home/dashboard',
       hasSubmenu: false,
     },
-    {
-      title: 'Application Management',
-      icon: 'fa-solid fa-chart-line',
-      link: '/home/app-management',
-      hasSubmenu: false,
-    },
+
     {
       title: 'Administrative',
       icon: 'fa-solid fa-user',
@@ -37,6 +32,7 @@ export class ModuleService {
       submodules: [
         { title: 'User Creation', link: '/home/user-mgt-list' },
         { title: 'Group Management', link: '/home/group-mgt-list' },
+        { title: 'Application Management', link: '/home/app-management' },
       ],
     },
     {
