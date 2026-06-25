@@ -49,6 +49,7 @@ export class Combobox implements OnInit, OnChanges {
 
   @Input() onChange?: (value: any, item: any) => void;
   @Input() handleChange?: (value: any, item: any) => void;
+  @Input() searchFromApi: boolean = true;
 
   isTouched = false;
 
@@ -108,12 +109,29 @@ export class Combobox implements OnInit, OnChanges {
     this.isTyping = true;
     this.searchText = term;
 
-    if (!term?.trim()) {
-      this.loadData('*');
-      return;
-    }
+    if (this.searchFromApi) {
+      if (!term?.trim()) {
+        this.loadData('*');
+        return;
+      }
 
-    this.loadData(term);
+      this.loadData(term);
+    } else {
+      const search = term.toLowerCase().trim();
+
+      if (!search) {
+        this.filteredItems = [...this.items];
+      } else {
+        this.filteredItems = this.items.filter((item) => {
+          const display = (item[this.displayExpr] ?? '').toString().toLowerCase();
+          return display.includes(search);
+        });
+      }
+
+      this.isLoading = false;
+      this.isOpen = true;
+      this.isDataLoaded = true;
+    }
   }
 
   onComboBoxInteract(): void {

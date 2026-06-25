@@ -154,8 +154,6 @@ export class UserMgtHistoryComponent implements OnInit {
       payload.locationId = this.formData.locationId;
     }
 
-    console.log('History Payload:', payload);
-
     const endPoint = `?q=/UserManagements/logs/user/${targetPage}/${this.pageSize}/DESC/createdAt`;
 
     this.apiService.post(endPoint, payload).subscribe({

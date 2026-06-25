@@ -36,4 +36,8 @@ export class UserMgtService {
       body,
     );
   }
+
+  saveUser(payload: any) {
+    return this.http.post(`${environment.apiUrl}/?q=/UserManagements/userSave`, payload);
+  }
 }

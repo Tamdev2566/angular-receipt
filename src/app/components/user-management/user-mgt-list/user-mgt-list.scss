@@ -8,10 +8,9 @@
 }
 
 .main-scrollable-content-fluid {
-  flex: 1;
+  // flex: 1;
   overflow-y: auto !important;
   overflow-x: hidden;
-  height: 100%;
   padding: 24px 0px !important;
 
   &::-webkit-scrollbar {

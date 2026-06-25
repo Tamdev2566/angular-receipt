@@ -6,6 +6,7 @@ import { finalize } from 'rxjs';
 import { ApiService } from '../../../services/api.service';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { UserMgtService } from '../user-mgt-service';
+import { AlertService } from '../../../services/alertService/alert';
 
 @Component({
   selector: 'app-user-mgmt-list',
@@ -95,15 +96,14 @@ export class UserMgtList implements OnInit {
     private apiService: ApiService,
     private cdr: ChangeDetectorRef,
     private rowData: UserMgtService,
+    private alert: AlertService,
   ) {}
 
   ngOnInit(): void {
     this.loadUserLedger();
   }
 
-  ngDoCheck(): void {
-    console.log(this.rowData.userListRowData);
-  }
+  ngDoCheck(): void {}
 
   loadUserLedger(): void {
     this.apiService
@@ -197,16 +197,73 @@ export class UserMgtList implements OnInit {
     this.paginatedRecords = this.filteredRecords.slice(startIndex, endIndex);
   }
 
-  toggleValidity(): void {
-    console.log('Valid/Invalid toggled for records');
+  toggleValidity(rowData: any): void {
+    console.log('rowData', rowData);
+    if (!rowData) {
+      this.alert.showAlert('Error', 'Please select a user to enable/disable', 'error');
+      return;
+    }
+
+    const payload = {
+      isValid: rowData.isValid === 'Y' ? 'N' : 'Y',
+      username: rowData.userName,
+    };
+
+    this.apiService
+      .put(`?q=/UserManagements/users/${rowData.userId}/status`, payload)
+      .pipe(
+        finalize(() => {
+          this.cdr.detectChanges();
+        }),
+      )
+      .subscribe({
+        next: (res: any) => {
+          this.userLedgerData = res.content || [];
+          this.filteredRecords = [...this.userLedgerData];
+          this.paginatedRecords = [...this.userLedgerData];
+          this.totalPages = res.totalPages;
+        },
+
+        error: (err) => {
+          console.error(err);
+        },
+      });
   }
 
   filterAll(): void {
     console.log('Showing all logs array dataset');
   }
 
-  printLedger(): void {
-    window.print();
+  downloadExcel(): void {
+    const search = this.searchText?.trim();
+
+    let url = '?q=/UserManagements/users/export';
+
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
+    }
+
+    this.apiService
+      .get(url, {
+        responseType: 'arraybuffer',
+      })
+      .subscribe({
+        next: (data: ArrayBuffer) => {
+          const blob = new Blob([data], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          });
+
+          const downloadUrl = window.URL.createObjectURL(blob);
+
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = 'User_Management_List.xlsx';
+          a.click();
+
+          window.URL.revokeObjectURL(downloadUrl);
+        },
+        error: (err) => console.error(err),
+      });
   }
 
   viewHistory(): void {

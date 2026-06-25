@@ -7,6 +7,7 @@ import { GroupModal } from './modals/group-modal/group-modal';
 import { UserMgtService } from '../user-mgt-service';
 import { Combobox } from '../../../shared/combobox/combobox';
 import { AlertService } from '../../../services/alertService/alert';
+import { environment } from '../../../../environment/environment';
 
 @Component({
   selector: 'app-user-mgt-details',
@@ -176,6 +177,15 @@ export class UserMgtDetails implements OnInit {
       // });
     } else {
       console.log('CREATE USER', payload);
+
+      this.userService.saveUser(payload).subscribe({
+        next: (res: any) => {
+          console.log(res);
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
 
       // this.userService.createUser(payload).subscribe({
       //   next: () => {
