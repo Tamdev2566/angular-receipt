@@ -84,13 +84,13 @@
           (keypress)="allowNumbersOnly($event)"
         />
 
-        <div
+        <!-- <div
           class="text-danger mt-1"
           style="font-size: 12px"
           *ngIf="phone.invalid && phone.touched"
         >
           Phone Number is required
-        </div>
+        </div> -->
       </div>
 
       <div class="col-12 col-sm-6 col-md-3">
@@ -150,6 +150,7 @@
           codeExpr="officeId"
           [(value)]="formData.defaultOffice"
           [onChange]="onOfficeChange.bind(this)"
+          [searchFromApi]="false"
         >
         </app-combobox>
 

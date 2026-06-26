@@ -127,11 +127,6 @@ export class UserMgtDetails implements OnInit {
     }
   }
 
-  ngDoCheck() {
-    console.log(this.locations);
-    console.log(this.userDetails);
-  }
-
   onOfficeChange(value: any, item: any): void {
     this.selectedOffice = item;
   }
@@ -229,7 +224,6 @@ export class UserMgtDetails implements OnInit {
         username: this.userDetails.userName,
         profileChanges,
       };
-      console.log('UPDATE USER', editPayload);
 
       this.userService.updateUser(editPayload).subscribe({
         next: (res: any) => {
@@ -244,7 +238,6 @@ export class UserMgtDetails implements OnInit {
     } else {
       this.userService.saveUser(payload).subscribe({
         next: (res: any) => {
-          console.log(res);
           this.alert.showAlert('Success', res.message, 'success');
           this.router.navigate(['/home/user-mgt-list']);
         },
@@ -351,10 +344,7 @@ export class UserMgtDetails implements OnInit {
         }
       }
     });
-    console.log('selectedOffice', this.selectedOffice);
     this.showLocationModal = false;
-
-    console.log('Location Table', this.locations);
   }
 
   closeOfficeModal() {

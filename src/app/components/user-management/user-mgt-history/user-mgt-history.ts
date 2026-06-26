@@ -6,6 +6,7 @@ import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { ApiService } from '../../../services/api.service';
 import { DatepickerComponent } from '../../../shared/date-picker/date-picker';
 import { Combobox } from '../../../shared/combobox/combobox';
+import * as XLSX from 'xlsx-js-style';
 
 @Component({
   selector: 'app-user-mgt-history',
@@ -184,7 +185,52 @@ export class UserMgtHistoryComponent implements OnInit {
   }
 
   onExportExcel(): void {
-    console.log('Export Excel');
+    this.loading = true;
+
+    const selectedAction = this.formData.actions.find((x: any) => x.id === this.formData.action);
+
+    const payload: any = {
+      dateFrom: this.formData.dateFrom,
+      dateTo: this.formData.dateTo,
+    };
+
+    if (selectedAction && selectedAction.name !== 'ALL') {
+      payload.action = selectedAction.name;
+    }
+
+    if (this.formData.userId) {
+      payload.userId = this.formData.userId;
+    }
+
+    if (this.formData.officeId) {
+      payload.officeId = this.formData.officeId;
+    }
+
+    if (this.formData.locationId) {
+      payload.locationId = this.formData.locationId;
+    }
+
+    this.apiService
+      .post('?q=/UserManagements/logs/user/export', payload, false, {
+        responseType: 'arraybuffer',
+      })
+      .subscribe({
+        next: (data: ArrayBuffer) => {
+          const blob = new Blob([data], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          });
+
+          const downloadUrl = window.URL.createObjectURL(blob);
+
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = 'User_Management_History.xlsx';
+          a.click();
+
+          window.URL.revokeObjectURL(downloadUrl);
+        },
+        error: (err) => console.error(err),
+      });
   }
 
   onBack(): void {

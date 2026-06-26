@@ -31,28 +31,7 @@ export class PasswordMgmt implements OnInit {
   onSubmitPassword(form: NgForm) {
     this.formSubmitted = true;
 
-    console.log('=== [CLMS DEBUG START] ===');
-    console.log('Click Triggered Successfully!');
-    console.log('Current Step Mode:', this.currentStep);
-    console.log('Angular NgForm Object:', form);
-
-    if (form) {
-      console.log('Form Valid State:', form.valid);
-      console.log('Form HTML Controls Status:', form.controls);
-    } else {
-      console.log('NgForm object is UNDEFINED or NULL!');
-    }
-
-    console.log('Field Values ->', {
-      token: this.token,
-      oldPassword: this.oldPassword,
-      newPassword: this.newPassword,
-      confirmPassword: this.confirmPassword,
-    });
-    console.log('=== [CLMS DEBUG END] ===');
-
     if (form && form.invalid) {
-      console.log('Stopping execution: Form validation failed internally.');
       Object.keys(form.controls).forEach((key) => {
         form.controls[key].markAsTouched();
       });
@@ -65,7 +44,6 @@ export class PasswordMgmt implements OnInit {
     // }
 
     const clmsRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
-    console.log(!clmsRegex.test(this.newPassword), 'regex');
 
     if (!clmsRegex.test(this.newPassword)) {
       this.alertService.showAlert(
