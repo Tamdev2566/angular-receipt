@@ -35,8 +35,8 @@ export class AppManagement implements OnInit {
   private apiService = inject(ApiService);
   private router = inject(Router);
 
-  searchTerm: string = 'admin';
-  isValidFilter: string = 'Y';
+  searchTerm: string = '';
+  isValidFilter: string = '';
   currentPage: number = 1;
   pageSize: number = 10;
   sortDirection: string = 'ASC';
@@ -59,10 +59,7 @@ export class AppManagement implements OnInit {
     { label: 'Valid', field: 'valid', align: 'center', width: '80px' },
   ];
 
-  appForm = {
-    appId: '',
-    appName: '',
-  };
+  appForm = { appId: '', appName: '' };
 
   ngOnInit(): void {
     this.loadApplications();
@@ -75,11 +72,16 @@ export class AppManagement implements OnInit {
       search = encodeURIComponent(this.searchTerm.trim());
     }
 
-    const endpoint = `applications/${search}/${this.isValidFilter}/${this.currentPage}/${this.pageSize}/${this.sortDirection}/`;
+    // const endpoint = `applications/${this.currentPage}/${this.pageSize}/${this.sortDirection}/app_name`;
+    // const endpoint = `applications/1/10/ASC/app_name`;
+    const endpoint = 'applications/1/10/ASC/app_name';
 
-    console.log(endpoint);
+    const data = {
+      // search: '%',
+      // isValid: 'Y',
+    };
 
-    this.apiService.get(endpoint, {}, true).subscribe({
+    this.apiService.post(endpoint, data, true).subscribe({
       next: (res: any) => {
         this.gridData = res.content;
         this.totalPages = res.totalPages;
@@ -138,7 +140,7 @@ export class AppManagement implements OnInit {
     };
   }
 
-  saveApplication(): void {
+  saveApplication(value: any): void {
     if (this.isEditMode) {
       const endpoint = `applications/${this.appForm.appId}`;
       const body = { appName: this.appForm.appName, username: this.currentUsername };

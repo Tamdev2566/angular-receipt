@@ -46,32 +46,6 @@ export class GroupMgtList implements OnInit {
 
   ngOnInit(): void {
     this.fetchGroupData(1);
-    this.quickTestAPI();
-  }
-  quickTestAPI() {
-    const search = '%';
-    const isValid = '%';
-    const page = 1;
-    const size = 10;
-    const direction = 'ASC';
-    const columnSort = 'id';
-
-    // const testUrl = `${baseUrl}/applications/lightweight`;
-    // const testUrl = `${baseUrl}/applications/APP001/groups`;
-    const testUrl = 'http://localhost:22000/ApplicationManagements/applications';
-
-    console.log('Calling this URL ->', testUrl);
-
-    this.http
-      .post(testUrl, { appId: 'APP001', appName: 'New Application', username: 'admin' })
-      .subscribe({
-        next: (data) => {
-          console.log('✅ SUPER! DATA:', data);
-        },
-        error: (err) => {
-          console.error('❌ ERROR ADIKITHU:', err);
-        },
-      });
   }
 
   private get currentApiPayload(): any {

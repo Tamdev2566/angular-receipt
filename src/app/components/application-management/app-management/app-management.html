@@ -49,8 +49,65 @@
             Go
           </button>
         </div>
+        <div></div>
       </div>
     </div>
+  </div>
+
+  <div class="card border-0 rounded-3 shadow-sm bg-white mb-4">
+    <form
+      id="appManagementForm"
+      #appFormRef="ngForm"
+      (ngSubmit)="saveApplication(appFormRef)"
+      class="p-2"
+    >
+      <div class="row form-card g-3">
+        <div class="col-12 col-sm-6 col-md-4">
+          <label for="appId" class="form-label fw-bold custom-flat-label mb-1.5"
+            >Application ID</label
+          >
+          <input
+            type="text"
+            class="form-control form-control-sm custom-flat-input"
+            id="appId"
+            name="appId"
+            [(ngModel)]="appForm.appId"
+            required
+            maxlength="50"
+            [disabled]="isEditMode"
+            placeholder="e.g., APP003"
+          />
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4">
+          <label for="appName" class="form-label fw-bold custom-flat-label mb-1.5"
+            >Application Name</label
+          >
+          <input
+            type="text"
+            class="form-control form-control-sm custom-flat-input"
+            id="appName"
+            name="appName"
+            [(ngModel)]="appForm.appName"
+            required
+            maxlength="100"
+            placeholder="e.g., Logistics Matrix Panel"
+          />
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 d-flex align-items-end justify-content-start mb-1">
+          <button
+            type="submit"
+            form="appManagementForm"
+            class="btn btn-flat-action-primary py-1.5 px-4"
+            [style.background-color]="isEditMode ? '#f0ad4e' : '#337ab7'"
+            [disabled]="!appFormRef.form.valid"
+          >
+            <i class="fa-solid fa-check me-1.5 small"></i>
+            {{ isEditMode ? 'Save Changes' : 'Submit' }}
+          </button>
+        </div>
+      </div>
+    </form>
   </div>
 
   <div class="card border-0 rounded-3 shadow-sm bg-white overflow-hidden">
@@ -87,85 +144,5 @@
       >
       </app-icon-button>
     </ng-template>
-  </div>
-</div>
-
-<div
-  class="modal fade"
-  id="appModal"
-  tabindex="-1"
-  aria-labelledby="appModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg rounded-3">
-      <div
-        class="modal-header text-white"
-        [style.background-color]="isEditMode ? '#f0ad4e' : '#337ab7'"
-      >
-        <h5 class="modal-title fw-medium" id="appModalLabel">
-          {{ isEditMode ? 'Modify Application' : 'Add New Application' }}
-        </h5>
-        <button
-          type="button"
-          class="btn-close btn-close-white"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body p-4 bg-white">
-        <form #appFormRef="ngForm">
-          <div class="mb-3">
-            <label for="appId" class="form-label text-secondary small fw-medium"
-              >Application ID</label
-            >
-            <input
-              type="text"
-              class="form-control border-light-dark py-2"
-              id="appId"
-              name="appId"
-              [(ngModel)]="appForm.appId"
-              required
-              maxlength="50"
-              [disabled]="isEditMode"
-              placeholder="e.g., APP003"
-            />
-          </div>
-          <div class="mb-3">
-            <label for="appName" class="form-label text-secondary small fw-medium"
-              >Application Name</label
-            >
-            <input
-              type="text"
-              class="form-control border-light-dark py-2"
-              id="appName"
-              name="appName"
-              [(ngModel)]="appForm.appName"
-              required
-              maxlength="100"
-              placeholder="e.g., Logistics Matrix Panel"
-            />
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer bg-light border-top-0 py-2">
-        <button
-          type="button"
-          class="btn btn-light border-secondary-subtle btn-sm px-3 rounded-2 text-secondary"
-          data-bs-dismiss="modal"
-        >
-          Cancel
-        </button>
-        <button
-          type="button"
-          class="btn text-white btn-sm px-4 rounded-2"
-          [style.background-color]="isEditMode ? '#f0ad4e' : '#337ab7'"
-          [disabled]="!appFormRef.form.valid"
-          (click)="saveApplication()"
-        >
-          {{ isEditMode ? 'Save Changes' : 'Submit' }}
-        </button>
-      </div>
-    </div>
   </div>
 </div>
