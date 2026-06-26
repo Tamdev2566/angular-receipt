@@ -74,7 +74,7 @@ export class AppManagement implements OnInit {
   appForm = { appId: '', appName: '' };
 
   ngOnInit(): void {
-    this.currentPage = this.user.getUser();
+    this.currentUsername = this.user.getUser();
     this.loadApplications();
   }
 
