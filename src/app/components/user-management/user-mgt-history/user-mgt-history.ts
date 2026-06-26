@@ -6,6 +6,7 @@ import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { ApiService } from '../../../services/api.service';
 import { DatepickerComponent } from '../../../shared/date-picker/date-picker';
 import { Combobox } from '../../../shared/combobox/combobox';
+import * as XLSX from 'xlsx-js-style';
 
 @Component({
   selector: 'app-user-mgt-history',
@@ -183,8 +184,119 @@ export class UserMgtHistoryComponent implements OnInit {
     this.loadHistory();
   }
 
+  private getStatus(value: string): string {
+    if (!value) {
+      return '';
+    }
+
+    try {
+      const obj = JSON.parse(value);
+
+      if (obj.is_valid === 'Y') {
+        return 'ACTIVE';
+      }
+
+      if (obj.is_valid === 'N') {
+        return 'DISABLED';
+      }
+
+      return '';
+    } catch {
+      return '';
+    }
+  }
+
+  private formatDetails(value: string): string {
+    if (!value) {
+      return '(None)';
+    }
+
+    try {
+      const obj = JSON.parse(value);
+
+      const ignoreKeys = ['is_valid', 'office_id', 'location_id', 'user_name'];
+
+      return (
+        Object.entries(obj)
+          .filter(([key, val]) => !ignoreKeys.includes(key) && val !== null && val !== '')
+          .map(([key, val]) => {
+            const displayValue = this.decodeHex(String(val));
+            return `${key.toUpperCase()}: ${displayValue}`;
+          })
+          .join('\n') || '(None)'
+      );
+    } catch {
+      return value;
+    }
+  }
+
+  private decodeHex(value: string): string {
+    if (!value || !value.startsWith('\\x')) {
+      return value;
+    }
+
+    try {
+      const hex = value.replace(/\\x/g, '');
+      let result = '';
+
+      for (let i = 0; i < hex.length; i += 2) {
+        result += String.fromCharCode(parseInt(hex.substring(i, i + 2), 16));
+      }
+
+      return result;
+    } catch {
+      return value;
+    }
+  }
+
   onExportExcel(): void {
-    console.log('Export Excel');
+    this.loading = true;
+
+    const selectedAction = this.formData.actions.find((x: any) => x.id === this.formData.action);
+
+    const payload: any = {
+      responseType: 'arraybuffer',
+      dateFrom: this.formData.dateFrom,
+      dateTo: this.formData.dateTo,
+    };
+
+    if (selectedAction && selectedAction.name !== 'ALL') {
+      payload.action = selectedAction.name;
+    }
+
+    if (this.formData.userId) {
+      payload.userId = this.formData.userId;
+    }
+
+    if (this.formData.officeId) {
+      payload.officeId = this.formData.officeId;
+    }
+
+    if (this.formData.locationId) {
+      payload.locationId = this.formData.locationId;
+    }
+
+    this.apiService
+      .post('?q=/UserManagements/logs/user/export', payload, false, {
+        responseType: 'arraybuffer',
+      })
+      .subscribe({
+        next: (data: ArrayBuffer) => {
+          const blob = new Blob([data], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          });
+
+          const downloadUrl = window.URL.createObjectURL(blob);
+
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = 'User_Management_History.xlsx';
+          a.click();
+
+          window.URL.revokeObjectURL(downloadUrl);
+        },
+        error: (err) => console.error(err),
+      });
   }
 
   onBack(): void {

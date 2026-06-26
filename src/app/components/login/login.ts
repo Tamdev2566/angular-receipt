@@ -90,8 +90,6 @@ export class LoginPage {
       )
       .subscribe({
         next: (res: any) => {
-          console.log('LOGIN RESPONSE', res);
-
           localStorage.setItem('angular_token', res.token);
           localStorage.setItem('token_expire', res.expire);
 
@@ -138,7 +136,6 @@ export class LoginPage {
 
         error: (err) => {
           console.log('ERROR', err);
-
           this.alertService.showAlert('Error', err?.error, 'error');
         },
       });

@@ -18,8 +18,6 @@ export class Sidebar implements OnInit {
 
   ngOnInit(): void {
     this.appMenus = this.modulesService.getMenus();
-
-    console.log('appMenus', this.appMenus);
   }
 
   toggleSubmenu(menu: MenuItem): void {
