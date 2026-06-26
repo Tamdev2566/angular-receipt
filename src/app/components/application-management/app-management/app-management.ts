@@ -39,7 +39,7 @@ export class AppManagement implements OnInit {
   private user = inject(UserService);
 
   validFilterMode: 'ALL' | 'INACTIVE' | 'ACTIVE' = 'ALL';
-  searchTerm: string = '';
+  searchQuery: string = '';
   isValidFilter: string = '';
   currentPage: number = 1;
   pageSize: number = 10;
@@ -52,7 +52,6 @@ export class AppManagement implements OnInit {
 
   isEditMode: boolean = false;
   currentUsername: string = 'admin';
-  searchQuery = '';
 
   selectedApplications: Application[] = [];
   selectedGroupId: string = '';
@@ -81,8 +80,8 @@ export class AppManagement implements OnInit {
   loadApplications(): void {
     let searchText = '';
 
-    if (this.searchTerm && this.searchTerm.trim() && this.searchTerm.trim() !== '%') {
-      searchText = encodeURIComponent(this.searchTerm.trim());
+    if (this.searchQuery && this.searchQuery.trim() && this.searchQuery.trim() !== '%') {
+      searchText = encodeURIComponent(this.searchQuery.trim());
     }
     let isValid;
     switch (this.validFilterMode) {
@@ -250,14 +249,14 @@ export class AppManagement implements OnInit {
             appId: '',
             appName: '',
           };
-
+          this.alert.showAlert('Success', 'Application Updated Successfully', 'success');
           this.isEditMode = false;
 
           this.loadApplications();
         },
         error: (err) => {
           console.error(err);
-          alert('Failed to update application');
+          this.alert.showAlert('Error', err?.error?.message, 'error');
         },
       });
     } else {
@@ -269,7 +268,7 @@ export class AppManagement implements OnInit {
 
       this.apiService.post('applications', body, true).subscribe({
         next: (res: any) => {
-          this.alert.showAlert('Error', res?.message, 'error');
+          this.alert.showAlert('Success', 'Application Created Successfully', 'success');
           this.appForm = {
             appId: '',
             appName: '',
@@ -279,7 +278,6 @@ export class AppManagement implements OnInit {
           this.loadApplications();
         },
         error: (err: any) => {
-          console.error(err);
           this.alert.showAlert('Error', err?.error?.message, 'error');
         },
       });
@@ -291,7 +289,7 @@ export class AppManagement implements OnInit {
     const endpoint = `applications/${app.app_id}/status`;
     const body = { isValid: nextStatus, username: this.currentUsername };
 
-    this.apiService.patch(endpoint, body).subscribe({
+    this.apiService.patch(endpoint, body, true).subscribe({
       next: () => this.loadApplications(),
     });
   }
@@ -299,7 +297,7 @@ export class AppManagement implements OnInit {
   deleteApplication(appId: string): void {
     if (confirm('Are you sure you want to delete this application?')) {
       const endpoint = `applications/${appId}`;
-      this.apiService.delete(endpoint).subscribe({
+      this.apiService.delete(endpoint, true).subscribe({
         next: () => {
           this.currentPage = 1;
           this.loadApplications();

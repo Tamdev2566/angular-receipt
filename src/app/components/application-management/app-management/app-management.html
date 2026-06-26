@@ -116,30 +116,48 @@
   </div>
 
   <div class="card border-0 rounded-3 shadow-sm bg-white overflow-hidden">
-    <app-data-grid
-      [records]="gridData"
-      [columns]="gridColumns"
-      [showCheckbox]="true"
-      [showAction]="true"
-      [isServerSide]="true"
-      [serverTotalPages]="totalPages"
-      [serverCurrentPage]="currentPage"
-      (pageChange)="onPageChange($event)"
-      (selectionChange)="onGridSelectionChange($event)"
-      [actionTemplate]="myCustomActionDesign"
-      [tableHeight]="'500px'"
-    >
-    </app-data-grid>
-
-    <ng-template #myCustomActionDesign let-row>
-      <app-icon-button
-        iconClass="bi bi-pencil-fill"
-        colorClass="color-info"
-        title="View"
-        [customStyle]="{ 'margin-right': '8px' }"
-        (onClick)="viewDetails(row)"
+    <div class="card-body">
+      <app-data-grid
+        [records]="gridData"
+        [columns]="gridColumns"
+        [showCheckbox]="true"
+        [showAction]="true"
+        [isServerSide]="true"
+        [serverTotalPages]="totalPages"
+        [serverCurrentPage]="currentPage"
+        (pageChange)="onPageChange($event)"
+        (selectionChange)="onGridSelectionChange($event)"
+        [actionTemplate]="myCustomActionDesign"
+        [tableHeight]="'500px'"
       >
-      </app-icon-button>
-    </ng-template>
+      </app-data-grid>
+
+      <ng-template #myCustomActionDesign let-row>
+        <app-icon-button
+          iconClass="bi bi-pencil-fill"
+          colorClass="color-info"
+          title="View"
+          [customStyle]="{ 'margin-right': '8px' }"
+          (onClick)="viewDetails(row)"
+        >
+        </app-icon-button>
+        <app-icon-button
+          [iconClass]="row.is_valid === 'Y' ? 'bi bi-toggle-on' : 'bi bi-toggle-off'"
+          [colorClass]="row.is_valid === 'Y' ? 'text-success' : 'text-danger'"
+          [title]="row.is_valid === 'Y' ? 'Deactivate' : 'Activate'"
+          [customStyle]="{ 'margin-right': '8px' }"
+          (onClick)="toggleStatus(row)"
+        >
+        </app-icon-button>
+
+        <app-icon-button
+          iconClass="bi bi-trash-fill"
+          colorClass="text-danger"
+          title="Delete"
+          (onClick)="deleteApplication(row.app_id)"
+        >
+        </app-icon-button>
+      </ng-template>
+    </div>
   </div>
 </div>
