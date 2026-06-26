@@ -170,13 +170,12 @@ export class AppManagement implements OnInit {
       .post(`groups/${this.selectedGroupId}/applications/bulk-assign`, body, true)
       .subscribe({
         next: (res) => {
-          alert(`${res} Application(s) Assigned Successfully`);
-
+          this.alert.showAlert('Success', ' Application(s) Assigned Successfully', 'success');
           this.loadApplications();
         },
         error: (err) => {
           console.error(err);
-          alert('Bulk Assign Failed');
+          this.alert.showAlert('Error', ' Bulk Assign Failed', 'error');
         },
       });
   }
@@ -196,21 +195,20 @@ export class AppManagement implements OnInit {
       .post(`groups/${this.selectedGroupId}/applications/bulk-remove`, body, true)
       .subscribe({
         next: (res) => {
-          alert(`${res} Application(s) Removed Successfully`);
-
+          this.alert.showAlert('Success', ' Application(s) Removed Successfully', 'success');
           this.loadApplications();
         },
         error: (err) => {
           console.error(err);
-          alert('Bulk Remove Failed');
+          this.alert.showAlert('Error', ' Bulk Remove Failed', 'error');
         },
       });
   }
+
   viewDetails(row: Application): void {
     this.apiService.get(`applications/${row.app_id}`, {}, true).subscribe({
       next: (response: any) => {
         this.isEditMode = true;
-
         this.appForm = {
           appId: response.app_id,
           appName: response.app_name,
