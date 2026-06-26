@@ -156,13 +156,8 @@ export class AppManagement implements OnInit {
   }
 
   bulkAssign(): void {
-    if (!this.selectedGroupId) {
-      alert('Please select a Group');
-      return;
-    }
-
     if (this.selectedApplications.length === 0) {
-      alert('Please select Applications');
+      this.alert.showAlert('Error', 'Please select Application', 'error');
       return;
     }
 
@@ -185,14 +180,10 @@ export class AppManagement implements OnInit {
         },
       });
   }
-  bulkRemove(): void {
-    if (!this.selectedGroupId) {
-      alert('Please select a Group');
-      return;
-    }
 
+  bulkRemove(): void {
     if (this.selectedApplications.length === 0) {
-      alert('Please select Applications');
+      this.alert.showAlert('Error', 'Please select Application', 'error');
       return;
     }
 
@@ -290,7 +281,13 @@ export class AppManagement implements OnInit {
     const body = { isValid: nextStatus, username: this.currentUsername };
 
     this.apiService.patch(endpoint, body, true).subscribe({
-      next: () => this.loadApplications(),
+      next: () => {
+        this.alert.showAlert('Success', 'Status Updated Successfully', 'success');
+        this.loadApplications();
+      },
+      error: () => {
+        this.alert.showAlert('Error', 'Status Not Updated', 'error');
+      },
     });
   }
 
@@ -299,8 +296,12 @@ export class AppManagement implements OnInit {
       const endpoint = `applications/${appId}`;
       this.apiService.delete(endpoint, true).subscribe({
         next: () => {
+          this.alert.showAlert('Success', 'Application Deleted Successfully', 'success');
           this.currentPage = 1;
           this.loadApplications();
+        },
+        error: () => {
+          this.alert.showAlert('Error', 'Application Not Deleted', 'error');
         },
       });
     }
