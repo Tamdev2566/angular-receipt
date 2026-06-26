@@ -8,6 +8,7 @@ import { UserMgtService } from '../user-mgt-service';
 import { Combobox } from '../../../shared/combobox/combobox';
 import { AlertService } from '../../../services/alertService/alert';
 import { environment } from '../../../../environment/environment';
+import { UserService } from '../../../services/userService/user.service';
 
 @Component({
   selector: 'app-user-mgt-details',
@@ -53,15 +54,20 @@ export class UserMgtDetails implements OnInit {
   cloneTargetLocation: any = null;
 
   submitted = false;
+  userDetails: any;
+  user: any;
+  originalData: any = {};
 
   constructor(
     private router: Router,
     public userService: UserMgtService,
     private cdr: ChangeDetectorRef,
     private alert: AlertService,
+    private loginUser: UserService,
   ) {}
 
   ngOnInit(): void {
+    this.user = this.loginUser.getUser();
     const stateData = history.state?.userRecord;
 
     if (stateData) {
@@ -69,6 +75,14 @@ export class UserMgtDetails implements OnInit {
 
       this.userService.getUserInfo(stateData.userId).subscribe({
         next: (res: any) => {
+          this.userDetails = res || [];
+          this.originalData = {
+            fullName: res.fullName,
+            phone: res.phone,
+            isValid: res.isValid,
+            locationId: res.locationId,
+            officeId: res.officeId,
+          };
           this.formData = {
             ...res,
             password: '',
@@ -99,6 +113,9 @@ export class UserMgtDetails implements OnInit {
                 x.officeId === defaultLocation.officeId,
             );
             this.groupsTemplates = [...(defaultLocation.assignedGroups || [])];
+            this.privilegeTemplates = [
+              ...(defaultLocation.assignedGroups[0].privilegePreview || []),
+            ];
           }
 
           this.cdr.detectChanges();
@@ -108,6 +125,11 @@ export class UserMgtDetails implements OnInit {
         },
       });
     }
+  }
+
+  ngDoCheck() {
+    console.log(this.locations);
+    console.log(this.userDetails);
   }
 
   onOfficeChange(value: any, item: any): void {
@@ -156,6 +178,9 @@ export class UserMgtDetails implements OnInit {
       email: this.formData.email,
       password: this.isEditMode ? null : this.formData.password,
       isValid: this.formData.isValidToggle ? 'Y' : 'N',
+      createdBy: this.user.name,
+      locationId: this.formData.defaultLocation,
+      officeId: this.formData.defaultOffice,
 
       assignedLocations: this.locations.map((loc) => ({
         locationId: loc.locationId,
@@ -164,34 +189,70 @@ export class UserMgtDetails implements OnInit {
         officeName: loc.officeName,
         isDefault: loc.isDefault ? 'Y' : 'N',
         assignedGroups: loc.assignedGroups || [],
+        privilegePreview: loc.assignedGroups.privilegePreview || [],
       })),
     };
 
     if (this.isEditMode) {
-      console.log('UPDATE USER', payload);
+      const profileChanges: any = {};
 
-      // this.userService.updateUser(payload).subscribe({
-      //   next: () => {
-      //     this.router.navigate(['/home/user-mgt-list']);
-      //   }
-      // });
-    } else {
-      console.log('CREATE USER', payload);
+      if (this.formData.fullName !== this.originalData.fullName) {
+        profileChanges.fullName = this.formData.fullName;
+      }
 
-      this.userService.saveUser(payload).subscribe({
+      if (this.formData.phone !== this.originalData.phone) {
+        profileChanges.phone = this.formData.phone;
+      }
+
+      const currentIsValid = this.formData.isValidToggle ? 'Y' : 'N';
+      if (currentIsValid !== this.originalData.isValid) {
+        profileChanges.isValid = currentIsValid;
+      }
+
+      const currentLocationId =
+        this.formData.defaultLocation?.location_id ??
+        this.formData.defaultLocation?.locationId ??
+        this.formData.defaultLocation;
+
+      if (currentLocationId !== this.originalData.locationId) {
+        profileChanges.locationId = currentLocationId;
+      }
+
+      const currentOfficeId = this.formData.defaultOffice?.officeId ?? this.formData.defaultOffice;
+
+      if (currentOfficeId !== this.originalData.officeId) {
+        profileChanges.officeId = currentOfficeId;
+      }
+
+      const editPayload = {
+        userId: this.userDetails.userId,
+        username: this.userDetails.userName,
+        profileChanges,
+      };
+      console.log('UPDATE USER', editPayload);
+
+      this.userService.updateUser(editPayload).subscribe({
         next: (res: any) => {
-          console.log(res);
+          this.alert.showAlert('Success', res.message, 'success');
+          this.router.navigate(['/home/user-mgt-list']);
         },
         error: (err) => {
           console.log(err);
+          this.alert.showAlert('Error', err.message, 'error');
         },
       });
-
-      // this.userService.createUser(payload).subscribe({
-      //   next: () => {
-      //     this.router.navigate(['/home/user-mgt-list']);
-      //   }
-      // });
+    } else {
+      this.userService.saveUser(payload).subscribe({
+        next: (res: any) => {
+          console.log(res);
+          this.alert.showAlert('Success', res.message, 'success');
+          this.router.navigate(['/home/user-mgt-list']);
+        },
+        error: (err) => {
+          console.log(err);
+          this.alert.showAlert('Error', err.message, 'error');
+        },
+      });
     }
   }
 

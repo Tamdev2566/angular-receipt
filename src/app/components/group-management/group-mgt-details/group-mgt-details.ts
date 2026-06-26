@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ApiService } from '../../../services/api.service';
 import { PrivilegeModal } from './modal/privilege-modal/privilege-modal';
+import { AlertService } from '../../../services/alertService/alert';
 
 export interface PrivilegeRow {
   menuId?: string;
@@ -27,8 +28,9 @@ export class GroupMgtDetails implements OnInit {
   totalAssignedUsers = 0;
   isValid = true;
 
-  privilegeSearchQuery = '';
   assignedPrivileges: PrivilegeRow[] = [];
+  allAssignedPrivileges: PrivilegeRow[] = [];
+
   masterMenus: any[] = [];
 
   createdBy = 'SSS';
@@ -38,9 +40,12 @@ export class GroupMgtDetails implements OnInit {
 
   showPrivilegeModal = false;
 
+  searchText = '';
+
   constructor(
     private router: Router,
     private apiService: ApiService,
+    private alert: AlertService,
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +54,10 @@ export class GroupMgtDetails implements OnInit {
     if (row) {
       this.getDetails(row);
     }
+  }
+
+  get selectedMenuIds(): string[] {
+    return this.assignedPrivileges.map((x) => x.menuId).filter((id): id is string => !!id);
   }
 
   getDetails(row: any): void {
@@ -78,6 +87,8 @@ export class GroupMgtDetails implements OnInit {
           accessLevel: item.accessLevel.toUpperCase(),
         }));
 
+        this.allAssignedPrivileges = [...this.assignedPrivileges];
+
         this.masterMenus = response.masterMenus.content || [];
       },
       error: (error) => {
@@ -102,6 +113,8 @@ export class GroupMgtDetails implements OnInit {
         });
       }
     });
+
+    this.allAssignedPrivileges = [...this.assignedPrivileges];
 
     this.showPrivilegeModal = false;
   }
@@ -136,15 +149,15 @@ export class GroupMgtDetails implements OnInit {
     const endpoint = '?q=/GroupManagements/groupSave';
 
     this.apiService.post(endpoint, payload).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.loading = false;
-        alert(`Group ${this.groupName} saved successfully`);
+        this.alert.showAlert('Success', res.message, 'success');
         this.router.navigate(['/home/group-mgt-list']);
       },
       error: (err) => {
         this.loading = false;
         console.error(err);
-        alert(err?.error?.message || 'Failed to save group');
+        this.alert.showAlert('Success', err.message, 'success');
       },
     });
   }
@@ -192,5 +205,21 @@ export class GroupMgtDetails implements OnInit {
 
   removePrivilegeRow(index: number): void {
     this.assignedPrivileges.splice(index, 1);
+    this.allAssignedPrivileges = [...this.assignedPrivileges];
+  }
+
+  onSearch(value: string): void {
+    const keyword = value.trim().toLowerCase();
+
+    if (!keyword) {
+      this.assignedPrivileges = [...this.allAssignedPrivileges];
+      return;
+    }
+
+    this.assignedPrivileges = this.allAssignedPrivileges.filter(
+      (item) =>
+        item.menuName.toLowerCase().includes(keyword) ||
+        item.accessLevel.toLowerCase().includes(keyword),
+    );
   }
 }

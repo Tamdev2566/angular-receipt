@@ -30,6 +30,11 @@ export class UserMgtList implements OnInit {
   searchText = '';
   tableHeaders: ColumnDef[] = [
     {
+      label: 'No',
+      field: 'no',
+      width: '100px',
+    },
+    {
       label: 'User ID',
       field: 'userId',
       width: '100px',
@@ -101,6 +106,7 @@ export class UserMgtList implements OnInit {
 
   ngOnInit(): void {
     this.loadUserLedger();
+    console.log('paginatedRecords', this.paginatedRecords);
   }
 
   ngDoCheck(): void {}
@@ -138,7 +144,7 @@ export class UserMgtList implements OnInit {
 
           this.totalPages = res.totalPages;
 
-          console.log('paginatedRecords', this.paginatedRecords);
+          // console.log('paginatedRecords', this.paginatedRecords);
         },
         error: (err) => {
           console.error(err);
@@ -166,7 +172,23 @@ export class UserMgtList implements OnInit {
       )
       .subscribe({
         next: (res: any) => {
-          this.userLedgerData = res.content || [];
+          this.userLedgerData = (res.content || []).map((item: any, index: number) => ({
+            no: (this.currentPage - 1) * this.pageSize + index + 1,
+
+            userId: item.userId,
+            userName: item.userName,
+            fullName: item.fullName,
+            email: item.email,
+            defaultOffice: item.officeName,
+            defaultLocation: item.locationName,
+            valid: item.isValid,
+            createdBy: item.userCreated,
+            modifiedBy: item.userModified,
+            dateCreated: item.dateCreated,
+            dateModified: item.dateModified,
+            isSelected: false,
+          }));
+
           this.filteredRecords = [...this.userLedgerData];
           this.paginatedRecords = [...this.userLedgerData];
           this.totalPages = res.totalPages;
@@ -185,9 +207,12 @@ export class UserMgtList implements OnInit {
   }
 
   changePage(page: number): void {
-    if (page >= 1) {
+    if (!this.searchText && page >= 1) {
       this.currentPage = page;
       this.loadUserLedger();
+    } else {
+      this.currentPage = page;
+      this.searchUsers();
     }
   }
 

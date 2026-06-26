@@ -40,4 +40,7 @@ export class UserMgtService {
   saveUser(payload: any) {
     return this.http.post(`${environment.apiUrl}/?q=/UserManagements/userSave`, payload);
   }
+  updateUser(payload: any) {
+    return this.http.post(`${environment.apiUrl}/?q=/UserManagements/userSaveDelta`, payload);
+  }
 }

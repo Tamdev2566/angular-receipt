@@ -112,9 +112,10 @@
             <div class="search-flat-wrapper d-flex align-items-center" style="max-width: 240px">
               <input
                 type="text"
-                placeholder="Search Assigned Menus..."
-                class="search-flat-input"
-                [(ngModel)]="privilegeSearchQuery"
+                class="form-control"
+                [(ngModel)]="searchText"
+                (ngModelChange)="onSearch($event)"
+                placeholder="Search Menu..."
               />
               <button class="btn-search-flat-go">
                 <i class="fa-solid fa-magnifying-glass font-0.7"></i>
@@ -140,13 +141,14 @@
                   class="flat-table-row animate-fade-in"
                 >
                   <td>
-                    <input
+                    {{ row.menuName }}
+                    <!-- <input
                       type="text"
                       class="form-control inner-table-input"
                       placeholder="Menu Name"
                       [(ngModel)]="row.menuName"
                       [name]="'menuName-' + idx"
-                    />
+                    /> -->
                   </td>
                   <td>
                     <select
@@ -156,8 +158,6 @@
                     >
                       <option value="FULL ACCESS">FULL ACCESS</option>
                       <option value="READ ONLY">READ ONLY</option>
-                      <option value="WRITE / MODIFY">WRITE / MODIFY</option>
-                      <option value="NO ACCESS">NO ACCESS</option>
                     </select>
                   </td>
                   <td class="text-center">
@@ -190,7 +190,7 @@
 
 <app-privilege-modal
   *ngIf="showPrivilegeModal"
-  [menus]="masterMenus"
+  [selectedMenuIds]="selectedMenuIds"
   (close)="showPrivilegeModal = false"
   (selectedMenus)="onMenusSelected($event)"
 >
