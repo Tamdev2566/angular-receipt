@@ -184,78 +184,12 @@ export class UserMgtHistoryComponent implements OnInit {
     this.loadHistory();
   }
 
-  private getStatus(value: string): string {
-    if (!value) {
-      return '';
-    }
-
-    try {
-      const obj = JSON.parse(value);
-
-      if (obj.is_valid === 'Y') {
-        return 'ACTIVE';
-      }
-
-      if (obj.is_valid === 'N') {
-        return 'DISABLED';
-      }
-
-      return '';
-    } catch {
-      return '';
-    }
-  }
-
-  private formatDetails(value: string): string {
-    if (!value) {
-      return '(None)';
-    }
-
-    try {
-      const obj = JSON.parse(value);
-
-      const ignoreKeys = ['is_valid', 'office_id', 'location_id', 'user_name'];
-
-      return (
-        Object.entries(obj)
-          .filter(([key, val]) => !ignoreKeys.includes(key) && val !== null && val !== '')
-          .map(([key, val]) => {
-            const displayValue = this.decodeHex(String(val));
-            return `${key.toUpperCase()}: ${displayValue}`;
-          })
-          .join('\n') || '(None)'
-      );
-    } catch {
-      return value;
-    }
-  }
-
-  private decodeHex(value: string): string {
-    if (!value || !value.startsWith('\\x')) {
-      return value;
-    }
-
-    try {
-      const hex = value.replace(/\\x/g, '');
-      let result = '';
-
-      for (let i = 0; i < hex.length; i += 2) {
-        result += String.fromCharCode(parseInt(hex.substring(i, i + 2), 16));
-      }
-
-      return result;
-    } catch {
-      return value;
-    }
-  }
-
   onExportExcel(): void {
     this.loading = true;
 
     const selectedAction = this.formData.actions.find((x: any) => x.id === this.formData.action);
 
     const payload: any = {
-      responseType: 'arraybuffer',
       dateFrom: this.formData.dateFrom,
       dateTo: this.formData.dateTo,
     };
