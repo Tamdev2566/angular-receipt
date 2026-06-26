@@ -117,6 +117,13 @@ export const routes: Routes = [
             (m) => m.AppManagement,
           ),
       },
+      {
+        path: 'app-history',
+        loadComponent: () =>
+          import('./components/application-management/app-management-history/app-management-history').then(
+            (m) => m.AppManagementHistory,
+          ),
+      },
     ],
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },

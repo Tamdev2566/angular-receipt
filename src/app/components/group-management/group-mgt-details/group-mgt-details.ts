@@ -3,9 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { AlertService } from '../../../services/alertService/alert';
 import { ApiService } from '../../../services/api.service';
 import { PrivilegeModal } from './modal/privilege-modal/privilege-modal';
-import { AlertService } from '../../../services/alertService/alert';
 
 export interface PrivilegeRow {
   menuId?: string;
@@ -84,9 +84,8 @@ export class GroupMgtDetails implements OnInit {
         this.assignedPrivileges = details.assignedPrivileges.map((item: any) => ({
           menuId: item.menuId,
           menuName: item.menuName,
-          accessLevel: item.accessLevel.toUpperCase(),
+          accessLevel: item.accessLevel?.toLowerCase() === 'full' ? 'FULL ACCESS' : 'READ ONLY',
         }));
-
         this.allAssignedPrivileges = [...this.assignedPrivileges];
 
         this.masterMenus = response.masterMenus.content || [];

@@ -31,7 +31,6 @@ export class Navbar {
   ngOnInit(): void {
     this.user = this.userService.getUser();
     this.searchData = this.moduleService.getMenus().flatMap((item) => item.submodules || []);
-    console.log(this.user);
   }
   toggleAccountCard(event: Event): void {
     event.stopPropagation();

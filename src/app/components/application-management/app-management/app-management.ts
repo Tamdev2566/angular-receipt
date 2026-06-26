@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AlertService } from '../../../services/alertService/alert';
 import { ApiService } from '../../../services/api.service';
+import { UserService } from '../../../services/userService/user.service';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { IconButton } from '../../../shared/icon-button/icon-button';
-// Unga service path kku yethaarpole mathikolavum
 
 interface Application {
   app_id: string;
@@ -34,7 +35,10 @@ interface ApiResponse {
 export class AppManagement implements OnInit {
   private apiService = inject(ApiService);
   private router = inject(Router);
+  private alert = inject(AlertService);
+  private user = inject(UserService);
 
+  validFilterMode: 'ALL' | 'INACTIVE' | 'ACTIVE' = 'ALL';
   searchTerm: string = '';
   isValidFilter: string = '';
   currentPage: number = 1;
@@ -48,37 +52,54 @@ export class AppManagement implements OnInit {
 
   isEditMode: boolean = false;
   currentUsername: string = 'admin';
+  searchQuery = '';
+
+  selectedApplications: Application[] = [];
+  selectedGroupId: string = '';
 
   gridColumns: ColumnDef[] = [
-    { label: 'Group ID', field: 'id', align: 'center', width: '120px' },
-    { label: 'Profile Name', field: 'name' },
-    { label: 'Created By', field: 'createdBy', align: 'center', width: '130px' },
-    { label: 'Date Created', field: 'dateCreated', align: 'center', width: '160px' },
-    { label: 'Modified By', field: 'modifiedBy', align: 'center', width: '130px' },
-    { label: 'Total Users', field: 'totalUsers', align: 'center', type: 'badge', width: '110px' },
-    { label: 'Valid', field: 'valid', align: 'center', width: '80px' },
+    { label: 'App Id', field: 'app_id', align: 'center' },
+    { label: 'App Name', field: 'app_name' },
+    { label: 'Created By', field: 'user_created', align: 'center' },
+    { label: 'Date Created', field: 'date_created', align: 'center' },
+    { label: 'Modified By', field: 'user_modified', align: 'center' },
+    {
+      label: 'Date Modified',
+      field: 'date_modified',
+      align: 'center',
+    },
+    { label: 'Valid', field: 'is_valid', align: 'center' },
   ];
 
   appForm = { appId: '', appName: '' };
 
   ngOnInit(): void {
+    this.currentPage = this.user.getUser();
     this.loadApplications();
   }
 
   loadApplications(): void {
-    let search = '%';
+    let searchText = '';
 
     if (this.searchTerm && this.searchTerm.trim() && this.searchTerm.trim() !== '%') {
-      search = encodeURIComponent(this.searchTerm.trim());
+      searchText = encodeURIComponent(this.searchTerm.trim());
     }
-
-    // const endpoint = `applications/${this.currentPage}/${this.pageSize}/${this.sortDirection}/app_name`;
-    // const endpoint = `applications/1/10/ASC/app_name`;
-    const endpoint = 'applications/1/10/ASC/app_name';
+    let isValid;
+    switch (this.validFilterMode) {
+      case 'ACTIVE':
+        isValid = 'Y';
+        break;
+      case 'INACTIVE':
+        isValid = 'N';
+        break;
+      default:
+        isValid = '';
+    }
+    const endpoint = `applications/${this.currentPage}/${this.pageSize}/${this.sortDirection}/${this.sortColumn}`;
 
     const data = {
-      // search: '%',
-      // isValid: 'Y',
+      search: searchText,
+      isValid: isValid,
     };
 
     this.apiService.post(endpoint, data, true).subscribe({
@@ -91,18 +112,28 @@ export class AppManagement implements OnInit {
     });
   }
 
-  onSearch(): void {
-    this.currentPage = 1;
+  get validButtonText(): string {
+    if (this.validFilterMode === 'INACTIVE') return 'InActive';
+    if (this.validFilterMode === 'ACTIVE') return 'Active';
+    return 'All';
+  }
+
+  get validButtonIcon(): string {
+    if (this.validFilterMode === 'INACTIVE') return 'fa-xmark';
+    if (this.validFilterMode === 'ACTIVE') return 'fa-check';
+    return 'fa-check-double';
+  }
+
+  onToggleValidClick(): void {
+    if (this.validFilterMode === 'ALL') this.validFilterMode = 'INACTIVE';
+    else if (this.validFilterMode === 'INACTIVE') this.validFilterMode = 'ACTIVE';
+    else this.validFilterMode = 'ALL';
+
     this.loadApplications();
   }
 
-  changeSort(column: string): void {
-    if (this.sortColumn === column) {
-      this.sortDirection = this.sortDirection === 'ASC' ? 'DESC' : 'ASC';
-    } else {
-      this.sortColumn = column;
-      this.sortDirection = 'ASC';
-    }
+  onSearch(): void {
+    this.currentPage = 1;
     this.loadApplications();
   }
 
@@ -113,52 +144,143 @@ export class AppManagement implements OnInit {
     }
   }
 
-  openCreateModal(): void {
-    this.isEditMode = false;
-    this.appForm = { appId: '', appName: '' };
+  onHistory(): void {
+    this.router.navigate(['home/app-history']);
   }
 
   onPageChange(newPage: number): void {
     this.loadApplications();
   }
 
-  onGridSelectionChange(selectedRows: any[]): void {
-    console.log('Selected items count:');
+  onGridSelectionChange(rows: Application[]): void {
+    this.selectedApplications = rows;
   }
 
-  viewDetails(row: any): void {
-    this.router.navigate(['home/group-mgt-details'], {
-      state: { row },
+  bulkAssign(): void {
+    if (!this.selectedGroupId) {
+      alert('Please select a Group');
+      return;
+    }
+
+    if (this.selectedApplications.length === 0) {
+      alert('Please select Applications');
+      return;
+    }
+
+    const body = {
+      appIds: this.selectedApplications.map((x) => x.app_id),
+      username: this.currentUsername,
+    };
+
+    this.apiService
+      .post(`groups/${this.selectedGroupId}/applications/bulk-assign`, body, true)
+      .subscribe({
+        next: (res) => {
+          alert(`${res} Application(s) Assigned Successfully`);
+
+          this.loadApplications();
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Bulk Assign Failed');
+        },
+      });
+  }
+  bulkRemove(): void {
+    if (!this.selectedGroupId) {
+      alert('Please select a Group');
+      return;
+    }
+
+    if (this.selectedApplications.length === 0) {
+      alert('Please select Applications');
+      return;
+    }
+
+    const body = {
+      appIds: this.selectedApplications.map((x) => x.app_id),
+      username: this.currentUsername,
+    };
+
+    this.apiService
+      .post(`groups/${this.selectedGroupId}/applications/bulk-remove`, body, true)
+      .subscribe({
+        next: (res) => {
+          alert(`${res} Application(s) Removed Successfully`);
+
+          this.loadApplications();
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Bulk Remove Failed');
+        },
+      });
+  }
+  viewDetails(row: Application): void {
+    this.apiService.get(`applications/${row.app_id}`, {}, true).subscribe({
+      next: (response: any) => {
+        this.isEditMode = true;
+
+        this.appForm = {
+          appId: response.app_id,
+          appName: response.app_name,
+        };
+      },
+      error: (err) => {
+        console.error(err);
+      },
     });
   }
 
-  openEditModal(app: Application): void {
-    this.isEditMode = true;
-    this.appForm = {
-      appId: app.app_id,
-      appName: app.app_name,
-    };
-  }
+  saveApplication(): void {
+    if (!this.appForm.appId.trim() || !this.appForm.appName.trim()) {
+      alert('Application ID and Application Name are required');
+      return;
+    }
 
-  saveApplication(value: any): void {
     if (this.isEditMode) {
-      const endpoint = `applications/${this.appForm.appId}`;
-      const body = { appName: this.appForm.appName, username: this.currentUsername };
+      const body = {
+        appName: this.appForm.appName.trim(),
+        username: this.currentUsername,
+      };
 
-      this.apiService.put(endpoint, body).subscribe({
-        next: () => {
+      this.apiService.put(`applications/${this.appForm.appId}`, body, true).subscribe({
+        next: (res) => {
+          this.appForm = {
+            appId: '',
+            appName: '',
+          };
+
+          this.isEditMode = false;
+
           this.loadApplications();
-          this.closeModal('appModal');
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Failed to update application');
         },
       });
     } else {
-      const endpoint = `applications`;
-      const body = { ...this.appForm, username: this.currentUsername };
+      const body = {
+        appId: this.appForm.appId.trim(),
+        appName: this.appForm.appName.trim(),
+        username: this.currentUsername,
+      };
 
-      this.apiService.post(endpoint, body).subscribe({
-        next: () => {
+      this.apiService.post('applications', body, true).subscribe({
+        next: (res: any) => {
+          this.alert.showAlert('Error', res?.message, 'error');
+          this.appForm = {
+            appId: '',
+            appName: '',
+          };
+
+          this.isEditMode = false;
           this.loadApplications();
-          this.closeModal('appModal');
+        },
+        error: (err: any) => {
+          console.error(err);
+          this.alert.showAlert('Error', err?.error?.message, 'error');
         },
       });
     }
@@ -183,15 +305,6 @@ export class AppManagement implements OnInit {
           this.loadApplications();
         },
       });
-    }
-  }
-
-  private closeModal(modalId: string): void {
-    const modalEl = document.getElementById(modalId);
-    if (modalEl) {
-      const bootstrap = (window as any).bootstrap;
-      const modalInstance = bootstrap.Modal.getInstance(modalEl);
-      if (modalInstance) modalInstance.hide();
     }
   }
 }

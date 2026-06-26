@@ -50,6 +50,97 @@
   font-size: 16px;
 }
 
+.btn-flat-action-primary {
+  background: #ffffff !important;
+  color: #33708f !important;
+  font-weight: 500;
+  font-size: 0.8rem;
+  padding: 8px 18px !important;
+  border: none !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+
+  &:hover {
+    background: white !important;
+    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+    transform: translateY(-1px);
+  }
+}
+
+.btn-flat-action-secondary {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #475569 !important;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 8px 16px !important;
+  border-radius: 8px;
+
+  &:hover:not([disabled]) {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  &.btn-flat-active {
+    background: #fce8eb !important;
+    border-color: #e03545 !important;
+    color: #e03545 !important;
+    font-weight: 600;
+  }
+  &[disabled] {
+    opacity: 0.5;
+    background: #f1f5f9 !important;
+    cursor: not-allowed;
+  }
+}
+
+.search-flat-wrapper {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  overflow: hidden;
+  max-width: 300px;
+  width: 100%;
+  display: flex;
+  transition: all 0.2s ease;
+
+  &:focus-within {
+    border-color: #e03545;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    background: #ffffff;
+  }
+}
+
+.search-flat-input {
+  border: none !important;
+  padding: 8px 16px;
+  color: #0f172a !important;
+  font-size: 0.8rem;
+  width: 100%;
+  background: transparent;
+  outline: none;
+
+  &::placeholder {
+    color: #94a3b8;
+  }
+}
+
+.btn-search-flat-go {
+  background: #e03545 !important;
+  border: none !important;
+  color: #ffffff !important;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #e03545 !important;
+  }
+}
+
 .pagination-wrapper {
   display: flex;
   justify-content: space-between;
