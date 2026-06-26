@@ -30,7 +30,7 @@ export class ModuleService {
       hasSubmenu: true,
       isExpanded: false,
       submodules: [
-        { title: 'User Creation', link: '/home/user-mgt-list' },
+        { title: 'User Management', link: '/home/user-mgt-list' },
         { title: 'Group Management', link: '/home/group-mgt-list' },
         { title: 'Application Management', link: '/home/app-management' },
       ],
