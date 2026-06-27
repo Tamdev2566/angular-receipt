@@ -157,12 +157,12 @@ export class AppManagement implements OnInit {
 
   bulkAssign(): void {
     if (!this.selectedGroupId) {
-      alert('Please select a Group');
+      this.alert.showAlert('Error', 'Please select a Group', 'error');
       return;
     }
 
     if (this.selectedApplications.length === 0) {
-      alert('Please select Applications');
+      this.alert.showAlert('Error', 'Please select Applications', 'error');
       return;
     }
 
@@ -176,23 +176,26 @@ export class AppManagement implements OnInit {
       .subscribe({
         next: (res) => {
           alert(`${res} Application(s) Assigned Successfully`);
-
+          this.alert.showAlert('Success', `${res} Application(s) Assigned Successfully`, 'success');
           this.loadApplications();
         },
         error: (err) => {
           console.error(err);
           alert('Bulk Assign Failed');
+          this.alert.showAlert('Error', err.message, 'error');
         },
       });
   }
   bulkRemove(): void {
     if (!this.selectedGroupId) {
-      alert('Please select a Group');
+      this.alert.showAlert('Error', 'Please select a Group', 'error');
+
       return;
     }
 
     if (this.selectedApplications.length === 0) {
-      alert('Please select Applications');
+      this.alert.showAlert('Error', 'Please select Applications', 'error');
+
       return;
     }
 
@@ -205,7 +208,7 @@ export class AppManagement implements OnInit {
       .post(`groups/${this.selectedGroupId}/applications/bulk-remove`, body, true)
       .subscribe({
         next: (res) => {
-          alert(`${res} Application(s) Removed Successfully`);
+          this.alert.showAlert('Success', `${res} Application(s) Removed Successfully`, 'success');
 
           this.loadApplications();
         },

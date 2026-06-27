@@ -363,6 +363,9 @@
                     </button>
                   </td>
                 </tr>
+                <tr *ngIf="locations.length === 0">
+                  <td colspan="5" class="text-center p-4 text-muted small">No Location Added</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -464,7 +467,7 @@
           <div
             *ngIf="privilegeTemplates.length > 0"
             class="table-responsive rounded-2 flat-inner-table-border"
-            style="max-height: 390px; overflow-y: auto"
+            style="max-height: 360px; overflow-y: auto"
           >
             <table class="table align-middle m-0 flat-inner-table">
               <tbody>
