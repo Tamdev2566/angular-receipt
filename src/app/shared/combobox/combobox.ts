@@ -155,41 +155,61 @@ export class Combobox implements OnInit, OnChanges {
       apiUrl = this.url.replace('*/*/1/100', `*/${searchTerm}/1/100`);
     }
 
-    this.apiService
-      .get(apiUrl, {
-        context: new HttpContext().set(SKIP_LOADER, true),
-      })
-      .subscribe({
-        next: (response: any) => {
-          let result = response;
+    const success = (response: any) => {
+      let result = response;
 
-          if (this.responsePath?.trim() && result) {
-            const paths = this.responsePath.split('.');
+      if (this.responsePath?.trim() && result) {
+        const paths = this.responsePath.split('.');
 
-            for (const path of paths) {
-              result = result?.[path];
-            }
-          }
+        for (const path of paths) {
+          result = result?.[path];
+        }
+      }
 
-          this.items = Array.isArray(result) ? [...result] : [];
-          this.filteredItems = [...this.items];
+      this.items = Array.isArray(result) ? [...result] : [];
+      this.filteredItems = [...this.items];
 
-          this.isLoading = false;
-          this.isOpen = true;
-          this.isDataLoaded = true;
+      this.isLoading = false;
+      this.isOpen = true;
+      this.isDataLoaded = true;
 
-          if (!this.isTyping) {
-            this.syncDisplayLabel();
-          }
+      if (!this.isTyping) {
+        this.syncDisplayLabel();
+      }
 
-          this.cdr.detectChanges();
-        },
-        error: () => {
-          this.items = [];
-          this.filteredItems = [];
-          this.isLoading = false;
-        },
-      });
+      this.cdr.detectChanges();
+    };
+
+    const error = () => {
+      this.items = [];
+      this.filteredItems = [];
+      this.isLoading = false;
+    };
+
+    if (this.apiMethod === 'POST') {
+      const body = {
+        ...(this.requestBody || {}),
+        search: searchTerm === '*' ? '' : searchTerm,
+      };
+
+      this.apiService
+        .post(apiUrl, body, false, {
+          context: new HttpContext().set(SKIP_LOADER, true),
+        })
+        .subscribe({
+          next: success,
+          error,
+        });
+    } else {
+      this.apiService
+        .get(apiUrl, {
+          context: new HttpContext().set(SKIP_LOADER, true),
+        })
+        .subscribe({
+          next: success,
+          error,
+        });
+    }
   }
 
   private getNestedValue(obj: any, path: string): any {
