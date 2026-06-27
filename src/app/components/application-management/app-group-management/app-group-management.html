@@ -1,0 +1,105 @@
+<div class="py-4">
+  <div
+    class="card border-0 rounded-3 shadow-sm mb-3 main-master-header text-white"
+    style="background-color: #33708f"
+  >
+    <div class="card-body d-flex justify-content-between align-items-center py-3 px-4">
+      <h4 class="mb-0 fw-semibold tracking-wide">Group - Application Assignment</h4>
+    </div>
+  </div>
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-5">
+          <div class="card">
+            <div class="card-header bg-light">
+              <strong> Available Applications </strong>
+            </div>
+
+            <div class="card-body p-0">
+              <app-data-grid
+                [records]="availableApplications"
+                [columns]="availableColumns"
+                [showCheckbox]="true"
+                (selectionChange)="selectedAvailableApps = $event"
+                [tableHeight]="'450px'"
+                [showAction]="true"
+                [isServerSide]="true"
+                [serverCurrentPage]="availableCurrentPage"
+                [serverTotalPages]="availableTotalPages"
+                (pageChange)="onAvailablePageChange($event)"
+                [actionTemplate]="myCustomActionDesign"
+              >
+              </app-data-grid>
+              <ng-template #myCustomActionDesign let-row>
+                <app-icon-button
+                  iconClass="bi bi-plus-circle-fill"
+                  colorClass="color-info"
+                  title="View"
+                  [customStyle]="{ 'margin-right': '8px' }"
+                  (onClick)="assignApplication(row)"
+                >
+                  >
+                </app-icon-button>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2 d-flex flex-column justify-content-center align-items-center">
+          <button class="btn btn-primary mb-3 w-100" (click)="bulkAssign()">
+            <i class="bi bi-chevron-double-right"></i>
+
+            Assign
+          </button>
+
+          <button class="btn btn-danger w-100" (click)="bulkRemove()">
+            <i class="bi bi-chevron-double-left"></i>
+
+            Remove
+          </button>
+        </div>
+
+        <div class="col-md-5">
+          <div class="card">
+            <div class="card-header bg-light d-flex justify-content-between">
+              <strong> Assigned Applications </strong>
+
+              <span class="badge bg-primary">
+                {{ assignedApplications.length }}
+              </span>
+            </div>
+
+            <div class="card-body p-0">
+              <app-data-grid
+                [records]="assignedApplications"
+                [columns]="assignedColumns"
+                [showCheckbox]="true"
+                [showAction]="true"
+                [isServerSide]="true"
+                [isServerSide]="true"
+                [serverCurrentPage]="assignedCurrentPage"
+                [serverTotalPages]="assignedTotalPages"
+                (pageChange)="onAssignedPageChange($event)"
+                x
+                (selectionChange)="selectedAssignedApps = $event"
+                [actionTemplate]="myCustomActionDesign"
+                [tableHeight]="'450px'"
+              >
+              </app-data-grid>
+              <ng-template #myCustomActionDesign let-row>
+                <app-icon-button
+                  iconClass="bi bi-dash-circle-fill"
+                  colorClass="text-danger"
+                  title="Remove"
+                  (onClick)="removeApplication(row)"
+                >
+                </app-icon-button>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

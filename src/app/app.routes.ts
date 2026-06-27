@@ -124,6 +124,13 @@ export const routes: Routes = [
             (m) => m.AppManagementHistory,
           ),
       },
+      // {
+      //   path: 'app-group-management',
+      //   loadComponent: () =>
+      //     import('./components/application-management/app-group-management/app-group-management').then(
+      //       (m) => m.AppGroupManagement,
+      //     ),
+      // },
     ],
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },

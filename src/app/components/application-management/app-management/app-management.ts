@@ -53,9 +53,6 @@ export class AppManagement implements OnInit {
   isEditMode: boolean = false;
   currentUsername: string = 'admin';
 
-  selectedApplications: Application[] = [];
-  selectedGroupId: string = '';
-
   gridColumns: ColumnDef[] = [
     { label: 'App Id', field: 'app_id', align: 'center' },
     { label: 'App Name', field: 'app_name' },
@@ -149,60 +146,6 @@ export class AppManagement implements OnInit {
 
   onPageChange(newPage: number): void {
     this.loadApplications();
-  }
-
-  onGridSelectionChange(rows: Application[]): void {
-    this.selectedApplications = rows;
-  }
-
-  bulkAssign(): void {
-    if (this.selectedApplications.length === 0) {
-      this.alert.showAlert('Error', 'Please select Application', 'error');
-      return;
-    }
-
-    const body = {
-      appIds: this.selectedApplications.map((x) => x.app_id),
-      username: this.currentUsername,
-    };
-
-    this.apiService
-      .post(`groups/${this.selectedGroupId}/applications/bulk-assign`, body, true)
-      .subscribe({
-        next: (res) => {
-          this.alert.showAlert('Success', ' Application(s) Assigned Successfully', 'success');
-          this.loadApplications();
-        },
-        error: (err) => {
-          console.error(err);
-          this.alert.showAlert('Error', ' Bulk Assign Failed', 'error');
-        },
-      });
-  }
-
-  bulkRemove(): void {
-    if (this.selectedApplications.length === 0) {
-      this.alert.showAlert('Error', 'Please select Application', 'error');
-      return;
-    }
-
-    const body = {
-      appIds: this.selectedApplications.map((x) => x.app_id),
-      username: this.currentUsername,
-    };
-
-    this.apiService
-      .post(`groups/${this.selectedGroupId}/applications/bulk-remove`, body, true)
-      .subscribe({
-        next: (res) => {
-          this.alert.showAlert('Success', ' Application(s) Removed Successfully', 'success');
-          this.loadApplications();
-        },
-        error: (err) => {
-          console.error(err);
-          this.alert.showAlert('Error', ' Bulk Remove Failed', 'error');
-        },
-      });
   }
 
   viewDetails(row: Application): void {

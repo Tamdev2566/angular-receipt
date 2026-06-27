@@ -70,9 +70,9 @@
         </app-icon-button>
 
         <app-icon-button
-          [iconClass]="row.isActive ? 'bi bi-toggle-on' : 'bi bi-toggle-off'"
-          [colorClass]="row.isActive ? 'color-success' : 'color-error'"
-          [title]="row.isActive ? 'Deactivate' : 'Activate'"
+          [iconClass]="row.valid === 'Y' ? 'bi bi-toggle-on' : 'bi bi-toggle-off'"
+          [colorClass]="row.valid === 'Y' ? 'text-success' : 'text-danger'"
+          [title]="row.valid === 'Y' ? 'Deactivate' : 'Activate'"
           [customStyle]="{ 'margin-right': '8px' }"
           (onClick)="toggleStatus(row)"
         >

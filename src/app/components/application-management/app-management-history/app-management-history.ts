@@ -129,15 +129,10 @@ export class AppManagementHistory {
   }
   fetchGroupData(targetPage: number = 1): void {
     this.loading = true;
-
-    const payload = this.currentApiPayload;
-
-    const endpoint = `audit/${encodeURIComponent(payload.dateFrom)}/${encodeURIComponent(
-      payload.dateTo,
-    )}/${payload.action}/${payload.groupId}/${payload.appId}/${targetPage}/${this.pageSize}`;
+    const endpoint = `audit/${targetPage}/${this.pageSize}`;
 
     this.apiService
-      .get(endpoint, {}, true)
+      .post(endpoint, this.currentApiPayload, true)
       .pipe(
         finalize(() => {
           this.loading = false;

@@ -33,6 +33,7 @@ export class ModuleService {
         { title: 'User Management', link: '/home/user-mgt-list' },
         { title: 'Group Management', link: '/home/group-mgt-list' },
         { title: 'Application Management', link: '/home/app-management' },
+        // { title: 'Application Group Management', link: '/home/app-group-management' },
       ],
     },
     // {
