@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { environment } from '../../../environment/environment';
 import { SKIP_LOADER } from '../../core/interceptors/loaderInterceptor/loader-interceptor-interceptor';
-import { ApiService } from '../../services/api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +25,7 @@ export class UserMgtService {
     );
   }
 
-  getGroups(search: string = '*', page: number = 1, size: number = 10) {
+  getGroups(search: string = '*', page: number = 1, size: number = 100) {
     const body = {
       search: search === '*' ? '' : search,
     };

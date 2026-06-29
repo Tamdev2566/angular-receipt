@@ -15,6 +15,8 @@ import {
 import { FormsModule } from '@angular/forms';
 import { SKIP_LOADER } from '../../core/interceptors/loaderInterceptor/loader-interceptor-interceptor';
 import { ApiService } from '../../services/api.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-combobox',
@@ -67,6 +69,9 @@ export class Combobox implements OnInit, OnChanges {
 
   private isTyping = false;
 
+  private suppressSearch = false;
+  private searchSubject = new Subject<string>();
+
   constructor(
     private http: HttpClient,
     private elementRef: ElementRef,
@@ -76,6 +81,10 @@ export class Combobox implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.initializeStaticData();
+
+    this.searchSubject.pipe(debounceTime(300), distinctUntilChanged()).subscribe((value) => {
+      this.loadData(value || '*');
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -106,32 +115,30 @@ export class Combobox implements OnInit, OnChanges {
   }
 
   onSearchInput(term: string): void {
+    if (this.suppressSearch) {
+      this.suppressSearch = false;
+      return;
+    }
+
     this.isTyping = true;
     this.searchText = term;
 
     if (this.searchFromApi) {
-      if (!term?.trim()) {
-        this.loadData('*');
-        return;
-      }
+      this.searchSubject.next(term?.trim() || '*');
 
-      this.loadData(term);
-    } else {
-      const search = term.toLowerCase().trim();
-
-      if (!search) {
-        this.filteredItems = [...this.items];
-      } else {
-        this.filteredItems = this.items.filter((item) => {
-          const display = (item[this.displayExpr] ?? '').toString().toLowerCase();
-          return display.includes(search);
-        });
-      }
-
-      this.isLoading = false;
-      this.isOpen = true;
-      this.isDataLoaded = true;
+      return;
     }
+
+    const search = term.toLowerCase().trim();
+
+    this.filteredItems = !search
+      ? [...this.items]
+      : this.items.filter((item) =>
+          (item[this.displayExpr] ?? '').toString().toLowerCase().includes(search),
+        );
+
+    this.isLoading = false;
+    this.isOpen = true;
   }
 
   onComboBoxInteract(): void {
@@ -261,6 +268,8 @@ export class Combobox implements OnInit, OnChanges {
 
     this.selectedItem = item;
 
+    this.suppressSearch = true;
+
     this.searchText = this.codeExpr
       ? `${item[this.codeExpr]} - ${item[this.displayExpr]}`
       : item[this.displayExpr];
@@ -272,6 +281,7 @@ export class Combobox implements OnInit, OnChanges {
     this.valueChange.emit(finalValue);
 
     this.onChange?.(finalValue, item);
+
     this.handleChange?.(finalValue, item);
 
     this.isOpen = false;
@@ -280,15 +290,17 @@ export class Combobox implements OnInit, OnChanges {
   clearSelection(event: Event): void {
     event.stopPropagation();
 
-    this.isTyping = false;
-
     this.value = null;
     this.selectedItem = null;
     this.searchText = '';
 
     this.valueChange.emit(null);
 
-    this.loadData('*');
+    if (this.searchFromApi) {
+      this.searchSubject.next('*');
+    } else {
+      this.filteredItems = [...this.items];
+    }
   }
 
   @HostListener('document:click', ['$event'])

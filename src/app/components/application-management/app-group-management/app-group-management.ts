@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
 import { Combobox } from '../../../shared/combobox/combobox';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { IconButton } from '../../../shared/icon-button/icon-button';
+import { AlertService } from '../../../services/alertService/alert';
 
 interface Application {
   app_id: string;
@@ -20,7 +21,11 @@ interface Application {
   styleUrl: './app-group-management.scss',
 })
 export class AppGroupManagement implements OnInit {
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private alert: AlertService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   currentUsername = 'admin';
   groups: any[] = [];
@@ -143,7 +148,7 @@ export class AppGroupManagement implements OnInit {
 
   assignApplication(row: Application): void {
     if (!this.selectedGroup) {
-      alert('Please select a Group.');
+      this.alert.showAlert('Error', 'Please select a Group.', 'error');
       return;
     }
     const body = { username: this.currentUsername };
@@ -152,7 +157,7 @@ export class AppGroupManagement implements OnInit {
       .post(`groups/${this.selectedGroup}/applications/${row.app_id}`, body, true)
       .subscribe({
         next: () => {
-          alert('Application Assigned Successfully');
+          this.alert.showAlert('Success', 'Application Assigned Successfully', 'success');
           this.loadAvailableApplications();
           this.loadAssignedApplications();
           this.loadApplicationCount();
@@ -163,7 +168,7 @@ export class AppGroupManagement implements OnInit {
 
   removeApplication(row: Application): void {
     if (!this.selectedGroup) {
-      alert('Please select a Group.');
+      this.alert.showAlert('Error', 'Please select a Group.', 'error');
       return;
     }
     const body = { username: this.currentUsername };
@@ -172,7 +177,7 @@ export class AppGroupManagement implements OnInit {
       .delete(`groups/${this.selectedGroup}/applications/${row.app_id}`, true, body)
       .subscribe({
         next: () => {
-          alert('Application Removed Successfully');
+          this.alert.showAlert('Success', 'Application Removed Successfully', 'success');
           this.loadAvailableApplications();
           this.loadAssignedApplications();
           this.loadApplicationCount();
@@ -183,11 +188,11 @@ export class AppGroupManagement implements OnInit {
 
   bulkAssign(): void {
     if (!this.selectedGroup) {
-      alert('Please select a Group.');
+      this.alert.showAlert('Error', 'Please select a Group.', 'error');
       return;
     }
     if (this.selectedAvailableApps.length === 0) {
-      alert('Please select Applications.');
+      this.alert.showAlert('Error', 'Please select  Applications.', 'error');
       return;
     }
 
@@ -196,25 +201,27 @@ export class AppGroupManagement implements OnInit {
       username: this.currentUsername,
     };
 
-    this.apiService.post(`groups/${this.selectedGroup}/applications/bulk-assign`, body).subscribe({
-      next: () => {
-        alert('Applications Assigned Successfully');
-        this.selectedAvailableApps = [];
-        this.loadAvailableApplications();
-        this.loadAssignedApplications();
-        this.loadApplicationCount();
-      },
-      error: (err) => console.error(err),
-    });
+    this.apiService
+      .post(`groups/${this.selectedGroup}/applications/bulk-assign`, body, true)
+      .subscribe({
+        next: () => {
+          this.alert.showAlert('Success', 'Application Assigned Successfully', 'success');
+          this.selectedAvailableApps = [];
+          this.loadAvailableApplications();
+          this.loadAssignedApplications();
+          this.loadApplicationCount();
+        },
+        error: (err) => console.error(err),
+      });
   }
 
   bulkRemove(): void {
     if (!this.selectedGroup) {
-      alert('Please select a Group.');
+      this.alert.showAlert('Error', 'Please select a Group.', 'error');
       return;
     }
     if (this.selectedAssignedApps.length === 0) {
-      alert('Please select Applications.');
+      this.alert.showAlert('Error', 'Please select Applications', 'error');
       return;
     }
 
@@ -223,15 +230,17 @@ export class AppGroupManagement implements OnInit {
       username: this.currentUsername,
     };
 
-    this.apiService.post(`groups/${this.selectedGroup}/applications/bulk-remove`, body).subscribe({
-      next: () => {
-        alert('Applications Removed Successfully');
-        this.selectedAssignedApps = [];
-        this.loadAvailableApplications();
-        this.loadAssignedApplications();
-        this.loadApplicationCount();
-      },
-      error: (err) => console.error(err),
-    });
+    this.apiService
+      .post(`groups/${this.selectedGroup}/applications/bulk-remove`, body, true)
+      .subscribe({
+        next: () => {
+          this.alert.showAlert('Success', 'Applications Removed Successfully', 'success');
+          this.selectedAssignedApps = [];
+          this.loadAvailableApplications();
+          this.loadAssignedApplications();
+          this.loadApplicationCount();
+        },
+        error: (err) => console.error(err),
+      });
   }
 }

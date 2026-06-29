@@ -302,13 +302,11 @@ export class UserMgtDetails implements OnInit {
 
   addLocation() {
     if (!this.formData.defaultLocation) {
-      // alert('Please select Default Location');
       this.alert.showAlert('Error!', 'Please select Default Location', 'error');
       return;
     }
 
     if (!this.formData.defaultOffice) {
-      // alert('Please select Default Office');
       this.alert.showAlert('Error!', 'Please select Default Office', 'error');
       return;
     }
