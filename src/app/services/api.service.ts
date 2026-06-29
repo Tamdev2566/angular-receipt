@@ -45,6 +45,8 @@ export class ApiService {
 
   delete(endpoint: string, config: boolean = false, options?: any) {
     if (config) {
+      console.log('options', options);
+
       return this.http.delete(`${this.appUrl}/${endpoint}`, options);
     }
 

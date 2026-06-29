@@ -33,8 +33,8 @@ export class GroupMgtDetails implements OnInit {
 
   masterMenus: any[] = [];
 
-  createdBy = 'SSS';
-  dateCreated = '2026-06-11 13:58:49';
+  createdBy = '';
+  dateCreated = '';
   modifiedBy = '';
   dateModified = '';
 

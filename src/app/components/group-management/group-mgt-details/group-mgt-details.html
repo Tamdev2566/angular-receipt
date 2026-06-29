@@ -79,13 +79,13 @@
           >
             <div class="col-6 border-end-flat">
               <div><span class="fw-semibold text-dark">Created By:</span> {{ createdBy }}</div>
-              <div class="text-muted mt-0.5">Date Created:</div>
+              <div class="text-muted mt-0.5">Date Created: {{ dateCreated }}</div>
             </div>
             <div class="col-6 ps-3">
               <div>
                 <span class="fw-semibold text-dark">Modified By:</span> {{ modifiedBy || 'N/A' }}
               </div>
-              <div class="text-muted mt-0.5">Date Modified:</div>
+              <div class="text-muted mt-0.5">Date Modified: {{ dateModified || '-' }}</div>
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ import { Combobox } from '../../../shared/combobox/combobox';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { IconButton } from '../../../shared/icon-button/icon-button';
 import { AlertService } from '../../../services/alertService/alert';
+import { UserService } from '../../../services/userService/user.service';
 
 interface Application {
   app_id: string;
@@ -25,9 +26,11 @@ export class AppGroupManagement implements OnInit {
     private apiService: ApiService,
     private alert: AlertService,
     private cdr: ChangeDetectorRef,
+    private userService: UserService,
   ) {}
 
-  currentUsername = 'admin';
+  currentUsername: any;
+
   groups: any[] = [];
 
   selectedGroup: any = null;
@@ -66,6 +69,7 @@ export class AppGroupManagement implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.currentUsername = this.userService.getUser();
     this.loadGroups();
     this.loadAvailableApplications();
   }
@@ -151,7 +155,7 @@ export class AppGroupManagement implements OnInit {
       this.alert.showAlert('Error', 'Please select a Group.', 'error');
       return;
     }
-    const body = { username: this.currentUsername };
+    const body = { username: this.currentUsername.name };
 
     this.apiService
       .post(`groups/${this.selectedGroup}/applications/${row.app_id}`, body, true)
@@ -171,7 +175,7 @@ export class AppGroupManagement implements OnInit {
       this.alert.showAlert('Error', 'Please select a Group.', 'error');
       return;
     }
-    const body = { username: this.currentUsername };
+    const body = { username: this.currentUsername.name };
 
     this.apiService
       .delete(`groups/${this.selectedGroup}/applications/${row.app_id}`, true, body)
@@ -198,7 +202,7 @@ export class AppGroupManagement implements OnInit {
 
     const body = {
       appIds: this.selectedAvailableApps.map((x) => x.app_id),
-      username: this.currentUsername,
+      username: this.currentUsername.name,
     };
 
     this.apiService
@@ -227,7 +231,7 @@ export class AppGroupManagement implements OnInit {
 
     const body = {
       appIds: this.selectedAssignedApps.map((x) => x.app_id),
-      username: this.currentUsername,
+      username: this.currentUsername.name,
     };
 
     this.apiService

@@ -9,6 +9,8 @@ import { ApiService } from '../../../services/api.service';
 
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { IconButton } from '../../../shared/icon-button/icon-button';
+import { AlertService } from '../../../services/alertService/alert';
+import { UserService } from '../../../services/userService/user.service';
 @Component({
   selector: 'app-group-mgt-list',
   standalone: true,
@@ -24,6 +26,7 @@ export class GroupMgtList implements OnInit {
   totalPages = 1;
   pageSize = 20;
   validFilterMode: 'ALL' | 'INVALID' | 'VALID' = 'ALL';
+  user: any;
 
   gridColumns: ColumnDef[] = [
     { label: 'Group ID', field: 'id', align: 'center', width: '120px' },
@@ -42,10 +45,17 @@ export class GroupMgtList implements OnInit {
     private router: Router,
     private apiService: ApiService,
     private http: HttpClient,
+    private alert: AlertService,
+    private userService: UserService,
   ) {}
 
   ngOnInit(): void {
     this.fetchGroupData(1);
+    this.user = this.userService.getUser();
+  }
+
+  ngDoCheck() {
+    console.log('user', this.user);
   }
 
   private get currentApiPayload(): any {
@@ -249,28 +259,31 @@ export class GroupMgtList implements OnInit {
 
   toggleStatus(row: any): void {
     const newStatus = row.valid === 'Y' ? 'N' : 'Y';
-
+    console.log(row, 'row');
     const payload = {
-      groupId: row.id,
+      username: this.user.name,
+
       isValid: newStatus,
     };
 
     this.loading = true;
 
     this.apiService
-      .post('?q=/GroupManagements/updateStatus', payload)
+      .put(`?q=/GroupManagements/groups/${row.id}/status`, payload)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: () => {
           row.valid = newStatus;
 
-          alert(
-            newStatus === 'Y' ? 'Group Activated Successfully' : 'Group Deactivated Successfully',
-          );
+          const message =
+            newStatus === 'Y' ? 'Group Activated Successfully' : 'Group Deactivated Successfully';
+
+          this.alert.showAlert('Success', message, 'success');
         },
         error: (err) => {
           console.error(err);
-          alert('Failed to update status');
+          // alert('Failed to update status');
+          this.alert.showAlert('Error', 'Failed to update status', 'error');
         },
       });
   }
