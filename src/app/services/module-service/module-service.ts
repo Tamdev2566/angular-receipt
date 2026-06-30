@@ -17,38 +17,26 @@ export interface MenuItem {
 @Injectable({ providedIn: 'root' })
 export class ModuleService {
   private appMenus: MenuItem[] = [
-    // {
-    //   title: 'Dashboard',
-    //   icon: 'fa-solid fa-chart-line',
-    //   link: '/home/dashboard',
-    //   hasSubmenu: false,
-    // },
+    {
+      title: 'Dashboard',
+      icon: 'fa-solid fa-chart-line',
+      link: '/home/dashboard',
+      hasSubmenu: false,
+    },
 
     {
-      title: 'Administrative',
-      icon: 'fa-solid fa-user',
+      title: 'Receipts',
+      icon: 'fa-solid fa-receipt',
       hasSubmenu: true,
       isExpanded: false,
       submodules: [
-        { title: 'User Management', link: '/home/user-mgt-list' },
-        { title: 'Group Management', link: '/home/group-mgt-list' },
-        { title: 'Application Management', link: '/home/app-management' },
-        { title: 'Group - Application Assignment', link: '/home/app-group-management' },
+        { title: 'Glossys & Docsys', link: '/home/receipts' },
+        { title: 'Undo Receipt', link: '/home/receipt-undo' },
+        { title: 'Remove Receipt', link: '/home/remove-receipt' },
+        { title: 'Update Cheque', link: '/home/update-cheque' },
+        { title: 'Update TT Ref', link: '/home/update-ttref' },
       ],
     },
-    // {
-    //   title: 'Receipts',
-    //   icon: 'fa-solid fa-receipt',
-    //   hasSubmenu: true,
-    //   isExpanded: false,
-    //   submodules: [
-    //     { title: 'Glossys & Docsys', link: '/home/receipts' },
-    //     { title: 'Undo Receipt', link: '/home/receipt-undo' },
-    //     { title: 'Remove Receipt', link: '/home/remove-receipt' },
-    //     { title: 'Update Cheque', link: '/home/update-cheque' },
-    //     { title: 'Update TT Ref', link: '/home/update-ttref' },
-    //   ],
-    // },
     // {
     //   title: 'Cheque',
     //   icon: 'fa-solid fa-money-check-dollar',

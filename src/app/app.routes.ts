@@ -7,7 +7,6 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () => import('./components/login/login').then((m) => m.LoginPage),
   },
-
   {
     path: 'home',
     canActivate: [authGuard],
@@ -29,11 +28,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/layout/welcome/welcome').then((m) => m.WelcomeComponent),
       },
-      {
-        path: 'dashboard',
-        loadComponent: () =>
-          import('./components/dashboard/dashboard').then((m) => m.DashboardComponent),
-      },
+
       {
         path: 'receipts',
         loadComponent: () =>
@@ -67,69 +62,6 @@ export const routes: Routes = [
         path: 'receipt-update-tt',
         loadComponent: () =>
           import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
-      },
-      {
-        path: 'user-mgt-list',
-        loadComponent: () =>
-          import('./components/user-management/user-mgt-list/user-mgt-list').then(
-            (m) => m.UserMgtList,
-          ),
-      },
-      {
-        path: 'user-mgt-details',
-        loadComponent: () =>
-          import('./components/user-management/user-mgt-details/user-mgt-details').then(
-            (m) => m.UserMgtDetails,
-          ),
-      },
-      {
-        path: 'user-mgt-history',
-        loadComponent: () =>
-          import('./components/user-management/user-mgt-history/user-mgt-history').then(
-            (m) => m.UserMgtHistoryComponent,
-          ),
-      },
-      {
-        path: 'group-mgt-list',
-        loadComponent: () =>
-          import('./components/group-management/group-mgt-list/group-mgt-list').then(
-            (m) => m.GroupMgtList,
-          ),
-      },
-      {
-        path: 'group-mgt-details',
-        loadComponent: () =>
-          import('./components/group-management/group-mgt-details/group-mgt-details').then(
-            (m) => m.GroupMgtDetails,
-          ),
-      },
-      {
-        path: 'group-mgt-history',
-        loadComponent: () =>
-          import('./components/group-management/group-mgt-history/group-mgt-history').then(
-            (m) => m.GroupMgtHistoryComponent,
-          ),
-      },
-      {
-        path: 'app-management',
-        loadComponent: () =>
-          import('./components/application-management/app-management/app-management').then(
-            (m) => m.AppManagement,
-          ),
-      },
-      {
-        path: 'app-history',
-        loadComponent: () =>
-          import('./components/application-management/app-management-history/app-management-history').then(
-            (m) => m.AppManagementHistory,
-          ),
-      },
-      {
-        path: 'app-group-management',
-        loadComponent: () =>
-          import('./components/application-management/app-group-management/app-group-management').then(
-            (m) => m.AppGroupManagement,
-          ),
       },
     ],
   },

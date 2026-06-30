@@ -13,10 +13,10 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SKIP_LOADER } from '../../core/interceptors/loaderInterceptor/loader-interceptor-interceptor';
-import { ApiService } from '../../services/api.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { SKIP_LOADER } from '../../core/interceptors/loaderInterceptor/loader-interceptor-interceptor';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-combobox',
@@ -200,7 +200,7 @@ export class Combobox implements OnInit, OnChanges {
       };
 
       this.apiService
-        .post(apiUrl, body, false, {
+        .post(apiUrl, body, {
           context: new HttpContext().set(SKIP_LOADER, true),
         })
         .subscribe({
