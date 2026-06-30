@@ -105,10 +105,10 @@ export class LoginPage {
 
               this.userService.setUser(userData);
 
+              let defaultLocation: any = null;
+
               if (userInfo.masterLocations?.length) {
-                const defaultLocation = userInfo.masterLocations.find(
-                  (x: any) => x.default === 'Y',
-                );
+                defaultLocation = userInfo.masterLocations.find((x: any) => x.default === 'Y');
 
                 if (defaultLocation) {
                   localStorage.setItem('defaultLocation', JSON.stringify(defaultLocation));
@@ -117,19 +117,27 @@ export class LoginPage {
                 localStorage.setItem('locationList', JSON.stringify(userInfo.masterLocations));
               }
 
-              this.alertService.showAlert('Success', 'Logged In Successfully!', 'success');
+              if (defaultLocation) {
+                this.authService.getMenus(userInfo.masterLocations[0].usersLocationId).subscribe({
+                  next: (menus: any) => {
+                    localStorage.setItem('menus', JSON.stringify(menus));
+                    console.log(menus);
 
-              this.router.navigate(['/home']);
-            },
+                    this.alertService.showAlert('Success', 'Logged In Successfully!', 'success');
 
-            error: (err) => {
-              console.error('/info error', err);
+                    this.router.navigate(['/home']);
+                  },
+                  error: (err: any) => {
+                    console.error('Menu API Error', err);
 
-              this.alertService.showAlert(
-                'Error',
-                err?.error?.message || 'Unable to fetch user information',
-                'error',
-              );
+                    this.alertService.showAlert('Error', 'Unable to load menus', 'error');
+                  },
+                });
+              } else {
+                this.alertService.showAlert('Success', 'Logged In Successfully!', 'success');
+
+                this.router.navigate(['/home']);
+              }
             },
           });
         },

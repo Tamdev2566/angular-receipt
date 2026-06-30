@@ -26,4 +26,8 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem('angular_token');
   }
+
+  getMenus(locationId: string) {
+    return this.apiService.get(`/menus/${locationId}`);
+  }
 }
