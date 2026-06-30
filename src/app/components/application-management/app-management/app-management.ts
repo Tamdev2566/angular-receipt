@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import * as XLSX from 'xlsx-js-style';
 import { AlertService } from '../../../services/alertService/alert';
 import { ApiService } from '../../../services/api.service';
 import { UserService } from '../../../services/userService/user.service';
@@ -16,14 +17,6 @@ interface Application {
   date_created: string;
   user_modified: string;
   date_modified: string;
-}
-
-interface ApiResponse {
-  content: Application[];
-  totalElements: number;
-  totalPages: number;
-  number: number;
-  size: number;
 }
 
 @Component({
@@ -161,6 +154,107 @@ export class AppManagement implements OnInit {
         console.error(err);
       },
     });
+  }
+
+  onDownloadExcel(): void {
+    if (!this.gridData || this.gridData.length === 0) {
+      this.alert.showAlert('Warning', 'No records found to download!', 'warning');
+      return;
+    }
+
+    const excelReadyData = this.gridData.map((item: any, index: number) => ({
+      'S.No': index + 1,
+      'Application ID': item.app_id || '',
+      'Application Name': item.app_name || '',
+      'Created By': item.user_created || '',
+      'Date Created': item.date_created ? new Date(item.date_created).toLocaleString() : '',
+      'Modified By': item.user_modified || '',
+      'Date Modified': item.date_modified ? new Date(item.date_modified).toLocaleString() : '',
+      Status: item.is_valid === 'Y' ? 'Active' : 'Inactive',
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(excelReadyData);
+
+    const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
+
+    for (let row = range.s.r; row <= range.e.r; row++) {
+      for (let col = range.s.c; col <= range.e.c; col++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+        const cell = worksheet[cellAddress];
+
+        if (!cell) continue;
+
+        if (row === 0) {
+          cell.s = {
+            fill: {
+              fgColor: { rgb: '33708F' },
+            },
+            font: {
+              color: { rgb: 'FFFFFF' },
+              bold: true,
+              sz: 11,
+            },
+            alignment: {
+              horizontal: 'center',
+              vertical: 'center',
+            },
+            border: {
+              top: { style: 'thin', color: { rgb: '1E4B63' } },
+              bottom: { style: 'medium', color: { rgb: '1E4B63' } },
+              left: { style: 'thin', color: { rgb: '1E4B63' } },
+              right: { style: 'thin', color: { rgb: '1E4B63' } },
+            },
+          };
+        } else {
+          cell.s = {
+            font: {
+              sz: 10,
+              color: { rgb: '333333' },
+            },
+            alignment: {
+              horizontal: col === 2 ? 'left' : 'center',
+              vertical: 'center',
+            },
+            border: {
+              top: { style: 'thin', color: { rgb: 'E2E8F0' } },
+              bottom: { style: 'thin', color: { rgb: 'E2E8F0' } },
+              left: { style: 'thin', color: { rgb: 'E2E8F0' } },
+              right: { style: 'thin', color: { rgb: 'E2E8F0' } },
+            },
+          };
+
+          if (col === 7) {
+            cell.s.font.color = cell.v === 'Active' ? { rgb: '10B981' } : { rgb: 'EF4444' };
+
+            cell.s.font.bold = true;
+          }
+        }
+      }
+    }
+
+    worksheet['!cols'] = [
+      { wch: 8 }, // S.No
+      { wch: 18 }, // Application ID
+      { wch: 35 }, // Application Name
+      { wch: 18 }, // Created By
+      { wch: 25 }, // Date Created
+      { wch: 18 }, // Modified By
+      { wch: 25 }, // Date Modified
+      { wch: 15 }, // Status
+    ];
+
+    worksheet['!freeze'] = {
+      xSplit: 0,
+      ySplit: 1,
+    };
+
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Application List');
+
+    const today = new Date().toISOString().split('T')[0];
+
+    XLSX.writeFile(workbook, `Application_Management_List_${today}.xlsx`);
   }
 
   saveApplication(): void {
