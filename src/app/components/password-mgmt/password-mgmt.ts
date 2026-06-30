@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../services/alertService/alert';
+import { ApiService } from '../../services/api.service';
+import { UserService } from '../../services/userService/user.service';
 
 @Component({
   selector: 'app-password-mgmt',
@@ -22,48 +24,90 @@ export class PasswordMgmt implements OnInit {
   isLoading = false;
   formSubmitted = false;
 
-  constructor(private alertService: AlertService) {}
+  constructor(
+    private alert: AlertService,
+    private apiService: ApiService,
+    private user: UserService,
+  ) {}
 
   ngOnInit() {
     if (this.mode === 'change') this.currentStep = 'change-password';
   }
 
-  onSubmitPassword(form: NgForm) {
+  onSubmitPassword(form: any): void {
     this.formSubmitted = true;
 
-    if (form && form.invalid) {
-      Object.keys(form.controls).forEach((key) => {
-        form.controls[key].markAsTouched();
-      });
+    if (form.invalid) {
+      form.control.markAllAsTouched();
       return;
     }
 
-    // if (this.newPassword !== this.confirmPassword) {
-    //   this.alertService.showAlert('Error', 'Password is not match', 'error');
-    //   return;
-    // }
-
-    const clmsRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
-
-    if (!clmsRegex.test(this.newPassword)) {
-      this.alertService.showAlert(
-        'Error',
-        'Password must be at least 8 characters and include 1 uppercase, 1 lowercase, 1 number, and 1 special character.',
-        'error',
-      );
+    if (this.newPassword !== this.confirmPassword) {
+      this.alert.showAlert('Error', 'Passwords do not match', 'error');
       return;
     }
 
     this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-      if (this.currentStep === 'change-password') {
-        this.alertService.showAlert('Success', 'Password has been changed.', 'success');
-      } else {
-        this.alertService.showAlert('Success', 'Password has been reset.', 'success');
-      }
-      this.closeModal();
-    }, 2000);
+
+    if (this.currentStep === 'change-password') {
+      const payload = {
+        userId: this.user.getUser().userId,
+        XPWD: btoa(`${this.oldPassword}.${this.newPassword}.${this.confirmPassword}`),
+      };
+
+      this.apiService.post('changePassword', payload).subscribe({
+        next: (resp: any) => {
+          this.isLoading = false;
+
+          if (
+            resp === 'Changed Password Successfully' ||
+            resp?.message === 'Changed Password Successfully'
+          ) {
+            this.alert.showAlert('Success', 'Changed Password Successfully', 'success');
+
+            this.oldPassword = '';
+            this.newPassword = '';
+            this.confirmPassword = '';
+
+            this.closeModal();
+          } else {
+            this.alert.showAlert('Warning', resp?.message || resp, 'warning');
+          }
+        },
+        error: (err: any) => {
+          this.isLoading = false;
+
+          this.alert.showAlert(
+            'Error',
+            err?.error?.message || 'Unable to change password',
+            'error',
+          );
+        },
+      });
+
+      return;
+    }
+
+    const resetPayload = {
+      token: this.token,
+      newPassword: this.newPassword,
+      confirmPassword: this.confirmPassword,
+    };
+
+    this.apiService.post('resetPassword', resetPayload).subscribe({
+      next: () => {
+        this.isLoading = false;
+
+        this.alert.showAlert('Success', 'Password Reset Successfully', 'success');
+
+        this.closeModal();
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+
+        this.alert.showAlert('Error', err?.error?.message || 'Password Reset Failed', 'error');
+      },
+    });
   }
 
   sendToken() {
