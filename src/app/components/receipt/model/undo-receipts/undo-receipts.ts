@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
+import { ColumnDef, DataGrid } from '../../../../shared/data-grid/data-grid';
 
 @Component({
   selector: 'app-undo-receipt',

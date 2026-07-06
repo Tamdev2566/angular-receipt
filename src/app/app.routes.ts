@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { UndoReceiptComponent } from './components/undo-receipts/undo-receipts';
 import { authGuard } from './core/guards/auth.guard';
+import { UndoReceiptComponent } from './components/receipt/model/undo-receipts/undo-receipts';
 
 export const routes: Routes = [
   {
@@ -28,7 +28,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/layout/welcome/welcome').then((m) => m.WelcomeComponent),
       },
-         {
+      {
         path: 'dashboard',
         loadComponent: () =>
           import('./components/dashboard/dashboard').then((m) => m.DashboardComponent),
@@ -36,18 +36,20 @@ export const routes: Routes = [
       {
         path: 'receipts',
         loadComponent: () =>
-          import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
+          import('./components/receipt/receipts/receipts').then((m) => m.ReceiptComponent),
       },
       {
         path: 'new-receipt',
         loadComponent: () =>
-          import('./components/new-receipts/new-receipts').then((m) => m.NewReceiptComponent),
+          import('./components/receipt/new-receipts/new-receipts').then(
+            (m) => m.NewReceiptComponent,
+          ),
       },
-      {
-        path: 'receipt-remove',
-        loadComponent: () =>
-          import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
-      },
+      // {
+      //   path: 'receipt-remove',
+      //   loadComponent: () =>
+      //     import('./components/receipt/receipts/receipts').then((m) => m.ReceiptComponent),
+      // },
       {
         path: 'receipt-undo',
         loadComponent: () => import('./shared/wrapper/wrapper').then((m) => m.Wrapper),
@@ -57,16 +59,16 @@ export const routes: Routes = [
           dynamicComponent: UndoReceiptComponent,
         },
       },
-      {
-        path: 'receipt-update-cheque',
-        loadComponent: () =>
-          import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
-      },
-      {
-        path: 'receipt-update-tt',
-        loadComponent: () =>
-          import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
-      },
+      // {
+      //   path: 'receipt-update-cheque',
+      //   loadComponent: () =>
+      //     import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
+      // },
+      // {
+      //   path: 'receipt-update-tt',
+      //   loadComponent: () =>
+      //     import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
+      // },
     ],
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },

@@ -1,0 +1,72 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <div class="main-scrollable-content-fluid p-4">
+    <div class="page-header-section">
+      <h4 class="text-header-title m-0 fw-bold">Receipt System</h4>
+    </div>
+
+    <div class="action-toolbar">
+      <div class="action-buttons-group">
+        <button class="btn btn-flat-action-primary" (click)="onCreateClick()">
+          <i class="fa-solid fa-plus small"></i>Create
+        </button>
+
+        <!-- <button
+          class="btn btn-flat-action-secondary"
+          [disabled]="!selectedRecord"
+          (click)="onUpdateClick()"
+        >
+          <i class="fa-solid fa-pencil small"></i> Update
+        </button> -->
+        <button class="btn btn-flat-action-secondary" (click)="onPrintClick()">
+          <i class="fa-solid fa-print small"></i> Print
+        </button>
+
+        <button class="btn btn-flat-action-secondary" (click)="onClickHistory()">
+          <i class="fa-solid fa-history small"></i> History
+        </button>
+      </div>
+
+      <div class="search-flat-wrapper">
+        <input
+          type="text"
+          placeholder="Search..."
+          class="search-flat-input"
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="onSearch($event)"
+        />
+        <button type="button" class="btn-search-flat-go" (click)="onSearch()">Go</button>
+      </div>
+    </div>
+    <!-- Summary Card here-->
+    <div class="main-container">
+      <app-summary-card
+        [items]="receipts"
+        (undo)="openUndoModal($event)"
+        (remove)="openRemoveModal($event)"
+      >
+      </app-summary-card>
+    </div>
+  </div>
+
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100" *ngIf="toastMessage">
+    <div class="toast show border-0 bg-dark text-white rounded-3 shadow-lg">
+      <div class="d-flex align-items-center p-3">
+        <i class="fa-solid fa-circle-info text-success me-2.5 fs-5"></i>
+        <div class="toast-body p-0 fw-medium small">{{ toastMessage }}</div>
+        <button
+          type="button"
+          class="btn-close btn-close-white ms-auto me-0 shadow-none"
+          (click)="toastMessage = null"
+        ></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-wrapper
+  *ngIf="showUndoModal"
+  title="UndoReceipt"
+  [dynamicComponent]="undoReceipt"
+  [isModal]="true"
+  (onClose)="closeModal()"
+></app-wrapper>

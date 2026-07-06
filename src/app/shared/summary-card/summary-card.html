@@ -1,0 +1,98 @@
+<div class="summary-card-grid">
+  <div *ngFor="let item of pagedItems" class="summary-card premium-shadow">
+    <!-- Header -->
+
+    <div class="summary-header">
+      <div class="summary-user">
+        <div class="summary-avatar">
+          {{ item.customerName?.charAt(0) }}
+        </div>
+
+        <div>
+          <h4 class="summary-name">
+            {{ item.customerName }}
+          </h4>
+
+          <p class="summary-invoice">
+            INVOICE NO :
+            {{ item.invoiceNo }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details -->
+
+    <div class="summary-details">
+      <div class="detail-row">
+        <span class="detail-label"> Vessel / Voyage </span>
+        <span class="detail-value">
+          {{ item.vesselName }}
+          ({{ item.voyageNo }})
+        </span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label"> BL Code </span>
+        <span class="detail-value"> {{ item.blNo }} </span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label"> Payment Ref </span>
+        <span class="detail-value"> {{ item.payMode }} - {{ item.chequeNo }} </span>
+      </div>
+    </div>
+
+    <!-- Amount -->
+
+    <div class="summary-amount">
+      <div>
+        <span class="amount-label"> Total Amount </span>
+
+        <div class="amount-value">
+          ${{ item.amount | number: '1.2-2' }}
+          <span> {{ item.currency }} </span>
+        </div>
+      </div>
+
+      <div class="ledger-date">
+        <span> Ledger Date </span>
+        <strong> {{ item.date }} </strong>
+      </div>
+    </div>
+    <!-- Footer -->
+
+    <div class="summary-actions">
+      <button class="btn-undo" (click)="undo.emit(item)">Undo Verification</button>
+      <button class="btn-remove" (click)="remove.emit(item)">Remove Invoice</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="totalPages > 1" class="pagination-wrapper">
+  <div class="pagination-info">
+    Page
+
+    <strong>{{ currentPage() }}</strong>
+
+    of
+
+    <strong>{{ totalPages }}</strong>
+  </div>
+
+  <ul class="pagination pagination-sm mb-0 custom-brand-pagination">
+    <li class="page-item" [class.disabled]="currentPage() === 1">
+      <button class="page-link" (click)="changePage(currentPage() - 1)">&laquo;</button>
+    </li>
+
+    <li *ngFor="let page of pages" class="page-item" [class.active]="currentPage() === page">
+      <button class="page-link" (click)="changePage(page)">
+        {{ page }}
+      </button>
+    </li>
+
+    <li class="page-item" [class.disabled]="currentPage() === totalPages">
+      <button class="page-link" (click)="changePage(currentPage() + 1)">&raquo;</button>
+    </li>
+  </ul>
+</div>
