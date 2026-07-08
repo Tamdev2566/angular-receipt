@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { RemoveReceipt } from './components/receipt/remove-receipt/remove-receipt';
-import { UndoReceipt } from './components/receipt/undo-receipt/undo-receipt';
 import { authGuard } from './core/guards/auth.guard';
+import { UndoReceipt } from './components/undo-receipt/undo-receipt';
+import { RemoveReceipt } from './components/remove-receipt/remove-receipt';
 
 export const routes: Routes = [
   {
@@ -70,25 +70,43 @@ export const routes: Routes = [
           dynamicComponent: RemoveReceipt,
         },
       },
-      // {
-      //   path: 'receipt-undo',
-      //   loadComponent: () => import('./shared/wrapper/wrapper').then((m) => m.Wrapper),
-      //   data: {
-      //     isModal: false,
-      //     title: 'Undo Receipt',
-      //     dynamicComponent: UndoReceiptComponent,
-      //   },
-      // },
-      // {
-      //   path: 'receipt-update-cheque',
-      //   loadComponent: () =>
-      //     import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
-      // },
-      // {
-      //   path: 'receipt-update-tt',
-      //   loadComponent: () =>
-      //     import('./components/receipts/receipts').then((m) => m.ReceiptComponent),
-      // },
+      {
+        path: 'update-cheque',
+        loadComponent: () =>
+          import('./components/update-cheque/update-cheque').then((m) => m.UpdateCheque),
+      },
+
+      {
+        path: 'update-tt-ref',
+        loadComponent: () =>
+          import('./components/update-tt-reference/update-tt-reference').then(
+            (m) => m.UpdateTtReference,
+          ),
+      },
+      {
+        path: 'edi-to-coda',
+        loadComponent: () =>
+          import('./components/edi-to-coda/edi-to-coda').then((m) => m.EdiToCoda),
+      },
+      {
+        path: 'print-report',
+        loadComponent: () =>
+          import('./components/print-report/print-report').then((m) => m.PrintReport),
+      },
+      {
+        path: 'updated-cheque-report',
+        loadComponent: () =>
+          import('./components/updated-cheque-report/updated-cheque-report').then(
+            (m) => m.UpdatedChequeReport,
+          ),
+      },
+      {
+        path: 'removed-invoice-report',
+        loadComponent: () =>
+          import('./components/removed-invoice-report/removed-invoice-report').then(
+            (m) => m.RemovedInvoiceReport,
+          ),
+      },
     ],
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },

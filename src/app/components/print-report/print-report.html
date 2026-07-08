@@ -1,0 +1,72 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <div class="page-header-section mt-3">
+    <h4 class="text-white m-0 fw-bold">Print Report</h4>
+
+    <div class="d-flex justify-content-between gap-3">
+      <button class="btn btn-flat-action-primary" (click)="onReportClick()">
+        <i class="fa-solid fa-file-lines"></i>
+        Generate Report
+      </button>
+
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">
+        <i class="fa-solid fa-xmark me-1"></i>
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <div class="main-scrollable-content-fluid p-1">
+    <div class="receipt-form-card">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6>Retrieve By</h6>
+        </div>
+        <div class="col-md-2">
+          <app-date-picker
+            label="Transaction Date"
+            [required]="true"
+            helperText="Select transaction start date"
+          >
+          </app-date-picker>
+        </div>
+        <div class="col-12 col-sm-6 col-md-2">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">Payment Mode:</label>
+          <app-combobox
+            displayExpr="name"
+            valueExpr="id"
+            name="paymentMode"
+            [data]="paymentTypes"
+            [onChange]="onPaymentChange.bind(this)"
+          >
+          </app-combobox>
+        </div>
+        <div class="col-12 col-sm-6 col-md-2">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">Currency:</label>
+          <app-combobox
+            displayExpr="name"
+            valueExpr="id"
+            name="paymentMode"
+            [data]="currency"
+            [onChange]="onCurrencyChange.bind(this)"
+          >
+          </app-combobox>
+        </div>
+        <div class="col-12 col-sm-6 col-md-2">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">Report For:</label>
+          <app-combobox
+            displayExpr="name"
+            valueExpr="id"
+            name="paymentMode"
+            [onChange]="onCurrencyChange.bind(this)"
+          >
+          </app-combobox>
+        </div>
+        <div class="col-md-3 d-flex align-items-end mb-2">
+          <button class="btn btn-flat-action-primary-fill" (click)="retrieveReport()">
+            Retrieve
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

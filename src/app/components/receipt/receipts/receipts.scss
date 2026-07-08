@@ -132,19 +132,20 @@
 //Customised Buttons
 
 .btn-flat-action-primary {
-  background: #ffffff !important;
+  background: #fff !important;
   color: #33708f !important;
-  font-weight: 500;
-  font-size: 0.8rem;
-  padding: 8px 18px !important;
   border: none !important;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
-  &:hover {
-    background: white !important;
-    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
-    transform: translateY(-1px);
-  }
+  padding: 8px 18px !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  box-shadow: 0 2px 5px rgba(51, 112, 143, 0.15);
+  transition: 0.2s;
+}
+
+.btn-flat-action-primary:hover {
+  transform: translateY(-1px);
 }
 
 .btn-flat-action-secondary {

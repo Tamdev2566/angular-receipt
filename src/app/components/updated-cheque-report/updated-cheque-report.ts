@@ -1,0 +1,69 @@
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { DatepickerComponent } from '../../shared/date-picker/date-picker';
+
+@Component({
+  selector: 'app-updated-cheque-report',
+  standalone: true,
+  imports: [CommonModule, FormsModule, DatepickerComponent],
+  templateUrl: './updated-cheque-report.html',
+  styleUrls: ['./updated-cheque-report.scss'],
+})
+export class UpdatedChequeReport {
+  constructor(private router: Router) {
+    const today = new Date().toISOString().split('T')[0];
+
+    this.reportForm.fromDate = today;
+    this.reportForm.toDate = today;
+  }
+
+  reportForm = {
+    fromDate: '',
+    toDate: '',
+    directoryPath: 'C:\\',
+  };
+
+  loading = false;
+
+  browseDirectory(): void {
+    console.log('Browse Folder');
+  }
+
+  generateReport(): void {
+    if (!this.reportForm.fromDate) {
+      alert('Please select From Date');
+      return;
+    }
+
+    if (!this.reportForm.toDate) {
+      alert('Please select To Date');
+      return;
+    }
+
+    if (!this.reportForm.directoryPath.trim()) {
+      alert('Please select Directory Path');
+      return;
+    }
+
+    const payload = {
+      fromDate: this.reportForm.fromDate,
+      toDate: this.reportForm.toDate,
+      directoryPath: this.reportForm.directoryPath,
+    };
+
+    console.log('Updated Cheque Report Payload');
+    console.log(payload);
+
+    // TODO: Call API
+  }
+
+  onGenerate(): void {
+    this.generateReport();
+  }
+
+  onCancel(): void {
+    this.router.navigate(['/home/dashboard']);
+  }
+}

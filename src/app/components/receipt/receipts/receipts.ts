@@ -6,8 +6,8 @@ import { Router } from '@angular/router';
 import { ModuleService } from '../../../services/module-service/module-service';
 import { SummaryCard } from '../../../shared/summary-card/summary-card';
 import { Wrapper } from '../../../shared/wrapper/wrapper';
-import { RemoveReceipt } from '../remove-receipt/remove-receipt';
-import { UndoReceipt } from '../undo-receipt/undo-receipt';
+import { UndoReceipt } from '../../undo-receipt/undo-receipt';
+import { RemoveReceipt } from '../../remove-receipt/remove-receipt';
 
 @Component({
   selector: 'app-root',

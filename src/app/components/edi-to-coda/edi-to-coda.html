@@ -1,0 +1,49 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <div class="page-header-section receipt-header mt-3">
+    <h4 class="text-white m-0 fw-bold">EDI to CODA</h4>
+    <div class="d-flex justify-content-between gap-3">
+      <button class="btn btn-flat-action-primary" (click)="onExport()">
+        <i class="fa-solid fa-arrow-up-from-bracket"></i> Export
+      </button>
+
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">
+        <i class="fa-solid fa-xmark me-1"></i>
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <div class="main-scrollable-content-fluid p-1">
+    <div class="receipt-form-card">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6>Transaction Date</h6>
+        </div>
+
+        <div class="col-md-3">
+          <app-date-picker label="From Date" helperText="Select transaction start date">
+          </app-date-picker>
+        </div>
+
+        <div class="col-md-3">
+          <app-date-picker label="To Date" helperText="Select transaction start date">
+          </app-date-picker>
+        </div>
+
+        <div class="col-md-3 d-flex align-items-end">
+          <button class="btn btn-flat-action-primary-fill" (click)="retrieveInvoice()">
+            Retrieve
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <app-data-grid
+      [records]="gridData"
+      [columns]="columns"
+      [showAction]="false"
+      [tableHeight]="'380px'"
+    >
+    </app-data-grid>
+  </div>
+</div>

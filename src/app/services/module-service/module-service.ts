@@ -35,23 +35,31 @@ export class ModuleService {
       isExpanded: false,
       submodules: [
         { title: 'Glossys & Docsys', link: '/home/receipts' },
-        { title: 'Undo Receipt', link: '/home/undo-receipt' },
+        { title: 'Undo Payments', link: '/home/undo-receipt' },
         { title: 'Remove Invoice', link: '/home/receipt-remove' },
         { title: 'Update Cheque', link: '/home/update-cheque' },
-        { title: 'Update TT Ref', link: '/home/update-ttref' },
+        { title: 'Update TT Ref', link: '/home/update-tt-ref' },
       ],
     },
-    // {
-    //   title: 'Cheque',
-    //   icon: 'fa-solid fa-money-check-dollar',
-    //   hasSubmenu: true,
-    //   isExpanded: false,
-    //   submodules: [
-    //     { title: 'Cheque', link: '/home/receipt-cheque' },
-    //     { title: 'Remove Cheque', link: '/home/remove-cheque' },
-    //     { title: 'Update Cheque', link: '/home/update-cheque' },
-    //   ],
-    // },
+    {
+      title: 'EDI to CODA',
+      icon: 'fa-solid fa-money-check-dollar',
+      hasSubmenu: true,
+      isExpanded: false,
+      submodules: [{ title: 'EDI to CODA', link: '/home/edi-to-coda' }],
+    },
+    {
+      title: 'Reports',
+      icon: 'fa-solid fa-money-check-dollar',
+      hasSubmenu: true,
+      isExpanded: false,
+      submodules: [
+        { title: 'Print Reports', link: '/home/print-report' },
+        { title: 'Updated Cheque No Report', link: '/home/updated-cheque-report' },
+        { title: 'Removed Invoice Report', link: '/home/removed-invoice-report' },
+        { title: 'Updated TT Ref Report', link: '/home/update-cheque' },
+      ],
+    },
   ];
   getModalState(): boolean {
     return this.modalState.getValue();

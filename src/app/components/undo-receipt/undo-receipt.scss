@@ -1,15 +1,3 @@
-.input-readonly-flat {
-  background: #f8fafc !important;
-
-  color: #475569;
-
-  font-weight: 600;
-}
-
-.receipt-form-card {
-  margin-bottom: 16px;
-}
-
 .user-management-flat-wrapper {
   height: calc(100vh - 110px) !important;
   display: flex;
@@ -23,7 +11,7 @@
   overflow-y: auto !important;
   overflow-x: hidden;
   height: 100%;
-  // padding: 15px 0px !important;
+  padding: 15px 0px !important;
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -127,54 +115,34 @@
 }
 
 .btn-flat-action-primary {
-  background: #ffffff !important;
+  background: #fff !important;
   color: #33708f !important;
-  font-weight: 500;
-  font-size: 0.8rem;
-  padding: 8px 18px !important;
   border: none !important;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+  padding: 8px 18px !important;
+  font-size: 0.8rem;
+  font-weight: 600;
   letter-spacing: 0.08em;
-
-  &:hover {
-    background: white !important;
-    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
-    transform: translateY(-1px);
-  }
+  box-shadow: 0 2px 5px rgba(51, 112, 143, 0.15);
+  transition: 0.2s;
 }
 
-.btn-flat-action-warning {
-  background: #f59e0b;
-  border: 1px solid #f59e0b;
-  color: #fff;
-  padding: 7px 18px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  border-radius: 4px;
-
-  &:hover {
-    background: #d97706;
-    border-color: #d97706;
-  }
+.btn-flat-action-primary:hover {
+  transform: translateY(-1px);
 }
 
 .btn-flat-action-danger-outline {
-  background: #ffffff !important;
-  border: 1px solid #fee2e2 !important;
+  background: #fff !important;
   color: #ef4444 !important;
-  font-size: 0.76rem;
-  font-weight: 500;
-  padding: 6px 14px !important;
-  border-radius: 4px;
-  display: inline-flex;
-  align-items: center;
-  transition: all 0.15s ease;
-  letter-spacing: 0.08em;
+  border: 1px solid #fecaca !important;
+  border-radius: 8px;
+  padding: 8px 18px !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: 0.2s;
 
   &:hover {
     background: #fef2f2 !important;
-    border-color: #fca5a5 !important;
   }
 }
 
@@ -197,5 +165,23 @@
   .btn-flat-action-warning,
   .btn-flat-action-danger {
     width: 100%;
+    letter-spacing: 0.08em;
+  }
+}
+
+.btn-flat-action-primary-fill {
+  background: #33708f !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px;
+  padding: 8px 18px !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  box-shadow: 0 2px 5px rgba(51, 112, 143, 0.15);
+  transition: 0.2s;
+
+  &:hover {
+    transform: translateY(-1px);
   }
 }

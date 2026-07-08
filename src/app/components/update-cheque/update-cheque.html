@@ -1,0 +1,144 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <div class="page-header-section receipt-header mt-3">
+    <h4 class="text-white m-0 fw-bold">Update Cheque</h4>
+    <div class="d-flex justify-content-between gap-3">
+      <button class="btn btn-flat-action-primary" (click)="updateCheque()">
+        <i class="fa-solid fa-floppy-disk me-1"></i>
+        Update
+      </button>
+
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">
+        <i class="fa-solid fa-xmark me-1"></i>
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <div class="main-scrollable-content-fluid p-1">
+    <!-- Retrieve -->
+
+    <div class="receipt-form-card">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6>Retrieve By</h6>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Cheque No : </label>
+
+          <input
+            class="form-control custom-flat-input"
+            [(ngModel)]="retrieve.chequeNo"
+            placeholder="Enter Cheque Number"
+          />
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+          <button class="btn btn-flat-action-primary-fill" (click)="retrieveCheque()">
+            Retrieve
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Receipt Details -->
+
+    <div class="receipt-form-card mt-3">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6>Receipt Details</h6>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Transaction No : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="receipt.transactionNo"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Customer Name : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="receipt.customerName"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Reference No : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="receipt.referenceNo"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Currency : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="receipt.currency"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Amount : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="receipt.amount"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Paid Invoice Total : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="receipt.paidInvoiceTotal"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Update -->
+
+    <div class="receipt-form-card mt-3">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6>Update Cheque</h6>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> New Cheque No : </label>
+
+          <input
+            class="form-control custom-flat-input"
+            [(ngModel)]="update.newChequeNo"
+            placeholder="Enter New Cheque Number"
+          />
+        </div>
+
+        <div class="col-md-8">
+          <label class="form-label custom-flat-label"> Remark : </label>
+
+          <input
+            class="form-control custom-flat-input"
+            [(ngModel)]="update.remark"
+            placeholder="Enter Remark"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

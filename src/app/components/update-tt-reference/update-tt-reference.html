@@ -1,0 +1,152 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <!-- Header -->
+
+  <div class="page-header-section mt-3">
+    <h4 class="text-white m-0 fw-bold">Update TT Reference</h4>
+
+    <div class="d-flex justify-content-between gap-3">
+      <button class="btn btn-flat-action-primary" (click)="onUpdate()">
+        <i class="fa-solid fa-floppy-disk me-1"></i>
+        Update
+      </button>
+
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">
+        <i class="fa-solid fa-xmark me-1"></i>
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Body -->
+
+  <div class="main-scrollable-content-fluid p-1">
+    <!-- Retrieve By -->
+
+    <div class="receipt-form-card">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6>Retrieve By</h6>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> TT Ref No : </label>
+
+          <input
+            type="text"
+            class="form-control custom-flat-input"
+            placeholder="Enter TT Reference Number"
+            [(ngModel)]="retrieve.ttRefNo"
+          />
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+          <button class="btn btn-flat-action-primary-fill" (click)="retrieveTTReference()">
+            Retrieve
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Receipt Details -->
+
+    <div class="receipt-form-card mt-3">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6>Receipt Details</h6>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Transaction No : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="receipt.transactionNo"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Customer Name : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="receipt.customerName"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Reference No : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="receipt.referenceNo"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Currency : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="receipt.currency"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Amount : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="receipt.amount"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Paid Invoice Total : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="receipt.paidInvoiceTotal"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Update TT Reference -->
+
+    <div class="receipt-form-card mt-3">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6>Update TT Reference</h6>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> New TT Ref No : </label>
+
+          <input
+            type="text"
+            class="form-control custom-flat-input"
+            placeholder="Enter New TT Reference Number"
+            [(ngModel)]="update.newTTRefNo"
+          />
+        </div>
+
+        <div class="col-md-8">
+          <label class="form-label custom-flat-label"> Remark : </label>
+
+          <input
+            type="text"
+            class="form-control custom-flat-input"
+            placeholder="Enter Remark"
+            [(ngModel)]="update.remark"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

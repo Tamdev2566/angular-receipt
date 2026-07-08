@@ -4,19 +4,20 @@ $border-color-muted: #cbd5e1;
 
 //Customised Buttons
 .btn-flat-action-primary {
-  background: #fff;
-  border: 1px solid #33708f;
-  color: #33708f;
-  padding: 7px 18px;
-  font-size: 0.82rem;
+  background: #fff !important;
+  color: #33708f !important;
+  border: none !important;
+  border-radius: 8px;
+  padding: 8px 18px !important;
+  font-size: 0.8rem;
   font-weight: 600;
-  border-radius: 4px;
   letter-spacing: 0.08em;
+  box-shadow: 0 2px 5px rgba(51, 112, 143, 0.15);
+  transition: 0.2s;
+}
 
-  &:hover {
-    background: #e7f7ff;
-    border-color: #2c617c;
-  }
+.btn-flat-action-primary:hover {
+  transform: translateY(-1px);
 }
 
 .btn-flat-action-danger-outline {

@@ -1,13 +1,18 @@
 <div class="user-management-flat-wrapper animate-fade-in">
   <div class="page-header-section mt-3">
-    <h4 class="text-white m-0 fw-bold">Undo Receipt</h4>
+    <h4 class="text-white m-0 fw-bold">Undo Payments</h4>
     <div class="d-flex justify-content-between gap-3">
-      <button class="btn btn-flat-action-primary" (click)="undoReceipt()">Undo Payment</button>
+      <button class="btn btn-flat-action-primary" (click)="undoReceipt()">
+        <i class="fa-solid fa-rotate-left"></i> Undo Payment
+      </button>
 
-      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">Cancel</button>
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">
+        <i class="fa-solid fa-xmark me-1"></i>
+        Cancel
+      </button>
     </div>
   </div>
-  <div class="main-scrollable-content-fluid p-4">
+  <div class="main-scrollable-content-fluid p-1">
     <div class="receipt-form-card">
       <div class="row g-2">
         <div class="col-12">
@@ -42,7 +47,9 @@
         </div>
 
         <div class="col-md-2 d-flex align-items-end">
-          <button class="btn btn-flat-action-primary" (click)="retrieveReceipt()">Retrieve</button>
+          <button class="btn btn-flat-action-primary-fill" (click)="retrieveReceipt()">
+            Retrieve
+          </button>
         </div>
       </div>
     </div>

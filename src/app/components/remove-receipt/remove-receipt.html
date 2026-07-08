@@ -1,13 +1,18 @@
 <div class="user-management-flat-wrapper animate-fade-in">
-  <div class="page-header-section mt-3">
+  <div class="page-header-section receipt-header mt-3">
     <h4 class="text-white m-0 fw-bold">Remove Invoice</h4>
     <div class="d-flex justify-content-between gap-3">
-      <button class="btn btn-flat-action-primary" (click)="removeInvoice()">Remove Invoice</button>
+      <button class="btn btn-flat-action-primary" (click)="removeInvoice()">
+        <i class="fa-solid fa-trash-can"></i> Remove Invoice
+      </button>
 
-      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">Cancel</button>
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">
+        <i class="fa-solid fa-xmark me-1"></i>
+        Cancel
+      </button>
     </div>
   </div>
-  <div class="main-scrollable-content-fluid p-4">
+  <div class="main-scrollable-content-fluid p-1">
     <div class="receipt-form-card">
       <div class="row g-3">
         <div class="col-12">
@@ -42,7 +47,9 @@
         </div>
 
         <div class="col-md-3 d-flex align-items-end">
-          <button class="btn btn-flat-action-primary" (click)="retrieveInvoice()">Retrieve</button>
+          <button class="btn btn-flat-action-primary-fill" (click)="retrieveInvoice()">
+            Retrieve
+          </button>
         </div>
       </div>
     </div>
