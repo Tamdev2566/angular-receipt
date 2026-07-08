@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 export interface SubMenu {
   title: string;
@@ -16,6 +17,9 @@ export interface MenuItem {
 
 @Injectable({ providedIn: 'root' })
 export class ModuleService {
+  private modalState = new BehaviorSubject<boolean>(false);
+  modalState$ = this.modalState.asObservable();
+
   private appMenus: MenuItem[] = [
     {
       title: 'Dashboard',
@@ -49,7 +53,12 @@ export class ModuleService {
     //   ],
     // },
   ];
-
+  getModalState(): boolean {
+    return this.modalState.getValue();
+  }
+  setModalState(isOpen: boolean) {
+    this.modalState.next(isOpen);
+  }
   getMenus(): MenuItem[] {
     return this.appMenus;
   }

@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { ModuleService } from '../../../services/module-service/module-service';
 import { SummaryCard } from '../../../shared/summary-card/summary-card';
 import { Wrapper } from '../../../shared/wrapper/wrapper';
 import { RemoveReceipt } from '../remove-receipt/remove-receipt';
@@ -169,7 +170,10 @@ export class ReceiptComponent {
     },
   ];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private stateService: ModuleService,
+  ) {}
 
   ngOnInit() {
     this.filteredReceipts = [...this.receipts];
@@ -210,22 +214,21 @@ export class ReceiptComponent {
 
   openUndoModal(item: any) {
     this.selectedRecord = item;
-
     this.showUndoModal = true;
+    this.stateService.setModalState(true);
   }
 
   openRemoveModal(item: any) {
     this.selectedRecord = item;
-
     this.showRemoveModal = true;
+    this.stateService.setModalState(true);
   }
 
   closeModal() {
     this.showUndoModal = false;
-
     this.showRemoveModal = false;
-
     this.selectedRecord = null;
+    this.stateService.setModalState(false);
   }
 
   triggerToast(msg: string) {

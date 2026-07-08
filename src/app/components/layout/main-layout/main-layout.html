@@ -8,6 +8,7 @@
 
   <div
     class="h-100 flex-shrink-0 p-3 position-relative sidebar-container"
+    [ngClass]="{ 'modal-active': (stateService.modalState$ | async) }"
     [class.active]="isSidebarOpen"
     [class.receipt-blur]="showReceiptModal"
   >
