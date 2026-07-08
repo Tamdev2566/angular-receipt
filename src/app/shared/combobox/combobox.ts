@@ -52,6 +52,7 @@ export class Combobox implements OnInit, OnChanges {
   @Input() onChange?: (value: any, item: any) => void;
   @Input() handleChange?: (value: any, item: any) => void;
   @Input() searchFromApi: boolean = true;
+  @Input() name = '';
 
   isTouched = false;
 

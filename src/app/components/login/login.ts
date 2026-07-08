@@ -36,9 +36,8 @@ export class LoginPage {
   ) {}
 
   ngOnInit() {
-    const sessionId = localStorage.getItem('sessionId');
-
-    if (sessionId) {
+    const token = localStorage.getItem('angular_token');
+    if (token) {
       this.router.navigate(['/home']);
     }
   }
@@ -105,10 +104,10 @@ export class LoginPage {
 
               this.userService.setUser(userData);
 
-              let defaultLocation: any = null;
-
               if (userInfo.masterLocations?.length) {
-                defaultLocation = userInfo.masterLocations.find((x: any) => x.default === 'Y');
+                const defaultLocation = userInfo.masterLocations.find(
+                  (x: any) => x.default === 'Y',
+                );
 
                 if (defaultLocation) {
                   localStorage.setItem('defaultLocation', JSON.stringify(defaultLocation));
@@ -117,27 +116,39 @@ export class LoginPage {
                 localStorage.setItem('locationList', JSON.stringify(userInfo.masterLocations));
               }
 
-              if (defaultLocation) {
-                this.authService.getMenus(userInfo.masterLocations[0].usersLocationId).subscribe({
-                  next: (menus: any) => {
-                    localStorage.setItem('menus', JSON.stringify(menus));
-                    console.log(menus);
+              this.alertService.showAlert('Success', 'Logged In Successfully!', 'success');
 
-                    this.alertService.showAlert('Success', 'Logged In Successfully!', 'success');
-
-                    this.router.navigate(['/home']);
+              // Check password expiry (90-day policy)
+              const userId = userInfo.userId || userInfo.user_id;
+              if (userId) {
+                this.authService.checkPasswordStatus(userId).subscribe({
+                  next: (status: any) => {
+                    if (status?.expired) {
+                      localStorage.setItem('passwordExpired', 'true');
+                      this.router.navigate(['/change-password']);
+                    } else {
+                      localStorage.removeItem('passwordExpired');
+                      this.router.navigate(['/home']);
+                    }
                   },
-                  error: (err: any) => {
-                    console.error('Menu API Error', err);
-
-                    this.alertService.showAlert('Error', 'Unable to load menus', 'error');
+                  error: () => {
+                    // If check fails, allow login normally
+                    this.router.navigate(['/home']);
                   },
                 });
               } else {
-                this.alertService.showAlert('Success', 'Logged In Successfully!', 'success');
-
                 this.router.navigate(['/home']);
               }
+            },
+
+            error: (err) => {
+              console.error('/info error', err);
+
+              this.alertService.showAlert(
+                'Error',
+                err?.error?.message || 'Unable to fetch user information',
+                'error',
+              );
             },
           });
         },

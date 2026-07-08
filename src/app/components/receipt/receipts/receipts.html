@@ -1,22 +1,19 @@
 <div class="user-management-flat-wrapper animate-fade-in">
-  <div class="main-scrollable-content-fluid p-4">
-    <div class="page-header-section">
-      <h4 class="text-header-title m-0 fw-bold">Receipt System</h4>
-    </div>
+  <!-- Header — identical pattern to group-mgt-list -->
+  <div class="page-header-section mt-3">
+    <h4 class="text-header-title m-0 fw-bold">Receipt System</h4>
+    <button class="btn btn-flat-action-primary" (click)="onCreateClick()">
+      <i class="fa-solid fa-plus small"></i> Create
+    </button>
+  </div>
 
+  <div class="main-scrollable-content-fluid">
     <div class="action-toolbar">
       <div class="action-buttons-group">
-        <button class="btn btn-flat-action-primary" (click)="onCreateClick()">
+        <!-- <button class="btn btn-flat-action-primary" (click)="onCreateClick()">
           <i class="fa-solid fa-plus small"></i>Create
-        </button>
-
-        <!-- <button
-          class="btn btn-flat-action-secondary"
-          [disabled]="!selectedRecord"
-          (click)="onUpdateClick()"
-        >
-          <i class="fa-solid fa-pencil small"></i> Update
         </button> -->
+
         <button class="btn btn-flat-action-secondary" (click)="onPrintClick()">
           <i class="fa-solid fa-print small"></i> Print
         </button>
@@ -67,6 +64,14 @@
   *ngIf="showUndoModal"
   title="UndoReceipt"
   [dynamicComponent]="undoReceipt"
+  [isModal]="true"
+  (onClose)="closeModal()"
+></app-wrapper>
+
+<app-wrapper
+  *ngIf="showRemoveModal"
+  title="Remove Inovoice"
+  [dynamicComponent]="removeReceipt"
   [isModal]="true"
   (onClose)="closeModal()"
 ></app-wrapper>

@@ -1,0 +1,80 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <div class="page-header-section mt-3">
+    <h4 class="text-white m-0 fw-bold">Remove Invoice</h4>
+    <div class="d-flex justify-content-between gap-3">
+      <button class="btn btn-flat-action-primary" (click)="removeInvoice()">Remove Invoice</button>
+
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+  <div class="main-scrollable-content-fluid p-4">
+    <div class="receipt-form-card">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6>Retrieve By</h6>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label custom-flat-label"> Customer Name : </label>
+
+          <input
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="retrieve.customerName"
+          />
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label custom-flat-label"> Vessel Name : </label>
+
+          <input
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="retrieve.vesselName"
+          />
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label custom-flat-label"> Voyage No : </label>
+
+          <input
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="retrieve.voyageNo"
+          />
+        </div>
+
+        <div class="col-md-3 d-flex align-items-end">
+          <button class="btn btn-flat-action-primary" (click)="retrieveInvoice()">Retrieve</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="receipt-form-card mt-3">
+      <div class="col-12">
+        <h6>Invoice Details</h6>
+      </div>
+
+      <app-data-grid
+        [records]="invoiceGrid"
+        [columns]="invoiceColumns"
+        [showAction]="false"
+        [tableHeight]="'420px'"
+        [showCheckbox]="true"
+        (selectionChange)="onRowSelect($event)"
+      >
+      </app-data-grid>
+    </div>
+
+    <div class="receipt-form-card mt-3">
+      <div class="row align-items-end">
+        <div class="col-md-8">
+          <label class="form-label custom-flat-label"> Remark : </label>
+
+          <input
+            class="form-control custom-flat-input"
+            [(ngModel)]="remark"
+            placeholder="Enter remark"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

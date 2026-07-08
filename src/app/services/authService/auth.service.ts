@@ -30,4 +30,8 @@ export class AuthService {
   getMenus(locationId: string) {
     return this.apiService.get(`/menus/${locationId}`);
   }
+
+  checkPasswordStatus(userId: string): Observable<any> {
+    return this.apiService.get(`UserManagements/users/${userId}/password-status`);
+  }
 }

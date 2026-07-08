@@ -1,0 +1,138 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <div class="page-header-section mt-3">
+    <h4 class="text-white m-0 fw-bold">Undo Receipt</h4>
+    <div class="d-flex justify-content-between gap-3">
+      <button class="btn btn-flat-action-primary" (click)="undoReceipt()">Undo Payment</button>
+
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+  <div class="main-scrollable-content-fluid p-4">
+    <div class="receipt-form-card">
+      <div class="row g-2">
+        <div class="col-12">
+          <h6>Retrieve By</h6>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label fw-bold custom-flat-label"> Invoice No: </label>
+
+          <input
+            class="form-control form-control-sm custom-flat-input"
+            [(ngModel)]="retrieve.invoiceNo"
+          />
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-bold custom-flat-label"> BL No : </label>
+
+          <input
+            class="form-control form-control-sm custom-flat-input"
+            [(ngModel)]="retrieve.blNo"
+          />
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label fw-bold custom-flat-label"> Cheque No : </label>
+
+          <input
+            class="form-control form-control-sm custom-flat-input"
+            [(ngModel)]="retrieve.chequeNo"
+          />
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+          <button class="btn btn-flat-action-primary" (click)="retrieveReceipt()">Retrieve</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="receipt-form-card mt-3">
+      <div class="row g-2">
+        <div class="col-md-2">
+          <label class="form-label custom-flat-label"> BL No : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="details.blNo"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Vessel Name : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="details.vesselName"
+          />
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label custom-flat-label"> Voyage No : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="details.voyageNo"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Customer Name : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="details.customerName"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="receipt-form-card mt-3">
+      <div class="col-12">
+        <h6>Receipt Details</h6>
+      </div>
+
+      <app-data-grid
+        [records]="receiptGrid"
+        [columns]="receiptColumns"
+        [showAction]="false"
+        [tableHeight]="'180px'"
+        [showCheckbox]="true"
+        (selectionChange)="onRowSelect($event)"
+      >
+      </app-data-grid>
+    </div>
+
+    <div class="receipt-form-card mt-3">
+      <div class="col-12">
+        <h6>Invoice Details</h6>
+      </div>
+
+      <app-data-grid
+        [records]="invoiceGrid"
+        [columns]="invoiceColumns"
+        [showAction]="false"
+        [tableHeight]="'180px'"
+      >
+      </app-data-grid>
+    </div>
+
+    <div class="receipt-form-card mt-3">
+      <div class="col-12">
+        <h6>Outstanding Details</h6>
+      </div>
+
+      <app-data-grid
+        [records]="outstandingGrid"
+        [columns]="outstandingColumns"
+        [showAction]="false"
+        [tableHeight]="'180px'"
+      >
+      </app-data-grid>
+    </div>
+  </div>
+</div>

@@ -8,6 +8,11 @@ export const routes: Routes = [
     loadComponent: () => import('./components/login/login').then((m) => m.LoginPage),
   },
   {
+    path: 'change-password',
+    loadComponent: () =>
+      import('./components/change-password/change-password').then((m) => m.ChangePasswordPage),
+  },
+  {
     path: 'home',
     canActivate: [authGuard],
     loadComponent: () =>
@@ -45,20 +50,26 @@ export const routes: Routes = [
             (m) => m.NewReceiptComponent,
           ),
       },
-      // {
-      //   path: 'receipt-remove',
-      //   loadComponent: () =>
-      //     import('./components/receipt/receipts/receipts').then((m) => m.ReceiptComponent),
-      // },
       {
-        path: 'receipt-undo',
-        loadComponent: () => import('./shared/wrapper/wrapper').then((m) => m.Wrapper),
-        data: {
-          isModal: false,
-          title: 'Undo Receipt',
-          dynamicComponent: UndoReceiptComponent,
-        },
+        path: 'undo-receipt',
+        loadComponent: () =>
+          import('./components/receipt/undo-receipt/undo-receipt').then((m) => m.UndoReceipt),
       },
+
+      {
+        path: 'receipt-remove',
+        loadComponent: () =>
+          import('./components/receipt/remove-receipt/remove-receipt').then((m) => m.RemoveReceipt),
+      },
+      // {
+      //   path: 'receipt-undo',
+      //   loadComponent: () => import('./shared/wrapper/wrapper').then((m) => m.Wrapper),
+      //   data: {
+      //     isModal: false,
+      //     title: 'Undo Receipt',
+      //     dynamicComponent: UndoReceiptComponent,
+      //   },
+      // },
       // {
       //   path: 'receipt-update-cheque',
       //   loadComponent: () =>

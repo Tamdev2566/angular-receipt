@@ -31,8 +31,8 @@ export class ModuleService {
       isExpanded: false,
       submodules: [
         { title: 'Glossys & Docsys', link: '/home/receipts' },
-        { title: 'Undo Receipt', link: '/home/receipt-undo' },
-        { title: 'Remove Receipt', link: '/home/remove-receipt' },
+        { title: 'Undo Receipt', link: '/home/undo-receipt' },
+        { title: 'Remove Invoice', link: '/home/receipt-remove' },
         { title: 'Update Cheque', link: '/home/update-cheque' },
         { title: 'Update TT Ref', link: '/home/update-ttref' },
       ],

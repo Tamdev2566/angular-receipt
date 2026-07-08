@@ -24,7 +24,7 @@ $date-primary-hover: #27566f;
 
 .date-input {
   width: 100%;
-  height: 38px;
+  height: 36px;
   padding: 0 70px 0 12px;
   border: 1px solid #cbd5e1;
   border-radius: 4px;
@@ -172,4 +172,9 @@ $date-primary-hover: #27566f;
 
 .day-btn.selected:hover {
   background: $date-primary-hover;
+}
+
+.custom-flat-label {
+  font-size: 0.8rem !important;
+  color: #334155 !important;
 }

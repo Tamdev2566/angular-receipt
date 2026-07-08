@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Wrapper } from '../../../shared/wrapper/wrapper';
 import { UndoReceiptComponent } from '../model/undo-receipts/undo-receipts';
 import { SummaryCard } from '../../../shared/summary-card/summary-card';
+import { RemoveReceiptComponent } from '../model/remove-receipts/remove-receipts';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ import { SummaryCard } from '../../../shared/summary-card/summary-card';
 })
 export class ReceiptComponent {
   undoReceipt = UndoReceiptComponent;
+  removeReceipt = RemoveReceiptComponent;
 
   showUndoModal = false;
 
