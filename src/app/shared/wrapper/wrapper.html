@@ -3,10 +3,6 @@
 </ng-template>
 
 <div *ngIf="!isModal()" class="wrapper-container" [ngClass]="wrapperClass()">
-  <div class="wrapper-header border-bottom pb-2 mb-3" *ngIf="title()">
-    <h4 class="m-0 fw-bold">{{ title() }}</h4>
-  </div>
-
   <div class="wrapper-body">
     <ng-container *ngTemplateOutlet="componentContent"></ng-container>
   </div>
@@ -18,7 +14,7 @@
   tabindex="-1"
   style="background-color: rgba(0, 0, 0, 0.5); z-index: 1050 !important"
 >
-  <div class="modal-dialog modal-dialog-centered modal-xl">
+  <div class="modal-dialog modal-dialog-centered modal-xl" style="height: 300px">
     <div class="modal-content shadow-lg border-0">
       <div class="modal-header bg-light border-bottom px-4 py-3">
         <h5

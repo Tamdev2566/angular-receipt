@@ -3,10 +3,10 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Wrapper } from '../../../shared/wrapper/wrapper';
-import { UndoReceiptComponent } from '../model/undo-receipts/undo-receipts';
 import { SummaryCard } from '../../../shared/summary-card/summary-card';
-import { RemoveReceiptComponent } from '../model/remove-receipts/remove-receipts';
+import { Wrapper } from '../../../shared/wrapper/wrapper';
+import { RemoveReceipt } from '../remove-receipt/remove-receipt';
+import { UndoReceipt } from '../undo-receipt/undo-receipt';
 
 @Component({
   selector: 'app-root',
@@ -16,8 +16,8 @@ import { RemoveReceiptComponent } from '../model/remove-receipts/remove-receipts
   styleUrls: ['./receipts.scss'],
 })
 export class ReceiptComponent {
-  undoReceipt = UndoReceiptComponent;
-  removeReceipt = RemoveReceiptComponent;
+  undoReceipt = UndoReceipt;
+  removeReceipt = RemoveReceipt;
 
   showUndoModal = false;
 

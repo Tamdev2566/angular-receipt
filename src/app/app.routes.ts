@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
+import { RemoveReceipt } from './components/receipt/remove-receipt/remove-receipt';
+import { UndoReceipt } from './components/receipt/undo-receipt/undo-receipt';
 import { authGuard } from './core/guards/auth.guard';
-import { UndoReceiptComponent } from './components/receipt/model/undo-receipts/undo-receipts';
 
 export const routes: Routes = [
   {
@@ -52,14 +53,22 @@ export const routes: Routes = [
       },
       {
         path: 'undo-receipt',
-        loadComponent: () =>
-          import('./components/receipt/undo-receipt/undo-receipt').then((m) => m.UndoReceipt),
+        loadComponent: () => import('./shared/wrapper/wrapper').then((m) => m.Wrapper),
+        data: {
+          isModal: false,
+          title: 'Undo Receipt',
+          dynamicComponent: UndoReceipt,
+        },
       },
 
       {
         path: 'receipt-remove',
-        loadComponent: () =>
-          import('./components/receipt/remove-receipt/remove-receipt').then((m) => m.RemoveReceipt),
+        loadComponent: () => import('./shared/wrapper/wrapper').then((m) => m.Wrapper),
+        data: {
+          isModal: false,
+          title: 'Undo Receipt',
+          dynamicComponent: RemoveReceipt,
+        },
       },
       // {
       //   path: 'receipt-undo',
