@@ -23,9 +23,10 @@
   background-color: #ffffff !important;
   color: #333333;
   margin: 0 !important;
+  display: none !important;
 
   @media (max-width: 768px) {
-    display: none !important;
+    display: block !important;
   }
 }
 
@@ -56,13 +57,6 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.3);
-  z-index: 999;
+  z-index: 999 !important;
   backdrop-filter: blur(2px);
-}
-
-.receipt-blur {
-  filter: blur(8px);
-  opacity: 0.35;
-  pointer-events: none;
-  transition: all 0.3s ease;
 }
