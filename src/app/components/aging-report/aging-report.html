@@ -1,0 +1,70 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <!-- Header -->
+
+  <div class="page-header-section mt-3">
+    <h4 class="text-white m-0 fw-bold">Aging Report</h4>
+
+    <div class="d-flex justify-content-between gap-3">
+      <button class="btn btn-flat-action-primary" (click)="generateReport()">
+        <i class="fa-solid fa-file-lines me-1"></i>
+        Generate Report
+      </button>
+
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="main-scrollable-content-fluid p-4">
+    <!-- Selection Criteria -->
+
+    <div class="receipt-form-card">
+      <div class="row g-3 align-items-end">
+        <div class="col-12">
+          <h6>Selection Criteria</h6>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Aging Report of Days : </label>
+
+          <app-combobox
+            displayExpr="name"
+            valueExpr="id"
+            [(value)]="formData.agingDays"
+            [data]="agingDayList"
+            [onChange]="onAgingChange.bind(this)"
+          >
+          </app-combobox>
+        </div>
+      </div>
+    </div>
+
+    <!-- File Directory -->
+
+    <div class="receipt-form-card mt-3">
+      <div class="row g-3 align-items-end">
+        <div class="col-12">
+          <h6>File Directory Path</h6>
+        </div>
+
+        <div class="col-md-8">
+          <label class="form-label custom-flat-label">
+            Select the directory to create the report in :
+          </label>
+
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control custom-flat-input"
+              [(ngModel)]="formData.directoryPath"
+              placeholder="Directory Path"
+            />
+
+            <button type="button" class="btn btn-outline-secondary" (click)="browseDirectory()">
+              <i class="fa-solid fa-folder-open"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

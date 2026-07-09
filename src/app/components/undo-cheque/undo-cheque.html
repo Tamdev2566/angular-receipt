@@ -1,0 +1,135 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <!-- Header -->
+
+  <div class="page-header-section mt-3">
+    <h4 class="text-white m-0 fw-bold">Undo Cheque</h4>
+
+    <div class="d-flex justify-content-between gap-3">
+      <button class="btn btn-flat-action-primary" (click)="undoCheque()">
+        <i class="fa-solid fa-rotate-left me-1"></i>
+        Undo Cheque
+      </button>
+
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="main-scrollable-content-fluid p-4">
+    <!-- Retrieve By -->
+
+    <div class="receipt-form-card">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6>Retrieve By</h6>
+        </div>
+
+        <!-- Cheque No -->
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Cheque No : </label>
+
+          <app-combobox
+            displayExpr="cheque_no"
+            valueExpr="cheque_id"
+            [(value)]="retrieve.chequeNo"
+            [data]="chequeList"
+            [onChange]="onChequeChange.bind(this)"
+          >
+          </app-combobox>
+        </div>
+
+        <!-- Full Cheque -->
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Full Cheque : </label>
+
+          <app-combobox
+            displayExpr="full_cheque_no"
+            valueExpr="full_cheque_id"
+            [(value)]="retrieve.fullCheque"
+            [data]="fullChequeList"
+            [onChange]="onFullChequeChange.bind(this)"
+          >
+          </app-combobox>
+        </div>
+
+        <!-- Retrieve -->
+
+        <div class="col-md-2 d-flex align-items-end">
+          <button class="btn btn-flat-action-primary-fill mb-1" (click)="retrieveCheque()">
+            Retrieve
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cheque Reader Details -->
+
+    <div class="receipt-form-card mt-3">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6>Cheque Reader Details</h6>
+        </div>
+
+        <!-- Bound -->
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Bound : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="chequeDetails.bound"
+          />
+        </div>
+
+        <!-- Bank -->
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Bank Name : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="chequeDetails.bankName"
+          />
+        </div>
+
+        <!-- Scan User -->
+
+        <div class="col-md-4">
+          <label class="form-label custom-flat-label"> Scan User ID : </label>
+
+          <input
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="chequeDetails.scanUserId"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Undo Cheque -->
+
+    <div class="receipt-form-card mt-3">
+      <div class="row g-3 align-items-end">
+        <div class="col-12">
+          <h6>Undo Cheque</h6>
+        </div>
+
+        <!-- Remark -->
+
+        <div class="col-md-9">
+          <label class="form-label custom-flat-label"> Remark : </label>
+
+          <input
+            type="text"
+            class="form-control custom-flat-input"
+            [(ngModel)]="undo.remark"
+            placeholder="Enter Remark"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

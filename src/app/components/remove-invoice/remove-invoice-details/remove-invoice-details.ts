@@ -1,28 +1,21 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
 
 @Component({
-  selector: 'app-remove-invoice',
-
-  standalone: true,
-
+  selector: 'app-remove-invoice-details',
   imports: [CommonModule, FormsModule, DataGrid],
-
-  templateUrl: './remove-receipt.html',
-
-  styleUrls: ['./remove-receipt.scss'],
+  templateUrl: './remove-invoice-details.html',
+  styleUrl: './remove-invoice-details.scss',
 })
-export class RemoveReceipt {
+export class RemoveInvoiceDetails {
   paginatedRecords: any[] = [];
   selectedRecord: any = null;
 
   retrieve = {
     customerName: '',
-
     vesselName: '',
-
     voyageNo: '',
   };
 

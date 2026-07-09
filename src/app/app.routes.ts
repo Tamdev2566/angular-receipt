@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
-import { UndoReceipt } from './components/undo-receipt/undo-receipt';
-import { RemoveReceipt } from './components/remove-receipt/remove-receipt';
+import { RemoveInvoiceDetails } from './components/remove-invoice/remove-invoice-details/remove-invoice-details';
+import { UndoPaymentDetails } from './components/undo-payments/undo-payment-details/undo-payment-details';
 
 export const routes: Routes = [
   {
@@ -57,7 +57,7 @@ export const routes: Routes = [
         data: {
           isModal: false,
           title: 'Undo Receipt',
-          dynamicComponent: UndoReceipt,
+          dynamicComponent: UndoPaymentDetails,
         },
       },
 
@@ -67,9 +67,39 @@ export const routes: Routes = [
         data: {
           isModal: false,
           title: 'Undo Receipt',
-          dynamicComponent: RemoveReceipt,
+          dynamicComponent: RemoveInvoiceDetails,
         },
       },
+
+      {
+        path: 'remove-invoice',
+        loadComponent: () =>
+          import('./components/remove-invoice/remove-invoice-list/remove-invoice-list').then(
+            (m) => m.RemoveInvoiceList,
+          ),
+      },
+      {
+        path: 'remove-invoice-details',
+        loadComponent: () =>
+          import('./components/remove-invoice/remove-invoice-details/remove-invoice-details').then(
+            (m) => m.RemoveInvoiceDetails,
+          ),
+      },
+      {
+        path: 'undo-payment',
+        loadComponent: () =>
+          import('./components/undo-payments/undo-payment-list/undo-payment-list').then(
+            (m) => m.UndoPaymentList,
+          ),
+      },
+      {
+        path: 'undo-payment-details',
+        loadComponent: () =>
+          import('./components/undo-payments/undo-payment-details/undo-payment-details').then(
+            (m) => m.UndoPaymentDetails,
+          ),
+      },
+
       {
         path: 'update-cheque',
         loadComponent: () =>
@@ -105,6 +135,42 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/removed-invoice-report/removed-invoice-report').then(
             (m) => m.RemovedInvoiceReport,
+          ),
+      },
+      {
+        path: 'updated-tt-ref-report',
+        loadComponent: () =>
+          import('./components/updated-tt-ref-report/updated-tt-ref-report').then(
+            (m) => m.UpdatedTtRefReport,
+          ),
+      },
+      {
+        path: 'cheque-reader-info',
+        loadComponent: () =>
+          import('./components/cheque-reader-info/cheque-reader-info').then(
+            (m) => m.ChequeReaderInfo,
+          ),
+      },
+      {
+        path: 'undo-cheque',
+        loadComponent: () =>
+          import('./components/undo-cheque/undo-cheque').then((m) => m.UndoCheque),
+      },
+      {
+        path: 'aging-report',
+        loadComponent: () =>
+          import('./components/aging-report/aging-report').then((m) => m.AgingReport),
+      },
+      {
+        path: 'daily-scan-report',
+        loadComponent: () =>
+          import('./components/daily-scan-report/daily-scan-report').then((m) => m.DailyScanReport),
+      },
+      {
+        path: 'undo-cheque-reader-report',
+        loadComponent: () =>
+          import('./components/undo-cheque-reader-report/undo-cheque-reader-report').then(
+            (m) => m.UndoChequeReaderReport,
           ),
       },
     ],

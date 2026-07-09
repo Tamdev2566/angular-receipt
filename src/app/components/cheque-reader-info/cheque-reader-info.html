@@ -1,0 +1,119 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <!-- Header -->
+
+  <div class="page-header-section mt-3">
+    <h4 class="text-white m-0 fw-bold">Cheque Reader Information</h4>
+
+    <div class="d-flex justify-content-between gap-3">
+      <button class="btn btn-flat-action-primary" (click)="onSave()">
+        <i class="fa-solid fa-floppy-disk me-1"></i>
+        Save
+      </button>
+
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="main-scrollable-content-fluid p-4">
+    <div class="receipt-form-card">
+      <div class="row g-4">
+        <!-- Radio Buttons -->
+
+        <div class="col-12">
+          <div class="d-flex flex-wrap align-items-center gap-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="inbound"
+                name="direction"
+                value="INBOUND"
+                [(ngModel)]="formData.direction"
+              />
+
+              <label class="form-check-label" for="inbound"> Inbound </label>
+            </div>
+
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="outbound"
+                name="direction"
+                value="OUTBOUND"
+                [(ngModel)]="formData.direction"
+              />
+
+              <label class="form-check-label text-danger" for="outbound"> Outbound </label>
+            </div>
+
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="both"
+                name="direction"
+                value="BOTH"
+                [(ngModel)]="formData.direction"
+              />
+
+              <label class="form-check-label" for="both"> Inbound & Outbound </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date -->
+
+        <div class="col-md-3">
+          <label class="form-label custom-flat-label"> Date </label>
+
+          <input
+            type="text"
+            readonly
+            class="form-control custom-flat-input input-readonly-flat"
+            [(ngModel)]="formData.date"
+          />
+        </div>
+
+        <!-- Full Cheque -->
+
+        <div class="col-md-3">
+          <label class="form-label custom-flat-label"> Full Cheque </label>
+
+          <input
+            type="text"
+            class="form-control custom-flat-input"
+            placeholder="Enter Full Cheque"
+            [(ngModel)]="formData.fullCheque"
+          />
+        </div>
+
+        <!-- Cheque -->
+
+        <div class="col-md-3">
+          <label class="form-label custom-flat-label"> Cheque </label>
+
+          <input
+            type="text"
+            class="form-control custom-flat-input"
+            placeholder="Enter Cheque"
+            [(ngModel)]="formData.cheque"
+          />
+        </div>
+
+        <!-- Bank -->
+
+        <div class="col-md-3">
+          <label class="form-label custom-flat-label"> Bank </label>
+
+          <input
+            type="text"
+            class="form-control custom-flat-input"
+            placeholder="Enter Bank"
+            [(ngModel)]="formData.bank"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

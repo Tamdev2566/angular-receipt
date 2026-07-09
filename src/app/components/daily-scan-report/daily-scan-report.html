@@ -1,0 +1,128 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <!-- Header -->
+
+  <div class="page-header-section mt-3">
+    <h4 class="text-white m-0 fw-bold">Cheque Reader Report</h4>
+
+    <div class="d-flex justify-content-between gap-3">
+      <button class="btn btn-flat-action-primary" (click)="generateReport()">
+        <i class="fa-solid fa-file-lines me-1"></i>
+        Generate Report
+      </button>
+
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="main-scrollable-content-fluid p-4">
+    <!-- Selection Criteria -->
+
+    <div class="receipt-form-card">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6>Selection Criteria</h6>
+        </div>
+
+        <!-- Reader Type -->
+
+        <div class="col-12">
+          <label class="form-label custom-flat-label"> Reader Type </label>
+
+          <div class="d-flex flex-wrap gap-4 mt-2">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="inbound"
+                name="readerType"
+                value="INBOUND"
+                [(ngModel)]="formData.readerType"
+              />
+
+              <label class="form-check-label" for="inbound"> Inbound </label>
+            </div>
+
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="outbound"
+                name="readerType"
+                value="OUTBOUND"
+                [(ngModel)]="formData.readerType"
+              />
+
+              <label class="form-check-label text-danger" for="outbound"> Outbound </label>
+            </div>
+
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="both"
+                name="readerType"
+                value="BOTH"
+                [(ngModel)]="formData.readerType"
+              />
+
+              <label class="form-check-label" for="both"> Inbound & Outbound </label>
+            </div>
+
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="all"
+                name="readerType"
+                value="ALL"
+                [(ngModel)]="formData.readerType"
+              />
+
+              <label class="form-check-label" for="all"> All </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- From Date -->
+
+        <div class="col-md-3">
+          <app-date-picker label="From Date" [(value)]="formData.fromDate"> </app-date-picker>
+        </div>
+
+        <!-- To Date -->
+
+        <div class="col-md-3">
+          <app-date-picker label="To Date" [(value)]="formData.toDate"> </app-date-picker>
+        </div>
+      </div>
+    </div>
+
+    <!-- File Directory -->
+
+    <div class="receipt-form-card mt-3">
+      <div class="row g-3 align-items-end">
+        <div class="col-12">
+          <h6>File Directory Path</h6>
+        </div>
+
+        <div class="col-lg-8">
+          <label class="form-label custom-flat-label">
+            Select the directory you want to create the report in :
+          </label>
+
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control custom-flat-input"
+              [(ngModel)]="formData.directoryPath"
+            />
+
+            <button class="btn btn-outline-secondary" type="button" (click)="browseDirectory()">
+              <i class="fa-solid fa-folder-open"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

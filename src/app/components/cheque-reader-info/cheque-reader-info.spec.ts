@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UndoReceipt } from './undo-receipt';
+import { ChequeReaderInfo } from './cheque-reader-info';
 
-describe('UndoReceipt', () => {
-  let component: UndoReceipt;
-  let fixture: ComponentFixture<UndoReceipt>;
+describe('ChequeReaderInfo', () => {
+  let component: ChequeReaderInfo;
+  let fixture: ComponentFixture<ChequeReaderInfo>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UndoReceipt],
+      imports: [ChequeReaderInfo],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(UndoReceipt);
+    fixture = TestBed.createComponent(ChequeReaderInfo);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

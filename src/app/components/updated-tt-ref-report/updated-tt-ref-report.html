@@ -1,0 +1,67 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <!-- Header -->
+
+  <div class="page-header-section mt-3">
+    <h4 class="text-white m-0 fw-bold">Updated TT Ref Report</h4>
+
+    <div class="d-flex justify-content-between gap-3">
+      <button class="btn btn-flat-action-primary" (click)="onGenerate()">
+        <i class="fa-solid fa-file-arrow-down me-1"></i>
+        Generate Report
+      </button>
+
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="main-scrollable-content-fluid p-1">
+    <!-- Selection Criteria -->
+
+    <div class="receipt-form-card">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6>Selection Criteria</h6>
+        </div>
+
+        <div class="col-md-3">
+          <app-date-picker label="From Date" [(value)]="reportForm.fromDate" helperText="">
+          </app-date-picker>
+        </div>
+
+        <div class="col-md-3">
+          <app-date-picker label="To Date" [(value)]="reportForm.toDate" helperText="">
+          </app-date-picker>
+        </div>
+      </div>
+    </div>
+
+    <!-- File Directory -->
+
+    <div class="receipt-form-card mt-3">
+      <div class="row g-3 align-items-end">
+        <div class="col-12">
+          <h6>File Directory Path</h6>
+        </div>
+
+        <div class="col-md-10">
+          <label class="form-label custom-flat-label">
+            Select the directory you want to create the report in :
+          </label>
+
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control custom-flat-input"
+              [(ngModel)]="reportForm.directoryPath"
+              placeholder="Select Folder"
+            />
+
+            <button type="button" class="btn btn-outline-secondary" (click)="browseDirectory()">
+              <i class="fa-solid fa-folder-open"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

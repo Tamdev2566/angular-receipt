@@ -1,0 +1,228 @@
+/* Layout */
+
+.user-management-flat-wrapper {
+  height: calc(100vh - 110px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  letter-spacing: 0.08em;
+}
+
+.main-scrollable-content-fluid {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+
+    &:hover {
+      background: #94a3b8;
+    }
+  }
+}
+
+/* Header */
+
+.page-header-section {
+  background: linear-gradient(120deg, #1e4b63 0%, #33708f 100%);
+  padding: 20px 24px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-header-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.35),
+    rgba(255, 255, 255, 0)
+  );
+  transform: skewX(-25deg);
+}
+
+.page-header-section h4 {
+  color: #fff;
+  margin: 0;
+  font-weight: 700;
+  z-index: 2;
+}
+
+/* Card */
+
+.receipt-form-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.receipt-form-card h6 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* Labels */
+
+.custom-flat-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+/* Input */
+
+.custom-flat-input {
+  background: #fff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 4px !important;
+  padding: 7px 12px !important;
+  font-size: 0.82rem !important;
+  color: #1e293b !important;
+
+  &::placeholder {
+    color: #94a3b8;
+  }
+
+  &:focus {
+    border-color: #33708f !important;
+    box-shadow: 0 0 0 3px rgba(51, 112, 143, 0.18) !important;
+    outline: none;
+  }
+}
+
+/* Input Group */
+
+.input-group {
+  .btn {
+    border-color: #cbd5e1;
+    background: #fff;
+    color: #33708f;
+
+    &:hover {
+      background: #33708f;
+      color: #fff;
+    }
+  }
+}
+
+/* Buttons */
+
+.btn-flat-action-primary {
+  background: #fff !important;
+  color: #33708f !important;
+  border: none !important;
+  border-radius: 8px;
+  padding: 8px 18px !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  box-shadow: 0 2px 5px rgba(51, 112, 143, 0.15);
+  transition: 0.2s;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.btn-flat-action-danger-outline {
+  background: #fff !important;
+  color: #ef4444 !important;
+  border: 1px solid #fecaca !important;
+  border-radius: 8px;
+  padding: 8px 18px !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  &:hover {
+    background: #fef2f2 !important;
+  }
+}
+
+.btn-flat-action-primary-fill {
+  background: #33708f !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px;
+  padding: 8px 18px !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  box-shadow: 0 2px 5px rgba(51, 112, 143, 0.15);
+  transition: 0.2s;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Responsive */
+
+@media (max-width: 992px) {
+  .page-header-section {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .page-header-section h4 {
+    text-align: center;
+  }
+
+  .page-header-section > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .page-header-section .btn {
+    width: 100%;
+  }
+
+  .receipt-form-card {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .receipt-form-card {
+    padding: 12px;
+  }
+
+  .custom-flat-label {
+    font-size: 0.75rem;
+  }
+
+  .custom-flat-input {
+    font-size: 0.8rem !important;
+  }
+}

@@ -1,16 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
+import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 
 @Component({
   selector: 'app-undo-receipt',
   standalone: true,
   imports: [CommonModule, FormsModule, DataGrid],
-  templateUrl: './undo-receipt.html',
-  styleUrls: ['./undo-receipt.scss'],
+  templateUrl: './undo-payment-details.html',
+  styleUrl: './undo-payment-details.scss',
 })
-export class UndoReceipt {
+export class UndoPaymentDetails {
   paginatedRecords: any[] = [];
   selectedRecord: any = null;
 
