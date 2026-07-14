@@ -1,14 +1,46 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { ModuleService } from '../../../services/module-service/module-service';
 import { SummaryCard } from '../../../shared/summary-card/summary-card';
 import { Wrapper } from '../../../shared/wrapper/wrapper';
-import { LoaderService } from '../../../services/loaderService/loader-service';
 import { RemoveInvoiceDetails } from '../../remove-invoice/remove-invoice-details/remove-invoice-details';
 import { UndoPaymentDetails } from '../../undo-payments/undo-payment-details/undo-payment-details';
+import { ApiService } from '../../../services/api.service';
+import { finalize } from 'rxjs';
+import * as XLSX from 'xlsx-js-style';
+
+interface Receipt {
+  transactionNo?: string;
+  transactionDate?: string;
+  officeCode?: string;
+  customerName?: string;
+  paymentMode?: string;
+  receiptDate?: string;
+  referenceNo?: string;
+  chequeTtNo?: string;
+  currencyCode?: string;
+  amount?: number;
+  bankCharge?: number;
+  paidInvoiceTotal?: number;
+  receiptTotal?: number;
+  balanceAmount?: number;
+  postedToCoda?: boolean;
+  status?: boolean;
+  bank?: string;
+  createdDate?: string;
+  createdUser?: string;
+  modifiedDate?: string;
+  modifiedUser?: string;
+}
+
+interface ReceiptResponse {
+  data?: Receipt[];
+  content?: Receipt[];
+  items?: Receipt[];
+}
 
 @Component({
   selector: 'app-root',
@@ -31,155 +63,183 @@ export class ReceiptComponent {
 
   searchQuery = '';
 
-  filteredReceipts: any[] = [];
+  filteredReceipts: Receipt[] = [];
 
-  receipts: any[] = [];
+  receipts: Receipt[] = [];
+
+  loading = false;
 
   constructor(
     private router: Router,
     private stateService: ModuleService,
-    private loader: LoaderService,
+    private apiService: ApiService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
-    this.loader.isLoading.set(true);
-    setTimeout(() => {
-      this.loader.isLoading.set(false);
+    // this.loader.isLoading.set(true);
+    // setTimeout(() => {
+    //   this.loader.isLoading.set(false);
 
-      this.receipts = [
-        {
-          id: 'REC-101',
-          invoiceNo: 'DI23003580',
-          customerName: 'CUSTOMER ENTITY NAME LTD',
-          blNo: 'BL-SNG-4451',
-          chequeNo: 'CASH',
-          vesselName: 'SINAR AMBON',
-          voyageNo: 'TESTVGM2',
-          date: '2026-05-15',
-          amount: 2166.35,
-          currency: 'SGD',
-          payMode: 'Cash',
+    //   this.receipts = [
+    //     {
+    //       id: 'REC-101',
+    //       invoiceNo: 'DI23003580',
+    //       customerName: 'CUSTOMER ENTITY NAME LTD',
+    //       blNo: 'BL-SNG-4451',
+    //       chequeNo: 'CASH',
+    //       vesselName: 'SINAR AMBON',
+    //       voyageNo: 'TESTVGM2',
+    //       date: '2026-05-15',
+    //       amount: 2166.35,
+    //       currency: 'SGD',
+    //       payMode: 'Cash',
+    //     },
+    //     {
+    //       id: 'REC-102',
+    //       invoiceNo: 'DI23004491',
+    //       customerName: 'GLO-BRIDGE CARRIERS PTE',
+    //       blNo: 'BL-NOL-8891',
+    //       chequeNo: 'CHQ-DB-29930',
+    //       vesselName: 'MAERSK MC-KINNEY MOLLER',
+    //       voyageNo: 'V-2619N',
+    //       date: '2026-05-12',
+    //       amount: 8450,
+    //       currency: 'USD',
+    //       payMode: 'Cheque / TT',
+    //     },
+    //     {
+    //       id: 'REC-103',
+    //       invoiceNo: 'DI23009982',
+    //       customerName: 'PACIFIC HARBOR FREIGHTERS',
+    //       blNo: 'BL-APL-1290',
+    //       chequeNo: 'CHQ-CITI-44512',
+    //       vesselName: 'APL VANGUARD',
+    //       voyageNo: 'V-002E',
+    //       date: '2026-05-16',
+    //       amount: 14200,
+    //       currency: 'SGD',
+    //       payMode: 'Cheque / TT',
+    //     },
+    //     {
+    //       id: 'REC-104',
+    //       invoiceNo: 'DI23001229',
+    //       customerName: 'TRIDENT FREIGHT SERVICES',
+    //       blNo: 'BL-COSCO-5512',
+    //       chequeNo: 'CASH',
+    //       vesselName: 'COSCO ENGLAND',
+    //       voyageNo: 'V-5511',
+    //       date: '2026-05-18',
+    //       amount: 980,
+    //       currency: 'SGD',
+    //       payMode: 'Cash',
+    //     },
+    //     {
+    //       id: 'REC-105',
+    //       invoiceNo: 'DI23005510',
+    //       customerName: 'OCEANIC ALLIANCE CO',
+    //       blNo: 'BL-SNG-4462',
+    //       chequeNo: 'CASH',
+    //       vesselName: 'SINAR AMBON',
+    //       voyageNo: 'TESTVGM2',
+    //       date: '2026-05-14',
+    //       amount: 5120,
+    //       currency: 'SGD',
+    //       payMode: 'Cash',
+    //     },
+    //     {
+    //       id: 'REC-106',
+    //       invoiceNo: 'DI23007781',
+    //       customerName: 'GLOBAL LOGISTICS INC',
+    //       blNo: 'BL-SNG-9981',
+    //       chequeNo: 'CHQ-CITI-22314',
+    //       vesselName: 'MAERSK MC-KINNEY MOLLER',
+    //       voyageNo: 'V-2619N',
+    //       date: '2026-05-13',
+    //       amount: 12350,
+    //       currency: 'USD',
+    //       payMode: 'Cheque / TT',
+    //     },
+    //     {
+    //       id: 'REC-107',
+    //       invoiceNo: 'DI23007781',
+    //       customerName: 'GLOBAL LOGISTICS INC',
+    //       blNo: 'BL-SNG-9981',
+    //       chequeNo: 'CHQ-CITI-22314',
+    //       vesselName: 'MAERSK MC-KINNEY MOLLER',
+    //       voyageNo: 'V-2619N',
+    //       date: '2026-05-13',
+    //       amount: 12350,
+    //       currency: 'USD',
+    //       payMode: 'Cheque / TT',
+    //     },
+    //     {
+    //       id: 'REC-108',
+    //       invoiceNo: 'DI23007781',
+    //       customerName: 'GLOBAL LOGISTICS INC',
+    //       blNo: 'BL-SNG-9981',
+    //       chequeNo: 'CHQ-CITI-22314',
+    //       vesselName: 'MAERSK MC-KINNEY MOLLER',
+    //       voyageNo: 'V-2619N',
+    //       date: '2026-05-13',
+    //       amount: 12350,
+    //       currency: 'USD',
+    //       payMode: 'Cheque / TT',
+    //     },
+    //     {
+    //       id: 'REC-109',
+    //       invoiceNo: 'DI23007781',
+    //       customerName: 'GLOBAL LOGISTICS INC',
+    //       blNo: 'BL-SNG-9981',
+    //       chequeNo: 'CHQ-CITI-22314',
+    //       vesselName: 'MAERSK MC-KINNEY MOLLER',
+    //       voyageNo: 'V-2619N',
+    //       date: '2026-05-13',
+    //       amount: 12350,
+    //       currency: 'USD',
+    //       payMode: 'Cheque / TT',
+    //     },
+    //     {
+    //       id: 'REC-110',
+    //       invoiceNo: 'DI23007781',
+    //       customerName: 'GLOBAL LOGISTICS INC',
+    //       blNo: 'BL-SNG-9981',
+    //       chequeNo: 'CHQ-CITI-22314',
+    //       vesselName: 'MAERSK MC-KINNEY MOLLER',
+    //       voyageNo: 'V-2619N',
+    //       date: '2026-05-13',
+    //       amount: 12350,
+    //       currency: 'USD',
+    //       payMode: 'Cheque / TT',
+    //     },
+    //   ];
+    //   this.filteredReceipts = [...this.receipts];
+    // }, 2000);
+
+    this.loadReceipts();
+  }
+
+  loadReceipts(): void {
+    this.loading = true;
+
+    this.apiService
+      .get<Receipt[] | ReceiptResponse>('api/receipts')
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        }),
+      )
+      .subscribe({
+        next: (res: Receipt[] | ReceiptResponse) => {
+          this.receipts = Array.isArray(res) ? res : (res.data ?? res.content ?? res.items ?? []);
+          this.filteredReceipts = [...this.receipts];
         },
-        {
-          id: 'REC-102',
-          invoiceNo: 'DI23004491',
-          customerName: 'GLO-BRIDGE CARRIERS PTE',
-          blNo: 'BL-NOL-8891',
-          chequeNo: 'CHQ-DB-29930',
-          vesselName: 'MAERSK MC-KINNEY MOLLER',
-          voyageNo: 'V-2619N',
-          date: '2026-05-12',
-          amount: 8450,
-          currency: 'USD',
-          payMode: 'Cheque / TT',
+        error: () => {
+          this.receipts = [];
+          this.filteredReceipts = [];
         },
-        {
-          id: 'REC-103',
-          invoiceNo: 'DI23009982',
-          customerName: 'PACIFIC HARBOR FREIGHTERS',
-          blNo: 'BL-APL-1290',
-          chequeNo: 'CHQ-CITI-44512',
-          vesselName: 'APL VANGUARD',
-          voyageNo: 'V-002E',
-          date: '2026-05-16',
-          amount: 14200,
-          currency: 'SGD',
-          payMode: 'Cheque / TT',
-        },
-        {
-          id: 'REC-104',
-          invoiceNo: 'DI23001229',
-          customerName: 'TRIDENT FREIGHT SERVICES',
-          blNo: 'BL-COSCO-5512',
-          chequeNo: 'CASH',
-          vesselName: 'COSCO ENGLAND',
-          voyageNo: 'V-5511',
-          date: '2026-05-18',
-          amount: 980,
-          currency: 'SGD',
-          payMode: 'Cash',
-        },
-        {
-          id: 'REC-105',
-          invoiceNo: 'DI23005510',
-          customerName: 'OCEANIC ALLIANCE CO',
-          blNo: 'BL-SNG-4462',
-          chequeNo: 'CASH',
-          vesselName: 'SINAR AMBON',
-          voyageNo: 'TESTVGM2',
-          date: '2026-05-14',
-          amount: 5120,
-          currency: 'SGD',
-          payMode: 'Cash',
-        },
-        {
-          id: 'REC-106',
-          invoiceNo: 'DI23007781',
-          customerName: 'GLOBAL LOGISTICS INC',
-          blNo: 'BL-SNG-9981',
-          chequeNo: 'CHQ-CITI-22314',
-          vesselName: 'MAERSK MC-KINNEY MOLLER',
-          voyageNo: 'V-2619N',
-          date: '2026-05-13',
-          amount: 12350,
-          currency: 'USD',
-          payMode: 'Cheque / TT',
-        },
-        {
-          id: 'REC-107',
-          invoiceNo: 'DI23007781',
-          customerName: 'GLOBAL LOGISTICS INC',
-          blNo: 'BL-SNG-9981',
-          chequeNo: 'CHQ-CITI-22314',
-          vesselName: 'MAERSK MC-KINNEY MOLLER',
-          voyageNo: 'V-2619N',
-          date: '2026-05-13',
-          amount: 12350,
-          currency: 'USD',
-          payMode: 'Cheque / TT',
-        },
-        {
-          id: 'REC-108',
-          invoiceNo: 'DI23007781',
-          customerName: 'GLOBAL LOGISTICS INC',
-          blNo: 'BL-SNG-9981',
-          chequeNo: 'CHQ-CITI-22314',
-          vesselName: 'MAERSK MC-KINNEY MOLLER',
-          voyageNo: 'V-2619N',
-          date: '2026-05-13',
-          amount: 12350,
-          currency: 'USD',
-          payMode: 'Cheque / TT',
-        },
-        {
-          id: 'REC-109',
-          invoiceNo: 'DI23007781',
-          customerName: 'GLOBAL LOGISTICS INC',
-          blNo: 'BL-SNG-9981',
-          chequeNo: 'CHQ-CITI-22314',
-          vesselName: 'MAERSK MC-KINNEY MOLLER',
-          voyageNo: 'V-2619N',
-          date: '2026-05-13',
-          amount: 12350,
-          currency: 'USD',
-          payMode: 'Cheque / TT',
-        },
-        {
-          id: 'REC-110',
-          invoiceNo: 'DI23007781',
-          customerName: 'GLOBAL LOGISTICS INC',
-          blNo: 'BL-SNG-9981',
-          chequeNo: 'CHQ-CITI-22314',
-          vesselName: 'MAERSK MC-KINNEY MOLLER',
-          voyageNo: 'V-2619N',
-          date: '2026-05-13',
-          amount: 12350,
-          currency: 'USD',
-          payMode: 'Cheque / TT',
-        },
-      ];
-      this.filteredReceipts = [...this.receipts];
-    }, 2000);
+      });
   }
 
   onCreateClick() {
@@ -190,16 +250,52 @@ export class ReceiptComponent {
     this.router.navigate(['/home/new-receipt']);
   }
 
-  onPrintClick() {
-    console.log('Print Button Triggered');
+  onPrintClick(): void {
+    if (!this.filteredReceipts.length) {
+      this.triggerToast('There are no receipts to download.');
+      return;
+    }
+
+    const exportRows = this.filteredReceipts.map((receipt) => ({
+      'Transaction No': receipt.transactionNo,
+      'Transaction Date': receipt.transactionDate,
+      'Office Code': receipt.officeCode,
+      Customer: receipt.customerName || '',
+      'Payment Mode': receipt.paymentMode,
+      'Receipt Date': receipt.receiptDate,
+      'Reference No': receipt.referenceNo,
+      'Cheque / TT No': receipt.chequeTtNo || '',
+      Currency: receipt.currencyCode,
+      Amount: receipt.amount,
+      'Bank Charge': receipt.bankCharge,
+      'Paid Invoice Total': receipt.paidInvoiceTotal,
+      'Receipt Total': receipt.receiptTotal,
+      'Balance Amount': receipt.balanceAmount,
+      'Posted to CODA': receipt.postedToCoda ? 'Yes' : 'No',
+      Status: receipt.status ? 'Active' : 'Inactive',
+      Bank: receipt.bank,
+      'Created Date': receipt.createdDate,
+      'Created User': receipt.createdUser,
+      'Modified Date': receipt.modifiedDate,
+      'Modified User': receipt.modifiedUser,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportRows);
+    worksheet['!cols'] = Object.keys(exportRows[0]).map((key) => ({
+      wch: Math.max(key.length + 2, 14),
+    }));
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Receipts');
+    XLSX.writeFile(workbook, `receipts-${new Date().toISOString().slice(0, 10)}.xlsx`);
   }
 
   onClickHistory() {
     console.log('History Button Triggered');
   }
 
-  onSearch(value?: any): void {
-    const query = this.searchQuery.toLowerCase().trim() || value.toLowerCase().trim();
+  onSearch(): void {
+    const query = this.searchQuery.toLowerCase().trim();
 
     if (!query) {
       this.filteredReceipts = [...this.receipts];
@@ -208,11 +304,18 @@ export class ReceiptComponent {
 
     this.filteredReceipts = this.receipts.filter(
       (item) =>
-        item.invoiceNo.toLowerCase().includes(query) ||
-        item.customerName.toLowerCase().includes(query) ||
-        item.vesselName.toLowerCase().includes(query) ||
-        item.id.toLowerCase().includes(query),
+        this.matches(item.transactionNo, query) ||
+        this.matches(item.referenceNo, query) ||
+        this.matches(item.customerName, query) ||
+        this.matches(item.chequeTtNo, query) ||
+        this.matches(item.paymentMode, query) ||
+        this.matches(item.bank, query) ||
+        this.matches(item.officeCode, query),
     );
+  }
+
+  private matches(value: string | undefined, query: string): boolean {
+    return (value || '').toLowerCase().includes(query);
   }
 
   openUndoModal(item: any) {

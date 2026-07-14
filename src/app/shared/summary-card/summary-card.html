@@ -14,8 +14,8 @@
           </h4>
 
           <p class="summary-invoice">
-            INVOICE NO :
-            {{ item.invoiceNo }}
+            REFERENCE NO :
+            {{ item.referenceNo }}
           </p>
         </div>
       </div>
@@ -25,21 +25,30 @@
 
     <div class="summary-details">
       <div class="detail-row">
-        <span class="detail-label"> Vessel / Voyage </span>
+        <span class="detail-label"> Transaction No </span>
+        <span class="detail-value"> {{ item.transactionNo }} </span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label"> Receipt Date </span>
         <span class="detail-value">
-          {{ item.vesselName }}
-          ({{ item.voyageNo }})
+          {{ item.receiptDate }}
         </span>
       </div>
 
       <div class="detail-row">
-        <span class="detail-label"> BL Code </span>
-        <span class="detail-value"> {{ item.blNo }} </span>
+        <span class="detail-label"> Office / Bank </span>
+        <span class="detail-value"> {{ item.officeCode }} / {{ item.bank }} </span>
       </div>
 
       <div class="detail-row">
-        <span class="detail-label"> Payment Ref </span>
-        <span class="detail-value"> {{ item.payMode }} - {{ item.chequeNo }} </span>
+        <span class="detail-label"> Payment Mode </span>
+        <span class="detail-value"> {{ item.paymentMode }} </span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label"> Cheque / TT No </span>
+        <span class="detail-value"> {{ item.chequeTtNo || '-' }} </span>
       </div>
     </div>
 
@@ -50,14 +59,14 @@
         <span class="amount-label"> Total Amount </span>
 
         <div class="amount-value">
-          ${{ item.amount | number: '1.2-2' }}
-          <span> {{ item.currency }} </span>
+          <span>{{ item.currencyCode }}</span>
+          {{ item.amount | number: '1.2-2' }}
         </div>
       </div>
 
       <div class="ledger-date">
-        <span> Ledger Date </span>
-        <strong> {{ item.date }} </strong>
+        <span> Status </span>
+        <strong> {{ item.status ? 'Active' : 'Inactive' }} </strong>
       </div>
     </div>
     <!-- Footer -->

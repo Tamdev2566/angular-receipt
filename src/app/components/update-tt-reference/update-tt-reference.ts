@@ -83,9 +83,17 @@ export class UpdateTtReference {
   /* Cancel */
 
   onCancel(): void {
-    this.router.navigate(['/home/receipts']);
+    this.retrieve = { ttRefNo: '' };
+    this.receipt = {
+      transactionNo: '',
+      customerName: '',
+      referenceNo: '',
+      currency: '',
+      amount: '',
+      paidInvoiceTotal: '',
+    };
+    this.update = { newTTRefNo: '', remark: '' };
   }
-
   /* Header Button Click */
 
   onUpdate(): void {

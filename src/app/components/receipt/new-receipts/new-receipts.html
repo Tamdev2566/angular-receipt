@@ -1,15 +1,8 @@
 <div class="user-management-flat-wrapper animate-fade-in">
-  <div class="page-header-section receipt-header mt-3">
+  <div class="page-header-section receipt-header mt-3 mb-0">
     <h4 class="receipt-title">Receipt</h4>
 
     <div class="receipt-actions">
-      <button class="btn btn-flat-action-primary" (click)="onConfirm()">
-        <i class="fa-solid fa-check me-1"></i>
-        Confirm
-      </button>
-
-      <button class="btn btn-flat-action-warning" (click)="onOverPayment()">Over Payment</button>
-
       <button class="btn btn-flat-action-danger" (click)="onCancel()">
         <i class="fa-solid fa-xmark me-1"></i>
         Cancel
@@ -17,7 +10,7 @@
     </div>
   </div>
 
-  <div class="main-scrollable-content-fluid p-4">
+  <div class="main-scrollable-content-fluid">
     <form
       id="receiptSystemForm"
       #userForm="ngForm"
@@ -54,7 +47,7 @@
           </div>
         </div>
       </div>
-
+      <!-- recept information -->
       <div class="receipt-form-card">
         <div class="row g-2">
           <div class="col-12 col-sm-6 col-md-12">
@@ -67,6 +60,7 @@
               valueExpr="id"
               name="paymentMode"
               [(value)]="formData.paymentMode"
+              (valueChange)="onPaymentValueChange($event)"
               [data]="paymentTypes"
               [onChange]="onPaymentChange.bind(this)"
             >
@@ -79,6 +73,7 @@
               type="text"
               name="chequeNo"
               [(ngModel)]="formData.chequeNo"
+              [readonly]="selectedPayment?.name === 'Cash'"
               #chequeNo="ngModel"
               class="form-control form-control-sm custom-flat-input"
               placeholder="Cheque / TT No"
@@ -89,13 +84,13 @@
           <div class="col-12 col-sm-6 col-md-2">
             <app-date-picker
               label="Date"
-              [(value)]="formData.date"
-              helperText="Select transaction start date"
+              [(value)]="formData.receiptDate"
+              helperText="Select receipt date"
             >
             </app-date-picker>
           </div>
 
-          <div class="col-12 col-sm-6 col-md-1">
+          <div class="col-12 col-sm-6 col-md-2">
             <label class="form-label fw-bold custom-flat-label mb-2"> Currency: </label>
 
             <div class="d-flex align-items-center gap-3 mt-1">
@@ -132,7 +127,7 @@
               displayExpr="name"
               valueExpr="id"
               [(value)]="formData.account"
-              [data]="[{ id: 1, name: 'Cash' }]"
+              [data]="accounts"
             >
             </app-combobox>
           </div>
@@ -141,6 +136,9 @@
             <input
               type="text"
               name="amount"
+              [(ngModel)]="formData.amount"
+              (ngModelChange)="calculateSummary()"
+              (blur)="formatMoney('amount')"
               class="form-control form-control-sm custom-flat-input"
               placeholder="Amount"
               maxlength="15"
@@ -152,6 +150,9 @@
             <input
               type="text"
               name="bankCharges"
+              [(ngModel)]="formData.bankCharges"
+              (ngModelChange)="calculateSummary()"
+              (blur)="formatMoney('bankCharges')"
               class="form-control form-control-sm custom-flat-input"
               placeholder="Bank Charges"
               maxlength="15"
@@ -174,6 +175,7 @@
           <input
             type="text"
             name="invoiceNo"
+            [(ngModel)]="searchModel.invoiceNo"
             class="form-control form-control-sm custom-flat-input"
             placeholder="Invoice No"
           />
@@ -186,6 +188,7 @@
           <input
             type="text"
             name="blNo"
+            [(ngModel)]="searchModel.blNo"
             class="form-control form-control-sm custom-flat-input"
             placeholder="BL No"
           />
@@ -196,11 +199,13 @@
           <label class="form-label fw-bold custom-flat-label"> Vessel Name: </label>
 
           <app-combobox
-            name="vesselId"
-            displayExpr="vessel_name"
-            valueExpr="vessel_id"
+            [url]="'api/getvessel'"
+            [responsePath]="''"
+            displayExpr="vesselName"
+            valueExpr="vesselCode"
+            (selectionChange)="onVesselChange($event)"
             [(value)]="searchModel.vesselId"
-            [data]="vesselList"
+            apiMethod="POST"
           >
           </app-combobox>
         </div>
@@ -212,6 +217,7 @@
           <input
             type="text"
             name="customerName"
+            [(ngModel)]="searchModel.customerName"
             class="form-control form-control-sm custom-flat-input"
             placeholder="Customer Name"
           />
@@ -222,18 +228,29 @@
           <label class="form-label fw-bold custom-flat-label"> Voyage No: </label>
 
           <app-combobox
-            name="voyageId"
-            displayExpr="voyage_no"
-            valueExpr="voyage_id"
+            [url]="'api/getvoyage'"
+            [responsePath]="''"
+            displayExpr="voyageNo"
+            valueExpr="id"
             [(value)]="searchModel.voyageId"
-            [data]="voyageList"
+            apiMethod="POST"
+            [requestBody]="vesselValue || {}"
+            [reload]="true"
           >
           </app-combobox>
         </div>
 
         <div class="col-md-2 d-flex flex-column align-items-center gap-2">
-          <button class="btn btn-flat-action-primary">Check Outstanding</button>
-          <button class="btn btn-flat-action-warning">Search</button>
+          <button
+            type="button"
+            class="btn btn-flat-action-primary-fill"
+            (click)="onCheckOutstanding()"
+          >
+            Check Outstanding
+          </button>
+          <button type="button" class="btn btn-flat-action-warning" (click)="onSearchClick()">
+            Search
+          </button>
         </div>
       </div>
     </div>
@@ -287,12 +304,27 @@
         </div>
 
         <div class="col-md-7">
-          <div class="d-flex justify-content-end align-items-center gap-3">
+          <div class="d-flex justify-content-end flex-column align-items-center gap-3">
             <label class="doc-check mb-0">
               <input type="checkbox" [(ngModel)]="showReferenceType" name="showReferenceType" />
 
               <span>Show Reference Type</span>
             </label>
+            <div class="receipt-actions">
+              <button
+                type="button"
+                class="btn btn-flat-action-primary-fill"
+                [disabled]="loading"
+                (click)="onConfirm()"
+              >
+                <i class="fa-solid fa-check me-1"></i>
+                Confirm
+              </button>
+
+              <button class="btn btn-flat-action-warning" (click)="onOverPayment()">
+                Over Payment
+              </button>
+            </div>
           </div>
         </div>
       </div>

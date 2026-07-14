@@ -2,9 +2,36 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Combobox } from '../../../shared/combobox/combobox';
+import { finalize } from 'rxjs';
+import { Combobox, ComboboxSelection } from '../../../shared/combobox/combobox';
 import { DatepickerComponent } from '../../../shared/date-picker/date-picker';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
+import { ApiService } from '../../../services/api.service';
+import { AlertService } from '../../../services/alertService/alert';
+import { UserService } from '../../../services/userService/user.service';
+
+interface CreateReceiptPayload {
+  transactionDate: string;
+  officeCode: string;
+  paymentMode: string;
+  receiptDate: string;
+  referenceNo: string;
+  currencyCode: string;
+  amount: number;
+  bankCharge: number;
+  paidInvoiceTotal: number;
+  receiptTotal: number;
+  balanceAmount: number;
+  postedToCoda: boolean;
+  bank: string;
+  createdUser: string;
+  modifiedUser: string;
+}
+
+interface AccountOption {
+  id: string;
+  name: string;
+}
 
 @Component({
   selector: 'app-new-receipt',
@@ -37,16 +64,27 @@ export class NewReceiptComponent {
   pageNumbers: number[] = [];
   selectedRecord: any = null;
   searchText = '';
+  selectedVesselName = '';
+  vesselValue = {};
 
   formData = {
     paymentMode: '',
     chequeNo: '',
-    date: '',
+    receiptDate: '',
     currency: 'SGD',
     account: '',
     amount: '',
     bankCharges: '',
   };
+
+  accounts: AccountOption[] = [];
+
+  private readonly cashAccounts: AccountOption[] = [{ id: 'CASH', name: 'Cash' }];
+  private readonly chequeAccounts: AccountOption[] = [{ id: 'CHEQUE', name: 'Cheque' }];
+  private readonly ttAccounts: AccountOption[] = [
+    { id: 'CITI', name: 'CITI Bank' },
+    { id: 'UOB', name: 'UOB' },
+  ];
 
   searchModel = {
     invoiceNo: '',
@@ -78,9 +116,9 @@ export class NewReceiptComponent {
   ];
 
   summary = {
-    paidInvoiceTotal: '2166.35',
+    paidInvoiceTotal: '0.00',
     receiptTotal: '0.00',
-    balance: '2166.35',
+    balance: '0.00',
   };
 
   showReferenceType = false;
@@ -99,7 +137,12 @@ export class NewReceiptComponent {
     { label: 'Write-off', field: 'write_off', width: '90px' },
   ];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private apiService: ApiService,
+    private alertService: AlertService,
+    private userService: UserService,
+  ) {}
 
   // ngOnInit(): void {
   //   if (this.formData.paymentMode === 'Cash') {
@@ -110,7 +153,7 @@ export class NewReceiptComponent {
   // }\
 
   ngOnInit() {
-    this.formData.date = new Date().toISOString().split('T')[0];
+    this.formData.receiptDate = this.today();
 
     this.vesselList = [
       {
@@ -135,38 +178,129 @@ export class NewReceiptComponent {
     ];
   }
 
-  ngDoCheck() {
-    console.log('selectedPayment', this.selectedPayment);
-    if (this.selectedPayment === null) {
-      this.formData.chequeNo = '';
-      this.formData.amount = '';
-      this.formData.bankCharges = '';
-    }
-  }
-
   onPaymentChange(value: any, item: any): void {
-    console.log(item);
     this.selectedPayment = item;
 
-    if (item.name === 'Cash') {
-      this.formData.chequeNo = 'Cash';
-      this.formData.amount = '';
-      this.formData.bankCharges = '';
-    } else if (this.selectedPayment === null) {
+    if (!item) {
       this.formData.chequeNo = '';
-      this.formData.amount = '';
-      this.formData.bankCharges = '';
+      this.formData.account = '';
+      this.accounts = [];
+      return;
     }
 
-    console.log(this.formData);
+    if (item?.name === 'Cash') {
+      this.accounts = [...this.cashAccounts];
+      this.formData.chequeNo = 'CASH';
+      this.formData.account = 'CASH';
+      return;
+    }
+
+    this.formData.chequeNo = '';
+
+    if (item?.name === 'Cheque') {
+      this.accounts = [...this.chequeAccounts];
+      this.formData.account = 'CHEQUE';
+      return;
+    }
+
+    if (item?.name === 'T/T') {
+      this.accounts = [...this.ttAccounts];
+      this.formData.account = this.ttAccounts[0].id;
+    }
   }
 
-  onCheckOutstanding() {
-    alert('Outstanding checked: Clean ledger state');
+  onVesselChange(selection: ComboboxSelection): void {
+    this.searchModel.vesselId = selection.value;
+    this.vesselValue = { vessel: selection.item?.vesselName || '' };
+  }
+
+  onPaymentValueChange(value: unknown): void {
+    if (value === null || value === undefined || value === '') {
+      this.onPaymentChange(value, null);
+    }
+  }
+
+  onCheckOutstanding(): void {
+    this.currentPage = 1;
+    this.selectedRecord = null;
+
+    // Outstanding-record retrieval is not available in the current API contract.
+    // Keep the entered filters intact so they can be submitted when that endpoint is added.
+  }
+
+  onSearchClick() {
+    // Check if at least one field has a value
+    const hasValue =
+      this.searchModel.invoiceNo?.trim() ||
+      this.searchModel.blNo?.trim() ||
+      this.searchModel.vesselId ||
+      this.searchModel.customerName?.trim() ||
+      this.searchModel.voyageId;
+
+    if (!hasValue) {
+      this.alertService.showAlert(
+        'Validation',
+        'You must fill at least one field to search.',
+        'warning',
+      );
+      return;
+    }
+
+    const payload = {
+      invoiceNo: this.searchModel.invoiceNo || '',
+      blNo: this.searchModel.blNo || '',
+      vesselId: this.searchModel.vesselId || '',
+      customerName: this.searchModel.customerName || '',
+      voyageId: this.searchModel.voyageId || '',
+    };
+
+    console.log('Payload:', payload);
+
+    this.loading = true;
+
+    this.apiService
+      .post('api/receiptRetrieve', payload)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: (res: any) => {
+          console.log('res', res);
+        },
+        error: (error) => {
+          this.alertService.showAlert(
+            'Error',
+            error?.error?.message || 'Unable to retrieve receipt.',
+            'error',
+          );
+        },
+      });
   }
 
   onOverPayment() {
-    alert('Over payment threshold verified & registered');
+    // const payload = {
+    //   transactionDate: '2026-07-13',
+    //   officeCode: 'SIN',
+    //   paymentMode: 'CASH',
+    //   receiptDate: '2026-07-10',
+    //   referenceNo: 'REF000008',
+    //   currencyCode: 'SGD',
+    //   amount: 2500.0,
+    //   bankCharge: 0,
+    //   paidInvoiceTotal: 2500.0,
+    //   receiptTotal: 2500.0,
+    //   balanceAmount: 0.0,
+    //   postedToCoda: false,
+    //   bank: 'DBS',
+    //   createdUser: 'admin',
+    //   modifiedUser: 'admin',
+    // };
+    // this.apiService.post('api/receipts', payload).subscribe({
+    //   next: (response: any) => {
+    //     console.log('Receipt Created:', response);
+    //   },
+    //   error: (error: any) => {
+    //     console.error('API Error:', error);
+    //   },
+    // });
   }
 
   submitReceipt(formValue: any) {
@@ -183,14 +317,148 @@ export class NewReceiptComponent {
 
   onSaveUser(form: NgForm): void {
     this.submitted = true;
-    console.log('form', form);
+    if (form.invalid) {
+      return;
+    }
+
+    this.onConfirm();
   }
 
   onCancel() {
     this.router.navigate(['/home/receipts']);
   }
 
-  onConfirm() {}
+  onConfirm(): void {
+    if (this.loading) {
+      return;
+    }
+
+    const amount = this.toNumber(this.formData.amount);
+    const bankCharge = this.toNumber(this.formData.bankCharges);
+    const receiptDate = this.toApiDate(this.formData.receiptDate);
+    const bank = this.getAccountName();
+
+    if (
+      !this.selectedPayment ||
+      !this.formData.chequeNo.trim() ||
+      !receiptDate ||
+      !bank ||
+      amount <= 0 ||
+      bankCharge < 0
+    ) {
+      this.alertService.showAlert(
+        'Error',
+        'Please enter a receipt date, payment type, account, reference number, and a valid amount.',
+        'error',
+      );
+      return;
+    }
+
+    const user = this.userService.getUser();
+    const username = user?.username || user?.userName || user?.name || user?.email || 'admin';
+    const payload: CreateReceiptPayload = {
+      transactionDate: this.today(),
+      officeCode: this.getOfficeCode(),
+      paymentMode: this.selectedPayment.name.toUpperCase(),
+      receiptDate,
+      referenceNo: 'REF000006',
+      currencyCode: this.formData.currency,
+      amount,
+      bankCharge,
+      paidInvoiceTotal: this.toNumber(this.summary.paidInvoiceTotal),
+      receiptTotal: this.toNumber(this.summary.receiptTotal) || amount,
+      balanceAmount: this.toNumber(this.summary.balance),
+      postedToCoda: false,
+      bank,
+      createdUser: 'admin',
+      modifiedUser: 'admin',
+    };
+
+    this.loading = true;
+    this.apiService
+      .post('api/receipts', payload)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: () => {
+          this.alertService.showAlert('Success', 'Receipt created successfully.', 'success');
+          this.router.navigate(['/home/receipts']);
+        },
+        error: (error) => {
+          this.alertService.showAlert(
+            'Error',
+            error?.error?.message || 'Unable to create the receipt.',
+            'error',
+          );
+        },
+      });
+  }
+
+  private toNumber(value: string | number): number {
+    const number = Number(String(value).replace(/,/g, ''));
+    return Number.isFinite(number) ? number : 0;
+  }
+
+  formatMoney(field: 'amount' | 'bankCharges'): void {
+    const value = this.formData[field];
+
+    if (!String(value).trim()) {
+      return;
+    }
+
+    const amount = this.toNumber(value);
+    this.formData[field] = amount.toLocaleString('en-SG', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  calculateSummary(): void {
+    const amount = this.toNumber(this.formData.amount);
+
+    this.summary.paidInvoiceTotal = amount.toLocaleString('en-SG', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+    this.summary.receiptTotal = amount.toLocaleString('en-SG', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+    this.summary.balance = '0.00';
+  }
+
+  private today(): string {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  /** Converts the shared date picker value (DD/MM/YYYY) to the API's YYYY-MM-DD format. */
+  private toApiDate(value: string): string {
+    const match = value.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+    if (match) {
+      const [, day, month, year] = match;
+      return `${year}-${month}-${day}`;
+    }
+
+    return /^\d{4}-\d{2}-\d{2}$/.test(value.trim()) ? value.trim() : '';
+  }
+
+  private getAccountName(): string {
+    return (
+      this.accounts.find((account) => String(account.id) === String(this.formData.account))?.name ||
+      ''
+    );
+  }
+
+  private getOfficeCode(): string {
+    try {
+      const location = JSON.parse(localStorage.getItem('defaultLocation') || '{}');
+      return location.locationName || '';
+    } catch {
+      return '';
+    }
+  }
 
   changePage(page: number): void {
     //   if (!this.searchText && page >= 1) {

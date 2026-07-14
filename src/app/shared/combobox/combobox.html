@@ -39,8 +39,9 @@
         <div class="combo-count-header">Count: {{ filteredItems.length }}</div>
 
         <div
-          *ngFor="let item of filteredItems"
+          *ngFor="let item of filteredItems; let i = index"
           class="combo-item"
+          [class.active]="i === activeIndex"
           (click)="selectItem(item, $event)"
         >
           {{ codeExpr ? item[codeExpr] + ' - ' + item[displayExpr] : item[displayExpr] }}

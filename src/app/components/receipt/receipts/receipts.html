@@ -25,15 +25,20 @@
           placeholder="Search..."
           class="search-flat-input"
           [(ngModel)]="searchQuery"
-          (keyup.enter)="onSearch($event)"
+          (keyup.enter)="onSearch()"
         />
         <button type="button" class="btn-search-flat-go" (click)="onSearch()">Go</button>
       </div>
     </div>
     <!-- Summary Card here-->
     <div class="main-container">
+      <p *ngIf="loading" class="text-muted text-center py-4 mb-0">Loading receipts…</p>
+      <p *ngIf="!loading && !filteredReceipts.length" class="text-muted text-center py-4 mb-0">
+        No receipts found.
+      </p>
       <app-summary-card
-        [items]="receipts"
+        *ngIf="!loading && filteredReceipts.length"
+        [items]="filteredReceipts"
         (undo)="openUndoModal($event)"
         (remove)="openRemoveModal($event)"
       >

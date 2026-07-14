@@ -133,6 +133,23 @@ $border-color-muted: #cbd5e1;
   }
 }
 
+.btn-flat-action-primary-fill {
+  background: #33708f !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px;
+  padding: 8px 18px !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  box-shadow: 0 2px 5px rgba(51, 112, 143, 0.15);
+  transition: 0.2s;
+}
+
+.btn-flat-action-primary:hover {
+  transform: translateY(-1px);
+}
+
 .custom-flat-checkbox {
   position: relative;
   display: inline-flex;

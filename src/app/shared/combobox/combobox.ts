@@ -18,6 +18,11 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SKIP_LOADER } from '../../core/interceptors/loaderInterceptor/loader-interceptor-interceptor';
 import { ApiService } from '../../services/api.service';
 
+export interface ComboboxSelection {
+  value: any;
+  item: any | null;
+}
+
 @Component({
   selector: 'app-combobox',
   standalone: true,
@@ -41,6 +46,8 @@ export class Combobox implements OnInit, OnChanges {
 
   @Input() value: any = null;
   @Output() valueChange = new EventEmitter<any>();
+  /** Emits both valueExpr and the complete selected item, including displayExpr fields. */
+  @Output() selectionChange = new EventEmitter<ComboboxSelection>();
 
   @Input() extraProp: any = { placeholder: 'Select Option' };
 
@@ -53,23 +60,23 @@ export class Combobox implements OnInit, OnChanges {
   @Input() handleChange?: (value: any, item: any) => void;
   @Input() searchFromApi: boolean = true;
   @Input() name = '';
+  @Input() reload: boolean = false;
 
   isTouched = false;
-
   formData = {};
-
   isOpen = false;
   isDataLoaded = false;
   isLoading = false;
 
   items: any[] = [];
   filteredItems: any[] = [];
-
   selectedItem: any = null;
   searchText = '';
 
-  private isTyping = false;
+  // Safe feature addition: Track active keyboard highlight index
+  activeIndex = -1;
 
+  private isTyping = false;
   private suppressSearch = false;
   private searchSubject = new Subject<string>();
 
@@ -106,7 +113,6 @@ export class Combobox implements OnInit, OnChanges {
       this.filteredItems = [...this.items];
 
       this.isDataLoaded = true;
-
       this.syncDisplayLabel();
     }
   }
@@ -123,10 +129,10 @@ export class Combobox implements OnInit, OnChanges {
 
     this.isTyping = true;
     this.searchText = term;
+    this.activeIndex = -1; // Reset selection index on new search string
 
     if (this.searchFromApi) {
       this.searchSubject.next(term?.trim() || '*');
-
       return;
     }
 
@@ -147,7 +153,9 @@ export class Combobox implements OnInit, OnChanges {
 
     this.isOpen = true;
 
-    if (!this.isDataLoaded) {
+    // If reload is true, force load every time.
+    // If reload is false, only load if data hasn't been fetched yet.
+    if (this.reload || !this.isDataLoaded) {
       this.loadData('*');
     }
   }
@@ -156,7 +164,6 @@ export class Combobox implements OnInit, OnChanges {
     if (!this.url) return;
 
     this.isLoading = true;
-
     let apiUrl = this.url;
 
     if (searchTerm !== '*') {
@@ -180,6 +187,7 @@ export class Combobox implements OnInit, OnChanges {
       this.isLoading = false;
       this.isOpen = true;
       this.isDataLoaded = true;
+      this.activeIndex = -1; // Clear highlight status post-fetch
 
       if (!this.isTyping) {
         this.syncDisplayLabel();
@@ -192,6 +200,7 @@ export class Combobox implements OnInit, OnChanges {
       this.items = [];
       this.filteredItems = [];
       this.isLoading = false;
+      this.cdr.detectChanges();
     };
 
     if (this.apiMethod === 'POST') {
@@ -247,6 +256,10 @@ export class Combobox implements OnInit, OnChanges {
 
     if (typeof this.value === 'object') {
       this.searchText = this.getNestedValue(this.value, this.displayExpr) || '';
+      return;
+    }
+    if (this.url && lookupPool.length === 0 && !this.isDataLoaded && !this.isLoading) {
+      this.loadData(this.value);
     }
   }
 
@@ -257,18 +270,19 @@ export class Combobox implements OnInit, OnChanges {
 
     this.isOpen = !this.isOpen;
 
-    if (this.isOpen && !this.isDataLoaded) {
+    // Same rule applied here for manual arrow clicks
+    if (this.isOpen && (this.reload || !this.isDataLoaded)) {
       this.loadData('*');
     }
   }
 
-  selectItem(item: any, event: Event): void {
-    event.stopPropagation();
+  selectItem(item: any, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
 
     this.isTyping = false;
-
     this.selectedItem = item;
-
     this.suppressSearch = true;
 
     this.searchText = this.codeExpr
@@ -276,13 +290,12 @@ export class Combobox implements OnInit, OnChanges {
       : item[this.displayExpr];
 
     const finalValue = item[this.valueExpr];
-
     this.value = finalValue;
 
     this.valueChange.emit(finalValue);
+    this.selectionChange.emit({ value: finalValue, item });
 
     this.onChange?.(finalValue, item);
-
     this.handleChange?.(finalValue, item);
 
     this.isOpen = false;
@@ -294,14 +307,63 @@ export class Combobox implements OnInit, OnChanges {
     this.value = null;
     this.selectedItem = null;
     this.searchText = '';
+    this.activeIndex = -1;
 
     this.valueChange.emit(null);
+    this.selectionChange.emit({ value: null, item: null });
+
+    this.onChange?.(null, null);
+    this.handleChange?.(null, null);
 
     if (this.searchFromApi) {
       this.searchSubject.next('*');
     } else {
       this.filteredItems = [...this.items];
     }
+  }
+
+  // Safe new feature: Isolated keyboard management hook
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    if (!this.isOpen) return;
+
+    switch (event.key) {
+      case 'ArrowDown':
+        if (this.filteredItems.length > 0) {
+          this.activeIndex = (this.activeIndex + 1) % this.filteredItems.length;
+          this.scrollActiveItemIntoView();
+        }
+        event.preventDefault();
+        break;
+      case 'ArrowUp':
+        if (this.filteredItems.length > 0) {
+          this.activeIndex =
+            (this.activeIndex - 1 + this.filteredItems.length) % this.filteredItems.length;
+          this.scrollActiveItemIntoView();
+        }
+        event.preventDefault();
+        break;
+      case 'Enter':
+        if (this.activeIndex >= 0 && this.activeIndex < this.filteredItems.length) {
+          this.selectItem(this.filteredItems[this.activeIndex]);
+        }
+        event.preventDefault();
+        break;
+      case 'Escape':
+      case 'Tab':
+        this.isOpen = false;
+        this.cdr.markForCheck();
+        break;
+    }
+  }
+
+  private scrollActiveItemIntoView(): void {
+    setTimeout(() => {
+      const activeEl = this.elementRef.nativeElement.querySelector('.combobox-item.active');
+      if (activeEl) {
+        activeEl.scrollIntoView({ block: 'nearest' });
+      }
+    });
   }
 
   @HostListener('document:click', ['$event'])

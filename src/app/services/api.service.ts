@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
 import { environment } from '../../environment/environment';
 
 @Injectable({
@@ -10,8 +11,8 @@ export class ApiService {
 
   private http = inject(HttpClient);
 
-  get(endpoint: string, options?: any, config: boolean = false) {
-    return this.http.get(`${this.baseUrl}/${endpoint}`, options);
+  get<T>(endpoint: string, options?: any): Observable<T> {
+    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, options) as Observable<T>;
   }
 
   post(endpoint: string, data: any, options?: any) {
