@@ -65,6 +65,7 @@
   *ngIf="showUndoModal"
   title="UndoReceipt"
   [dynamicComponent]="undoReceipt"
+  [componentInputs]="{ recordData: selectedRecord }"
   [isModal]="true"
   (onClose)="closeModal()"
 ></app-wrapper>
@@ -73,6 +74,7 @@
   *ngIf="showRemoveModal"
   title="Remove Inovoice"
   [dynamicComponent]="removeReceipt"
+  [componentInputs]="{ recordData: selectedRecord }"
   [isModal]="true"
   (onClose)="closeModal()"
 ></app-wrapper>

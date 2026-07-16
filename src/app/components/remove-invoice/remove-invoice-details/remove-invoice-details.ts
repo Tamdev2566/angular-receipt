@@ -1,7 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { UserService } from '../../../services/userService/user.service';
+import { ApiService } from '../../../services/api.service';
+import { AlertService } from '../../../services/alertService/alert';
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-remove-invoice-details',
@@ -23,6 +28,9 @@ export class RemoveInvoiceDetails {
 
   invoiceGrid: any[] = [];
 
+  loading: boolean = false;
+  recordData = input<any>();
+
   invoiceColumns: ColumnDef[] = [
     { label: 'Type', field: 'type', width: '90px' },
     { label: 'Reference No', field: 'referenceNo', width: '150px' },
@@ -33,12 +41,58 @@ export class RemoveInvoiceDetails {
     { label: 'USD Amount', field: 'usdAmount', width: '120px' },
   ];
 
+  constructor(
+    private userService: UserService,
+    private apiService: ApiService,
+    private alertService: AlertService,
+    private router: Router,
+  ) {}
+
   retrieveInvoice() {}
 
-  removeInvoice() {}
+  removeInvoice() {
+    const user = this.userService.getUser();
+    console.log(user);
+
+    const payload = {
+      userId: user.name || 'admin_user',
+      reason: this.remark || 'Duplicate invoice generation',
+      invoices: [
+        {
+          referenceNo: this.recordData().referenceNo || '',
+          source: 'DocSys',
+        },
+      ],
+    };
+
+    console.log('payload', payload);
+
+    this.apiService
+      .post('api/receiptRemoveInvoice', payload)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: (res: any) => {
+          this.alertService.showAlert('Success', res.message, 'success');
+        },
+        error: (error) => {
+          this.alertService.showAlert(
+            'Error',
+            error?.error?.message || 'Unable to Remove Invoice.',
+            'error',
+          );
+        },
+      });
+  }
 
   onCancel() {
-    history.back();
+    // history.back();
+    this.retrieve = {
+      customerName: '',
+      vesselName: '',
+      voyageNo: '',
+    };
+
+    this.remark = '';
   }
 
   onRowSelect(record: any): void {

@@ -1,7 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
+import { UserService } from '../../../services/userService/user.service';
+import { ApiService } from '../../../services/api.service';
+import { finalize } from 'rxjs';
+import { AlertService } from '../../../services/alertService/alert';
+import { Router } from '@angular/router';
+import { UndoPaymentService } from '../undopayment-service';
 
 @Component({
   selector: 'app-undo-receipt',
@@ -13,6 +19,7 @@ import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 export class UndoPaymentDetails {
   paginatedRecords: any[] = [];
   selectedRecord: any = null;
+  selectedRecords: any[] = [];
 
   retrieve = {
     invoiceNo: '',
@@ -33,6 +40,8 @@ export class UndoPaymentDetails {
 
   outstandingGrid: any[] = [];
 
+  recordData = input<any>();
+
   receiptColumns: ColumnDef[] = [
     { label: 'Transaction No', field: 'transactionNo', width: '160px' },
     { label: 'Transaction Date', field: 'transactionDate', width: '170px' },
@@ -44,15 +53,17 @@ export class UndoPaymentDetails {
 
   invoiceColumns: ColumnDef[] = [
     { label: 'Type', field: 'type', width: '90px' },
-    { label: 'Reference Date', field: 'referenceDate', width: '140px' },
+    { label: 'Reference Date', field: 'transactionDate', width: '140px' },
     { label: 'Reference No', field: 'referenceNo', width: '170px' },
     { label: 'Currency', field: 'currency', align: 'center', width: '90px' },
-    { label: 'Settlement Amount', field: 'settlementAmount', width: '150px' },
+    { label: 'Settlement Amount', field: 'settlementAmt', width: '150px' },
     { label: 'SGD Amount', field: 'sgdAmount', width: '120px' },
     { label: 'USD Amount', field: 'usdAmount', width: '120px' },
-    { label: 'Original SGD', field: 'originalSGD', width: '120px' },
-    { label: 'Original USD', field: 'originalUSD', width: '120px' },
-    { label: 'Partial', field: 'partial', align: 'center', width: '90px' },
+    { label: 'Original SGD', field: 'originalsgdAmount', width: '120px' },
+    { label: 'Original USD', field: 'originalusdAmount', width: '120px' },
+    // Reusable Column Type Set Panniyachu
+    { label: 'Partial', field: 'partial', align: 'center', type: 'checkbox', width: '90px' },
+    { label: 'Write-off', field: 'writeOff', align: 'center', type: 'checkbox', width: '90px' },
   ];
 
   outstandingColumns: ColumnDef[] = [
@@ -61,30 +72,121 @@ export class UndoPaymentDetails {
     { label: 'Amount', field: 'amount', width: '130px' },
   ];
 
-  constructor() {}
+  constructor(
+    private userService: UserService,
+    private apiService: ApiService,
+    private alertService: AlertService,
+    private router: Router,
+    private undoService: UndoPaymentService,
+  ) {}
 
   ngOnInit(): void {}
 
+  // onRowSelect(record: any): void {
+  //   if (record) {
+  //     this.selectedRecord = record;
+  //   } else {
+  //     this.selectedRecord = null;
+  //   }
+  // }
+
   onRowSelect(record: any): void {
-    this.trackSelectionLogs();
-    console.log('record', record);
-    // this.rowData.setRowData(record);
+    this.selectedRecords = this.receiptGrid.filter((row) => row.isSelected);
   }
 
-  trackSelectionLogs(): void {
-    const selectedRows = this.paginatedRecords.filter((row) => row.isSelected);
-
-    this.selectedRecord = selectedRows.length === 1 ? selectedRows[0] : null;
-  }
   retrieveReceipt(): void {
-    // API Call
+    this.undoService
+      .retrieveRecords(this.retrieve.invoiceNo, this.retrieve.blNo, this.retrieve.chequeNo)
+      .subscribe({
+        next: (res: any) => {
+          if (res) {
+            this.details = {
+              blNo: res.blNo || '',
+              vesselName: res.vesselName || '',
+              voyageNo: res.voyageNo || '',
+              customerName: res.customerName || '',
+            };
+
+            this.receiptGrid = res.receipts || [];
+
+            if (res.invoices) {
+              this.invoiceGrid = res.invoices.map((inv: any) => ({
+                type: inv.type,
+                transactionDate: inv.transactionDate || '',
+                referenceNo: inv.referenceNo,
+                currency: inv.currency,
+                settlementAmount: inv.settlementAmt,
+                sgdAmount: inv.sgdAmount,
+                usdAmount: inv.usdAmount,
+                originalSGD: inv.originalsgdAmount,
+                originalUSD: inv.originalusdAmount,
+                partial: inv.partial || 'N',
+                writeOff: inv.writeOff || 'N',
+              }));
+            } else {
+              this.invoiceGrid = [];
+            }
+
+            this.outstandingGrid = res.outstandings || [];
+          }
+        },
+        error: (err) => {
+          this.alertService.showAlert('Error', 'Failed to retrieve records.', 'error');
+        },
+      });
   }
 
   undoReceipt(): void {
-    // Undo Payment API
+    if (this.selectedRecords.length === 0) {
+      this.alertService.showAlert(
+        'Warning',
+        'Please select at least one record from the Receipt grid to undo.',
+        'warning',
+      );
+      return;
+    }
+
+    const payload: string[] = this.selectedRecords.map((record) => record.transactionNo || '');
+
+    this.undoService.processUndo(payload).subscribe({
+      next: (res: any) => {
+        this.alertService.showAlert(
+          'Success',
+          res.message || 'Selected receipts undone successfully.',
+          'success',
+        );
+        this.selectedRecords = [];
+        this.retrieveReceipt();
+      },
+      error: (error) => {
+        this.alertService.showAlert(
+          'Error',
+          error?.error?.message || 'Unable to Undo the Selected Receipts.',
+          'error',
+        );
+      },
+    });
   }
 
   onCancel(): void {
-    history.back();
+    // history.back();
+    this.retrieve = {
+      invoiceNo: '',
+      blNo: '',
+      chequeNo: '',
+    };
+
+    this.details = {
+      blNo: '',
+      vesselName: '',
+      voyageNo: '',
+      customerName: '',
+    };
+
+    this.receiptGrid = [];
+
+    this.invoiceGrid = [];
+
+    this.outstandingGrid = [];
   }
 }

@@ -1,6 +1,6 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { Combobox, ComboboxSelection } from '../../../shared/combobox/combobox';
@@ -39,33 +39,19 @@ interface AccountOption {
   templateUrl: './new-receipts.html',
   styleUrls: ['./new-receipts.scss'],
 })
-export class NewReceiptComponent {
-  @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<any>();
+export class NewReceiptComponent implements OnInit {
+  @Output() cancelReceipt = new EventEmitter<void>(); // Renamed safely to avoid unused template flags if generic
 
   docInward = true;
   docOutward = true;
   selectedPayment: any = null;
 
   loading = false;
-  isEditMode = false;
-  submitted = false;
-
-  vesselList: any[] = [];
-  voyageList: any[] = [];
-
   gridData: any[] = [];
-
-  paginatedRecords: any[] = [];
-
-  currentPage: number = 1;
   totalPages: number = 1;
-  pageSize: number = 20;
-  pageNumbers: number[] = [];
-  selectedRecord: any = null;
-  searchText = '';
-  selectedVesselName = '';
-  vesselValue = {};
+  currentPage: number = 1;
+
+  vesselValue: any = {};
 
   formData = {
     paymentMode: '',
@@ -92,21 +78,6 @@ export class NewReceiptComponent {
     vesselId: null,
     voyageId: null,
     customerName: '',
-  };
-
-  newRecord = {
-    id: '',
-    invoiceNo: '',
-    customerName: '',
-    blNo: '',
-    chequeNo: 'CASH',
-    vesselName: '',
-    voyageNo: '',
-    date: new Date().toISOString().substring(0, 10),
-    amount: 0,
-    currency: 'SGD',
-    payMode: 'Cash',
-    status: 'Unverified',
   };
 
   paymentTypes = [
@@ -144,38 +115,8 @@ export class NewReceiptComponent {
     private userService: UserService,
   ) {}
 
-  // ngOnInit(): void {
-  //   if (this.formData.paymentMode === 'Cash') {
-  //     this.formData.chequeNo = 'Cash';
-  //   } else {
-  //     this.formData.chequeNo = '';
-  //   }
-  // }\
-
   ngOnInit() {
     this.formData.receiptDate = this.today();
-
-    this.vesselList = [
-      {
-        vessel_id: 1,
-        vessel_name: 'SINAR AMBON',
-      },
-      {
-        vessel_id: 2,
-        vessel_name: 'SINAR BALI',
-      },
-    ];
-
-    this.voyageList = [
-      {
-        voyage_id: 1,
-        voyage_no: 'TESTVGM2',
-      },
-      {
-        voyage_id: 2,
-        voyage_no: 'TESTVGM3',
-      },
-    ];
   }
 
   onPaymentChange(value: any, item: any): void {
@@ -221,15 +162,31 @@ export class NewReceiptComponent {
   }
 
   onCheckOutstanding(): void {
-    this.currentPage = 1;
-    this.selectedRecord = null;
+    const payload = {
+      source: this.docInward ? 'DocSys' : 'Doc4All',
+      customerNames: [this.searchModel.customerName || ''],
+    };
 
-    // Outstanding-record retrieval is not available in the current API contract.
-    // Keep the entered filters intact so they can be submitted when that endpoint is added.
+    this.loading = true;
+
+    this.apiService
+      .post('api/receiptCheckOutstanding', payload)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: (res: any) => {
+          console.log('res', res);
+        },
+        error: (error) => {
+          this.alertService.showAlert(
+            'Error',
+            error?.error?.message || 'Unable to retrieve receipt.',
+            'error',
+          );
+        },
+      });
   }
 
   onSearchClick() {
-    // Check if at least one field has a value
     const hasValue =
       this.searchModel.invoiceNo?.trim() ||
       this.searchModel.blNo?.trim() ||
@@ -254,8 +211,6 @@ export class NewReceiptComponent {
       voyageId: this.searchModel.voyageId || '',
     };
 
-    console.log('Payload:', payload);
-
     this.loading = true;
 
     this.apiService
@@ -276,51 +231,13 @@ export class NewReceiptComponent {
   }
 
   onOverPayment() {
-    // const payload = {
-    //   transactionDate: '2026-07-13',
-    //   officeCode: 'SIN',
-    //   paymentMode: 'CASH',
-    //   receiptDate: '2026-07-10',
-    //   referenceNo: 'REF000008',
-    //   currencyCode: 'SGD',
-    //   amount: 2500.0,
-    //   bankCharge: 0,
-    //   paidInvoiceTotal: 2500.0,
-    //   receiptTotal: 2500.0,
-    //   balanceAmount: 0.0,
-    //   postedToCoda: false,
-    //   bank: 'DBS',
-    //   createdUser: 'admin',
-    //   modifiedUser: 'admin',
-    // };
-    // this.apiService.post('api/receipts', payload).subscribe({
-    //   next: (response: any) => {
-    //     console.log('Receipt Created:', response);
-    //   },
-    //   error: (error: any) => {
-    //     console.error('API Error:', error);
-    //   },
-    // });
+    // Kept intact since template binds explicitly to it
   }
 
-  submitReceipt(formValue: any) {
-    console.log('formValue', formValue);
-
-    if (!this.newRecord.customerName || !this.newRecord.invoiceNo || !this.newRecord.amount) {
-      alert('Mandatory form attributes entry missing!');
-      return;
-    }
-    this.newRecord.id = `REC-${Math.floor(100 + Math.random() * 900)}`;
-    this.save.emit({ ...this.newRecord });
-    this.close.emit();
-  }
-
-  onSaveUser(form: NgForm): void {
-    this.submitted = true;
+  submitReceipt(form: any) {
     if (form.invalid) {
       return;
     }
-
     this.onConfirm();
   }
 
@@ -355,7 +272,6 @@ export class NewReceiptComponent {
     }
 
     const user = this.userService.getUser();
-    const username = user?.username || user?.userName || user?.name || user?.email || 'admin';
     const payload: CreateReceiptPayload = {
       transactionDate: this.today(),
       officeCode: this.getOfficeCode(),
@@ -432,7 +348,6 @@ export class NewReceiptComponent {
     return new Date().toISOString().slice(0, 10);
   }
 
-  /** Converts the shared date picker value (DD/MM/YYYY) to the API's YYYY-MM-DD format. */
   private toApiDate(value: string): string {
     const match = value.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
 
@@ -461,24 +376,10 @@ export class NewReceiptComponent {
   }
 
   changePage(page: number): void {
-    //   if (!this.searchText && page >= 1) {
-    //     this.currentPage = page;
-    //     this.loadUserLedger();
-    //   } else {
-    //     this.currentPage = page;
-    //     this.searchUsers();
-    //   }
+    this.currentPage = page;
   }
 
   onRowSelect(record: any): void {
-    this.trackSelectionLogs();
     console.log('record', record);
-    // this.rowData.setRowData(record);
-  }
-
-  trackSelectionLogs(): void {
-    const selectedRows = this.paginatedRecords.filter((row) => row.isSelected);
-
-    this.selectedRecord = selectedRows.length === 1 ? selectedRows[0] : null;
   }
 }

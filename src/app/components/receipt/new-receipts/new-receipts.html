@@ -14,7 +14,7 @@
     <form
       id="receiptSystemForm"
       #userForm="ngForm"
-      (ngSubmit)="onSaveUser(userForm)"
+      (ngSubmit)="submitReceipt(userForm)"
       autocomplete="off"
       class="mb-4"
     >
@@ -47,7 +47,8 @@
           </div>
         </div>
       </div>
-      <!-- recept information -->
+
+      <!-- receipt information -->
       <div class="receipt-form-card">
         <div class="row g-2">
           <div class="col-12 col-sm-6 col-md-12">
@@ -91,6 +92,18 @@
           </div>
 
           <div class="col-12 col-sm-6 col-md-2">
+            <label class="form-label fw-bold custom-flat-label mb-1.5">Account:</label>
+            <app-combobox
+              name="account"
+              displayExpr="name"
+              valueExpr="id"
+              [(value)]="formData.account"
+              [data]="accounts"
+            >
+            </app-combobox>
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-2">
             <label class="form-label fw-bold custom-flat-label mb-2"> Currency: </label>
 
             <div class="d-flex align-items-center gap-3 mt-1">
@@ -120,17 +133,6 @@
             </div>
           </div>
 
-          <div class="col-12 col-sm-6 col-md-2">
-            <label class="form-label fw-bold custom-flat-label mb-1.5">Account:</label>
-            <app-combobox
-              name="account"
-              displayExpr="name"
-              valueExpr="id"
-              [(value)]="formData.account"
-              [data]="accounts"
-            >
-            </app-combobox>
-          </div>
           <div class="col-12 col-sm-6 col-md-2">
             <label class="form-label fw-bold custom-flat-label mb-1.5">Amount:</label>
             <input
@@ -162,6 +164,7 @@
       </div>
     </form>
 
+    <!-- retrieve information -->
     <div class="receipt-form-card mb-3">
       <div class="row g-2">
         <div class="col-12">
@@ -171,7 +174,6 @@
         <!-- Invoice No -->
         <div class="col-md-2">
           <label class="form-label fw-bold custom-flat-label"> Invoice No: </label>
-
           <input
             type="text"
             name="invoiceNo"
@@ -181,10 +183,8 @@
           />
         </div>
 
-        <!-- BL No -->
         <div class="col-md-2">
           <label class="form-label fw-bold custom-flat-label"> BL No: </label>
-
           <input
             type="text"
             name="blNo"
@@ -194,10 +194,8 @@
           />
         </div>
 
-        <!-- Vessel Name -->
         <div class="col-md-2">
           <label class="form-label fw-bold custom-flat-label"> Vessel Name: </label>
-
           <app-combobox
             [url]="'api/getvessel'"
             [responsePath]="''"
@@ -210,10 +208,8 @@
           </app-combobox>
         </div>
 
-        <!-- Customer Name -->
         <div class="col-md-2">
           <label class="form-label fw-bold custom-flat-label"> Customer Name: </label>
-
           <input
             type="text"
             name="customerName"
@@ -223,10 +219,8 @@
           />
         </div>
 
-        <!-- Voyage No -->
         <div class="col-md-2">
           <label class="form-label fw-bold custom-flat-label"> Voyage No: </label>
-
           <app-combobox
             [url]="'api/getvoyage'"
             [responsePath]="''"
@@ -240,7 +234,7 @@
           </app-combobox>
         </div>
 
-        <div class="col-md-2 d-flex flex-column align-items-center gap-2">
+        <div class="col-md-12 d-flex align-items-center justify-content-end gap-2">
           <button
             type="button"
             class="btn btn-flat-action-primary-fill"
@@ -307,7 +301,6 @@
           <div class="d-flex justify-content-end flex-column align-items-center gap-3">
             <label class="doc-check mb-0">
               <input type="checkbox" [(ngModel)]="showReferenceType" name="showReferenceType" />
-
               <span>Show Reference Type</span>
             </label>
             <div class="receipt-actions">

@@ -42,6 +42,16 @@
 
         <td *ngFor="let col of columns()" [ngClass]="col.align ? 'text-' + col.align : ''">
           <ng-container [ngSwitch]="col.type">
+            <span *ngSwitchCase="'checkbox'" class="d-flex justify-content-center">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                [checked]="
+                  row[col.field] === '0' || row[col.field] === 0 || row[col.field] === true
+                "
+                disabled
+              />
+            </span>
             <span *ngSwitchCase="'badge'" class="badge bg-primary">{{ row[col.field] }}</span>
             <span *ngSwitchDefault>{{ row[col.field] }}</span>
           </ng-container>

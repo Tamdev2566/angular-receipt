@@ -71,15 +71,15 @@ export const routes: Routes = [
         },
       },
 
+      // {
+      //   path: 'remove-invoice',
+      //   loadComponent: () =>
+      //     import('./components/remove-invoice/remove-invoice-list/remove-invoice-list').then(
+      //       (m) => m.RemoveInvoiceList,
+      //     ),
+      // },
       {
         path: 'remove-invoice',
-        loadComponent: () =>
-          import('./components/remove-invoice/remove-invoice-list/remove-invoice-list').then(
-            (m) => m.RemoveInvoiceList,
-          ),
-      },
-      {
-        path: 'remove-invoice-details',
         loadComponent: () =>
           import('./components/remove-invoice/remove-invoice-details/remove-invoice-details').then(
             (m) => m.RemoveInvoiceDetails,
@@ -88,17 +88,17 @@ export const routes: Routes = [
       {
         path: 'undo-payment',
         loadComponent: () =>
-          import('./components/undo-payments/undo-payment-list/undo-payment-list').then(
-            (m) => m.UndoPaymentList,
-          ),
-      },
-      {
-        path: 'undo-payment-details',
-        loadComponent: () =>
           import('./components/undo-payments/undo-payment-details/undo-payment-details').then(
             (m) => m.UndoPaymentDetails,
           ),
       },
+      // {
+      //   path: 'undo-payment-details',
+      //   loadComponent: () =>
+      //     import('./components/undo-payments/undo-payment-details/undo-payment-details').then(
+      //       (m) => m.UndoPaymentDetails,
+      //     ),
+      // },
 
       {
         path: 'update-cheque',

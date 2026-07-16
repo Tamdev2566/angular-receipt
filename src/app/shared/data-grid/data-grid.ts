@@ -7,7 +7,7 @@ export interface ColumnDef {
   field: string;
   width?: string;
   align?: 'start' | 'center' | 'end';
-  type?: 'text' | 'badge';
+  type?: 'text' | 'badge' | 'checkbox';
 }
 
 @Component({

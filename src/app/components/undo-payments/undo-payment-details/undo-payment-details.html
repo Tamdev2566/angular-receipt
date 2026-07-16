@@ -21,33 +21,37 @@
 
         <div class="col-md-2">
           <label class="form-label fw-bold custom-flat-label"> Invoice No: </label>
-
           <input
             class="form-control form-control-sm custom-flat-input"
             [(ngModel)]="retrieve.invoiceNo"
+            [disabled]="!!retrieve.blNo || !!retrieve.chequeNo"
           />
         </div>
 
         <div class="col-md-3">
           <label class="form-label fw-bold custom-flat-label"> BL No : </label>
-
           <input
             class="form-control form-control-sm custom-flat-input"
             [(ngModel)]="retrieve.blNo"
+            [disabled]="!!retrieve.invoiceNo || !!retrieve.chequeNo"
           />
         </div>
 
         <div class="col-md-2">
           <label class="form-label fw-bold custom-flat-label"> Cheque No : </label>
-
           <input
             class="form-control form-control-sm custom-flat-input"
             [(ngModel)]="retrieve.chequeNo"
+            [disabled]="!!retrieve.invoiceNo || !!retrieve.blNo"
           />
         </div>
 
         <div class="col-md-2 d-flex align-items-end">
-          <button class="btn btn-flat-action-primary-fill" (click)="retrieveReceipt()">
+          <button
+            class="btn btn-flat-action-primary-fill"
+            (click)="retrieveReceipt()"
+            [disabled]="!retrieve.invoiceNo && !retrieve.blNo && !retrieve.chequeNo"
+          >
             Retrieve
           </button>
         </div>
