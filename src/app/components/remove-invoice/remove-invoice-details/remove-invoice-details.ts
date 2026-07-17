@@ -1,12 +1,10 @@
-import { Component, input } from '@angular/core';
-import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { CommonModule } from '@angular/common';
+import { Component, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { UserService } from '../../../services/userService/user.service';
-import { ApiService } from '../../../services/api.service';
 import { AlertService } from '../../../services/alertService/alert';
-import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { UserService } from '../../../services/userService/user.service';
+import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
+import { RemoveInvoiceService } from '../service/remove-invoice-service';
 
 @Component({
   selector: 'app-remove-invoice-details',
@@ -33,57 +31,59 @@ export class RemoveInvoiceDetails {
 
   invoiceColumns: ColumnDef[] = [
     { label: 'Type', field: 'type', width: '90px' },
-    { label: 'Reference No', field: 'referenceNo', width: '150px' },
-    { label: 'Reference Date', field: 'referenceDate', width: '150px' },
-    { label: 'Vessel Name', field: 'vesselName', width: '170px' },
-    { label: 'Voyage No', field: 'voyageNo', width: '110px' },
-    { label: 'SGD Amount', field: 'sgdAmount', width: '120px' },
-    { label: 'USD Amount', field: 'usdAmount', width: '120px' },
+    { label: 'Reference No', field: 'reference_no', width: '150px' },
+    { label: 'Reference Date', field: 'reference_date', width: '150px' },
+    { label: 'Vessel Name', field: 'vessel_name', width: '170px' },
+    { label: 'Voyage No', field: 'voyage_no', width: '110px' },
+    { label: 'SGD Amount', field: 'original_sgd', width: '120px' },
+    { label: 'USD Amount', field: 'original_usd', width: '120px' },
   ];
 
   constructor(
     private userService: UserService,
-    private apiService: ApiService,
     private alertService: AlertService,
-    private router: Router,
+    private invoiceService: RemoveInvoiceService,
   ) {}
 
-  retrieveInvoice() {}
+  ngDoCheck() {
+    console.log(this.selectedRecord);
+  }
 
-  removeInvoice() {
-    const user = this.userService.getUser();
-    console.log(user);
-
-    const payload = {
-      userId: user.name || 'admin_user',
-      reason: this.remark || 'Duplicate invoice generation',
-      invoices: [
-        {
-          referenceNo: this.recordData().referenceNo || '',
-          source: 'DocSys',
-        },
-      ],
-    };
-
-    console.log('payload', payload);
-
-    this.apiService
-      .post('api/receiptRemoveInvoice', payload)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: (res: any) => {
-          this.alertService.showAlert('Success', res.message, 'success');
-        },
-        error: (error) => {
-          this.alertService.showAlert(
-            'Error',
-            error?.error?.message || 'Unable to Remove Invoice.',
-            'error',
-          );
-        },
+  retrieveInvoice() {
+    this.invoiceService
+      .searchInvoices(this.retrieve.customerName, this.retrieve.vesselName, this.retrieve.voyageNo)
+      .subscribe((res) => {
+        this.invoiceGrid = res;
       });
   }
 
+  removeInvoice() {
+    const selectedRecords = this.invoiceGrid.filter((row) => row.isSelected);
+
+    if (selectedRecords.length === 0) {
+      this.alertService.showAlert('Error', 'You must Select one Row', 'error');
+      return;
+    }
+
+    if (!this.remark.trim()) {
+      this.alertService.showAlert('Error', 'You must enter Remark', 'error');
+      return;
+    }
+
+    const referenceNos = selectedRecords.map((row) => row.reference_no);
+    const user = this.userService.getUser();
+
+    this.invoiceService.removeInvoices(referenceNos, user.name, this.remark).subscribe({
+      next: (res) => {
+        this.alertService.showAlert('Error', 'You must Select one Row', 'error');
+        this.retrieveInvoice();
+        this.remark = '';
+      },
+      error: (err) => {
+        this.alertService.showAlert('Error', 'You must Select one Row', 'error');
+      },
+    });
+  }
   onCancel() {
     // history.back();
     this.retrieve = {
@@ -103,7 +103,6 @@ export class RemoveInvoiceDetails {
 
   trackSelectionLogs(): void {
     const selectedRows = this.paginatedRecords.filter((row) => row.isSelected);
-
     this.selectedRecord = selectedRows.length === 1 ? selectedRows[0] : null;
   }
 }
