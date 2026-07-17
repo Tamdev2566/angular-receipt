@@ -74,13 +74,17 @@ export class RemoveInvoiceDetails {
     const user = this.userService.getUser();
 
     this.invoiceService.removeInvoices(referenceNos, user.name, this.remark).subscribe({
-      next: (res) => {
-        this.alertService.showAlert('Error', 'You must Select one Row', 'error');
+      next: (res: any) => {
+        console.log('res', res);
+
+        this.alertService.showAlert('Success', res.message, 'success');
         this.retrieveInvoice();
         this.remark = '';
       },
       error: (err) => {
-        this.alertService.showAlert('Error', 'You must Select one Row', 'error');
+        console.log('err', err);
+
+        this.alertService.showAlert('Error', err.message, 'error');
       },
     });
   }
