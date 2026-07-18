@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AlertService } from '../../services/alertService/alert';
+import { UserService } from '../../services/userService/user.service';
+import { UpdateChequeService } from './service/update-cheque-service';
 
 @Component({
   selector: 'app-update-cheque',
@@ -12,17 +15,9 @@ import { FormsModule } from '@angular/forms';
 export class UpdateCheque {
   loading = false;
 
-  // ===========================
-  // Retrieve Model
-  // ===========================
-
   retrieve = {
     chequeNo: '',
   };
-
-  // ===========================
-  // Receipt Details
-  // ===========================
 
   receipt = {
     transactionNo: '',
@@ -33,20 +28,16 @@ export class UpdateCheque {
     paidInvoiceTotal: '',
   };
 
-  // ===========================
-  // Update Model
-  // ===========================
-
   update = {
     newChequeNo: '',
     remark: '',
   };
 
-  constructor() {}
-
-  // ==================================
-  // Retrieve Button Click
-  // ==================================
+  constructor(
+    private updateChequeService: UpdateChequeService,
+    private user: UserService,
+    private alert: AlertService,
+  ) {}
 
   retrieveCheque(): void {
     if (!this.retrieve.chequeNo.trim()) {
@@ -54,26 +45,13 @@ export class UpdateCheque {
       return;
     }
 
-    // Dummy data
-    // Replace with API call
-
-    this.receipt = {
-      transactionNo: 'REC0000123',
-      customerName: 'SSL SHIPPING PTE LTD',
-      referenceNo: 'REF20260012',
-      currency: 'SGD',
-      amount: '2,560.00',
-      paidInvoiceTotal: '2,560.00',
-    };
-
-    console.log('Retrieve API Payload');
-
-    console.log(this.retrieve);
+    this.updateChequeService.searchCheque(this.retrieve.chequeNo.trim()).subscribe({
+      next: (res) => {
+        this.receipt = res;
+      },
+      error: (err) => {},
+    });
   }
-
-  // ==================================
-  // Update Button Click
-  // ==================================
 
   updateCheque(): void {
     if (!this.update.newChequeNo.trim()) {
@@ -82,22 +60,22 @@ export class UpdateCheque {
     }
 
     const payload = {
-      oldChequeNo: this.retrieve.chequeNo,
+      originalChequeNo: this.retrieve.chequeNo,
       newChequeNo: this.update.newChequeNo,
+      transactionNo: this.receipt.transactionNo,
       remark: this.update.remark,
+      userId: this.user.getUser().name,
     };
 
-    console.log('Update Payload');
-
-    console.log(payload);
-
-    // TODO:
-    // this.apiService.post('/receipt/updateCheque', payload)
+    this.updateChequeService.updateCheque(payload).subscribe({
+      next: (res) => {
+        this.alert.showAlert('Success', 'Cheque Number Updated Successfully', 'success');
+      },
+      error: (err) => {
+        this.alert.showAlert('Error', err, 'error');
+      },
+    });
   }
-
-  // ==================================
-  // Cancel
-  // ==================================
 
   onCancel(): void {
     this.retrieve = {
