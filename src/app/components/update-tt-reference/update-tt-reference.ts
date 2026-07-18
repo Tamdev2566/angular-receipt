@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { AlertService } from '../../services/alertService/alert';
+import { UserService } from '../../services/userService/user.service';
+import { TtReferene } from './service/tt-referene';
 
 @Component({
   selector: 'app-update-tt-reference',
@@ -11,26 +13,24 @@ import { Router } from '@angular/router';
   styleUrls: ['./update-tt-reference.scss'],
 })
 export class UpdateTtReference {
-  constructor(private router: Router) {}
-
-  /* Retrieve Section */
+  constructor(
+    private alert: AlertService,
+    private ttrefService: TtReferene,
+    private user: UserService,
+  ) {}
 
   retrieve = {
     ttRefNo: '',
   };
 
-  /* Receipt Details */
-
   receipt = {
-    transactionNo: '',
-    customerName: '',
-    referenceNo: '',
-    currency: '',
+    transaction_no: '',
+    customer_name: '',
+    reference_no: '',
+    currency_code: '',
     amount: '',
-    paidInvoiceTotal: '',
+    paid_invoice_total: '',
   };
-
-  /* Update Section */
 
   update = {
     newTTRefNo: '',
@@ -39,62 +39,62 @@ export class UpdateTtReference {
 
   loading = false;
 
-  /* Retrieve */
-
   retrieveTTReference(): void {
-    console.log('Retrieve TT Ref');
+    if (!this.retrieve.ttRefNo.trim()) {
+      this.alert.showAlert('Error', 'Please enter TT/Ref Number', 'error');
+      return;
+    }
 
-    // Dummy Data
-
-    this.receipt = {
-      transactionNo: '2605110002',
-      customerName: 'SM LINE CORPORATION - SINGAPORE',
-      referenceNo: this.retrieve.ttRefNo,
-      currency: 'SGD',
-      amount: '5249.44',
-      paidInvoiceTotal: '5249.44',
-    };
+    this.ttrefService.searchTT(this.retrieve.ttRefNo.trim()).subscribe({
+      next: (res) => {
+        this.receipt = res;
+      },
+      error: (err) => {},
+    });
   }
-
-  /* Update */
 
   updateTTReference(): void {
     if (!this.update.newTTRefNo.trim()) {
-      alert('Please enter New TT Reference Number');
+      this.alert.showAlert('Error', 'Please enter New TT Reference Number', 'error');
       return;
     }
 
     if (!this.update.remark.trim()) {
-      alert('Please enter Remark');
+      this.alert.showAlert('Error', 'Please enter Remark', 'error');
       return;
     }
 
     const payload = {
-      oldTTReference: this.retrieve.ttRefNo,
-      newTTReference: this.update.newTTRefNo,
+      originalTTNo: this.retrieve.ttRefNo,
+      newTTNo: this.update.newTTRefNo,
       remark: this.update.remark,
+      transactionNo: this.receipt.transaction_no,
+      userId: this.user.getUser().name,
     };
 
-    console.log(payload);
-
-    // API Call Here
+    this.ttrefService.updateTT(payload).subscribe({
+      next: ({ message }: any) => {
+        this.alert.showAlert('Success', message, 'success');
+        this.onCancel();
+      },
+      error: (err) => {
+        this.alert.showAlert('Error', err.error?.message || 'Something went wrong!', 'error');
+      },
+    });
   }
-
-  /* Cancel */
 
   onCancel(): void {
     this.retrieve = { ttRefNo: '' };
     this.receipt = {
-      transactionNo: '',
-      customerName: '',
-      referenceNo: '',
-      currency: '',
+      transaction_no: '',
+      customer_name: '',
+      reference_no: '',
+      currency_code: '',
       amount: '',
-      paidInvoiceTotal: '',
+      paid_invoice_total: '',
     };
     this.update = { newTTRefNo: '', remark: '' };
   }
-  /* Header Button Click */
 
   onUpdate(): void {
     this.updateTTReference();
