@@ -33,6 +33,8 @@ export class UpdateCheque {
     remark: '',
   };
 
+  isSubmitted = false;
+
   constructor(
     private updateChequeService: UpdateChequeService,
     private user: UserService,
@@ -40,16 +42,29 @@ export class UpdateCheque {
   ) {}
 
   retrieveCheque(): void {
-    if (!this.retrieve.chequeNo.trim()) {
-      alert('Please enter Cheque Number');
+    this.isSubmitted = true;
+
+    if (!this.retrieve.chequeNo || !this.retrieve.chequeNo.trim()) {
       return;
     }
 
+    this.isSubmitted = false;
+
     this.updateChequeService.searchCheque(this.retrieve.chequeNo.trim()).subscribe({
-      next: (res) => {
-        this.receipt = res;
+      next: (res: any) => {
+        this.receipt = {
+          transactionNo: res.transaction_no || '',
+          customerName: res.customer_name || '',
+          referenceNo: res.reference_no || '',
+          currency: res.currency_code || '',
+          amount: res.amount !== undefined ? res.amount.toString() : '',
+          paidInvoiceTotal:
+            res.paid_invoice_total !== undefined ? res.paid_invoice_total.toString() : '',
+        };
       },
-      error: (err) => {},
+      error: (err: any) => {
+        this.alert.showAlert('Error', err.error?.message || 'Something went wrong!', 'error');
+      },
     });
   }
 
@@ -70,14 +85,16 @@ export class UpdateCheque {
     this.updateChequeService.updateCheque(payload).subscribe({
       next: (res) => {
         this.alert.showAlert('Success', 'Cheque Number Updated Successfully', 'success');
+        this.onCancel();
       },
       error: (err) => {
-        this.alert.showAlert('Error', err, 'error');
+        this.alert.showAlert('Error', err.error?.message || 'Something went wrong!', 'error');
       },
     });
   }
 
   onCancel(): void {
+    this.isSubmitted = false;
     this.retrieve = {
       chequeNo: '',
     };

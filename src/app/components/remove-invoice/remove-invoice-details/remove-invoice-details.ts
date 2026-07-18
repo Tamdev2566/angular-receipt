@@ -45,10 +45,6 @@ export class RemoveInvoiceDetails {
     private invoiceService: RemoveInvoiceService,
   ) {}
 
-  ngDoCheck() {
-    console.log(this.selectedRecord);
-  }
-
   retrieveInvoice() {
     this.invoiceService
       .searchInvoices(this.retrieve.customerName, this.retrieve.vesselName, this.retrieve.voyageNo)
@@ -85,7 +81,7 @@ export class RemoveInvoiceDetails {
       error: (err) => {
         console.log('err', err);
 
-        this.alertService.showAlert('Error', err.message, 'error');
+        this.alertService.showAlert('Error', err.error.message, 'error');
       },
     });
   }

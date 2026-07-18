@@ -18,22 +18,36 @@
     <!-- Retrieve -->
 
     <div class="receipt-form-card">
-      <div class="row g-3">
+      <div class="row g-2">
         <div class="col-12">
           <h6>Retrieve By</h6>
         </div>
 
         <div class="col-md-4">
-          <label class="form-label custom-flat-label"> Cheque No : </label>
+          <label class="form-label custom-flat-label">
+            Cheque No<span class="text-danger">* </span>:</label
+          >
 
           <input
             class="form-control custom-flat-input"
+            [class.is-invalid]="chequeNoField.invalid && (chequeNoField.touched || isSubmitted)"
             [(ngModel)]="retrieve.chequeNo"
+            #chequeNoField="ngModel"
+            name="chequeNo"
             placeholder="Enter Cheque Number"
+            required
           />
+
+          <div
+            class="text-danger mt-1"
+            style="font-size: 11px; font-weight: 600"
+            *ngIf="chequeNoField.invalid && (chequeNoField.touched || isSubmitted)"
+          >
+            Cheque No is required.
+          </div>
         </div>
 
-        <div class="col-md-2 d-flex align-items-end">
+        <div class="col-md-2 d-flex align-items-end mb-1">
           <button class="btn btn-flat-action-primary-fill" (click)="retrieveCheque()">
             Retrieve
           </button>
@@ -50,7 +64,7 @@
         </div>
 
         <div class="col-md-4">
-          <label class="form-label custom-flat-label"> Transaction No : </label>
+          <label class="form-label custom-flat-label"> Transaction No: </label>
 
           <input
             readonly
@@ -60,7 +74,7 @@
         </div>
 
         <div class="col-md-4">
-          <label class="form-label custom-flat-label"> Customer Name : </label>
+          <label class="form-label custom-flat-label"> Customer Name: </label>
 
           <input
             readonly
@@ -70,7 +84,7 @@
         </div>
 
         <div class="col-md-4">
-          <label class="form-label custom-flat-label"> Reference No : </label>
+          <label class="form-label custom-flat-label"> Reference No: </label>
 
           <input
             readonly
@@ -80,7 +94,7 @@
         </div>
 
         <div class="col-md-4">
-          <label class="form-label custom-flat-label"> Currency : </label>
+          <label class="form-label custom-flat-label"> Currency: </label>
 
           <input
             readonly
@@ -90,7 +104,7 @@
         </div>
 
         <div class="col-md-4">
-          <label class="form-label custom-flat-label"> Amount : </label>
+          <label class="form-label custom-flat-label"> Amount: </label>
 
           <input
             readonly
@@ -100,7 +114,7 @@
         </div>
 
         <div class="col-md-4">
-          <label class="form-label custom-flat-label"> Paid Invoice Total : </label>
+          <label class="form-label custom-flat-label"> Paid Invoice Total: </label>
 
           <input
             readonly
@@ -120,7 +134,7 @@
         </div>
 
         <div class="col-md-4">
-          <label class="form-label custom-flat-label"> New Cheque No : </label>
+          <label class="form-label custom-flat-label"> New Cheque No: </label>
 
           <input
             class="form-control custom-flat-input"
@@ -130,7 +144,7 @@
         </div>
 
         <div class="col-md-8">
-          <label class="form-label custom-flat-label"> Remark : </label>
+          <label class="form-label custom-flat-label"> Remark: </label>
 
           <input
             class="form-control custom-flat-input"
