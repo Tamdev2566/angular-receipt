@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -23,8 +23,10 @@ export class ChangePasswordPage implements OnInit {
   loading = false;
   submitted = false;
 
-  /** true when redirected here because password expired — cannot skip */
-  isForced = false;
+  @Input() isForced = false;
+
+  @Output() closeModal = new EventEmitter<void>();
+  @Output() passwordChanged = new EventEmitter<any>();
 
   private userId = '';
 
@@ -36,13 +38,14 @@ export class ChangePasswordPage implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.isForced = localStorage.getItem('passwordExpired') === 'true';
+    if (!this.isForced) {
+      this.isForced = localStorage.getItem('passwordExpired') === 'true';
+    }
     const user = this.userService.getUser();
     this.userId = user?.userId || user?.user_id || '';
   }
 
   get passwordStrengthOk(): boolean {
-    // Min 8 chars, 1 upper, 1 lower, 1 digit, 1 special
     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(this.newPassword);
   }
 
@@ -84,10 +87,12 @@ export class ChangePasswordPage implements OnInit {
           this.alert.showAlert('Error', res.message, 'error');
           return;
         }
-        // Clear expiry flag and redirect
+
         localStorage.removeItem('passwordExpired');
         this.alert.showAlert('Success', 'Password changed successfully.', 'success');
-        this.router.navigate(['/home']);
+
+        this.passwordChanged.emit(payload);
+        this.closeModal.emit();
       },
       error: (err) => {
         this.loading = false;
@@ -97,9 +102,8 @@ export class ChangePasswordPage implements OnInit {
   }
 
   onSkip(): void {
-    // Only allowed if not a forced expiry redirect
     if (!this.isForced) {
-      this.router.navigate(['/home']);
+      this.closeModal.emit();
     }
   }
 }

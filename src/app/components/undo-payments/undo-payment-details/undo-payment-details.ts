@@ -61,7 +61,6 @@ export class UndoPaymentDetails {
     { label: 'USD Amount', field: 'usdAmount', width: '120px' },
     { label: 'Original SGD', field: 'originalsgdAmount', width: '120px' },
     { label: 'Original USD', field: 'originalusdAmount', width: '120px' },
-    // Reusable Column Type Set Panniyachu
     { label: 'Partial', field: 'partial', align: 'center', type: 'checkbox', width: '90px' },
     { label: 'Write-off', field: 'writeOff', align: 'center', type: 'checkbox', width: '90px' },
   ];
@@ -152,11 +151,12 @@ export class UndoPaymentDetails {
       next: (res: any) => {
         this.alertService.showAlert(
           'Success',
-          res.message || 'Selected receipts undone successfully.',
+          res.message || 'Undo Payment Processed Successfully',
           'success',
         );
         this.selectedRecords = [];
-        this.retrieveReceipt();
+        // this.retrieveReceipt();
+        this.onCancel();
       },
       error: (error) => {
         this.alertService.showAlert(

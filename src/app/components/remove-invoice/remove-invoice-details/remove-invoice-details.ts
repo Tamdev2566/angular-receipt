@@ -79,6 +79,7 @@ export class RemoveInvoiceDetails {
 
         this.alertService.showAlert('Success', res.message, 'success');
         this.retrieveInvoice();
+        this.onCancel();
         this.remark = '';
       },
       error: (err) => {
@@ -97,6 +98,7 @@ export class RemoveInvoiceDetails {
     };
 
     this.remark = '';
+    this.invoiceGrid = [];
   }
 
   onRowSelect(record: any): void {

@@ -162,14 +162,21 @@
           </span>
 
           <div class="form-options">
-            <label class="remember-me">
+            <!-- <label class="remember-me">
               <input type="checkbox" name="remember" />
               <span class="checkmark"></span>
               Remember
-            </label>
-            <a href="#" class="forgot-link" (click)="openForgotModal($event, 'forgot')"
-              >Forgot Password ?</a
+            </label> -->
+            <div
+              class="forgot-link"
+              role="button"
+              tabindex="0"
+              (click)="openForgotModal($event, 'forgot')"
+              (keydown.enter)="openForgotModal($event, 'forgot')"
+              (keydown.space)="$event.preventDefault(); openForgotModal($event, 'forgot')"
             >
+              Forgot Password?
+            </div>
           </div>
 
           <button type="submit" class="btn-login" [disabled]="isLoading">
