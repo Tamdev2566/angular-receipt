@@ -238,6 +238,7 @@
           <button
             type="button"
             class="btn btn-flat-action-primary-fill"
+            [disabled]="isCheckOutstandingDisabled"
             (click)="onCheckOutstanding()"
           >
             Check Outstanding
@@ -307,14 +308,18 @@
               <button
                 type="button"
                 class="btn btn-flat-action-primary-fill"
-                [disabled]="loading"
+                [disabled]="loading || isConfirmDisabled"
                 (click)="onConfirm()"
               >
                 <i class="fa-solid fa-check me-1"></i>
                 Confirm
               </button>
-
-              <button class="btn btn-flat-action-warning" (click)="onOverPayment()">
+              <button
+                type="button"
+                class="btn btn-flat-action-warning"
+                [disabled]="isOverPaymentDisabled"
+                (click)="onOverPayment()"
+              >
                 Over Payment
               </button>
             </div>
@@ -324,3 +329,19 @@
     </div>
   </div>
 </div>
+
+<!-- Outstanding Records Modal Popup -->
+<app-outstanding-modal
+  [(isOpen)]="isOutstandingModalOpen"
+  [customerName]="searchModel.customerName"
+  [records]="outstandingRecords"
+>
+</app-outstanding-modal>
+
+@if (isMessageShow) {
+  <app-confirm-dialog
+    name="Are you sure want to make over payment?"
+    (yes)="onConfirmRequest()"
+    (no)="onCancelRequest()"
+  ></app-confirm-dialog>
+}

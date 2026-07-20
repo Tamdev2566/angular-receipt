@@ -247,3 +247,32 @@
     transform: translateY(-1px);
   }
 }
+
+/* Retrieve Form  */
+.retrieve-field-wrapper {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.retrieve-btn-wrapper {
+  padding-top: 23px;
+}
+
+.retrieve-btn-wrapper .btn {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+/* Absolute positioned error text */
+.error-msg {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}

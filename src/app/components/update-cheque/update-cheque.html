@@ -23,34 +23,32 @@
           <h6>Retrieve By</h6>
         </div>
 
-        <div class="col-md-4">
-          <label class="form-label custom-flat-label">
-            Cheque No<span class="text-danger">* </span>:</label
-          >
+        <div class="col-md-6 d-flex align-items-start gap-2 position-relative">
+          <div class="retrieve-field-wrapper flex-grow-1">
+            <label class="form-label custom-flat-label mb-1">
+              Cheque No<span class="text-danger">* </span>:
+            </label>
 
-          <input
-            class="form-control custom-flat-input"
-            [class.is-invalid]="chequeNoField.invalid && (chequeNoField.touched || isSubmitted)"
-            [(ngModel)]="retrieve.chequeNo"
-            #chequeNoField="ngModel"
-            name="chequeNo"
-            placeholder="Enter Cheque Number"
-            required
-          />
+            <input
+              class="form-control custom-flat-input"
+              [class.is-invalid]="chequeNoField.invalid && isSubmitted"
+              [(ngModel)]="retrieve.chequeNo"
+              #chequeNoField="ngModel"
+              name="chequeNo"
+              placeholder="Enter Cheque Number"
+              required
+            />
 
-          <div
-            class="text-danger mt-1"
-            style="font-size: 11px; font-weight: 600"
-            *ngIf="chequeNoField.invalid && (chequeNoField.touched || isSubmitted)"
-          >
-            Cheque No is required.
+            <div class="error-msg text-danger" *ngIf="chequeNoField.invalid && isSubmitted">
+              Cheque No is required.
+            </div>
           </div>
-        </div>
 
-        <div class="col-md-2 d-flex align-items-end mb-1">
-          <button class="btn btn-flat-action-primary-fill" (click)="retrieveCheque()">
-            Retrieve
-          </button>
+          <div class="retrieve-btn-wrapper">
+            <button class="btn btn-flat-action-primary-fill" (click)="retrieveCheque()">
+              Retrieve
+            </button>
+          </div>
         </div>
       </div>
     </div>
