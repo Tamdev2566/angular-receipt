@@ -29,10 +29,13 @@
           <label class="form-label custom-flat-label"> Cheque No : </label>
 
           <app-combobox
-            displayExpr="cheque_no"
-            valueExpr="cheque_id"
+            [url]="'api/chequeBox/cheque-numbers'"
+            [responsePath]="''"
+            displayExpr="name"
+            valueExpr="id"
             [(value)]="retrieve.chequeNo"
-            [data]="chequeList"
+            apiMethod="POST"
+            [reload]="true"
             [onChange]="onChequeChange.bind(this)"
           >
           </app-combobox>
@@ -44,10 +47,14 @@
           <label class="form-label custom-flat-label"> Full Cheque : </label>
 
           <app-combobox
-            displayExpr="full_cheque_no"
-            valueExpr="full_cheque_id"
+            [url]="'api/chequeBox/full-cheque-numbers'"
+            [responsePath]="''"
+            displayExpr="name"
+            valueExpr="id"
             [(value)]="retrieve.fullCheque"
-            [data]="fullChequeList"
+            apiMethod="POST"
+            [requestBody]="fullchequeBody || {}"
+            [reload]="true"
             [onChange]="onFullChequeChange.bind(this)"
           >
           </app-combobox>
@@ -91,7 +98,7 @@
           <input
             readonly
             class="form-control custom-flat-input input-readonly-flat"
-            [(ngModel)]="chequeDetails.bankName"
+            [(ngModel)]="chequeDetails.bank_name"
           />
         </div>
 
@@ -103,7 +110,7 @@
           <input
             readonly
             class="form-control custom-flat-input input-readonly-flat"
-            [(ngModel)]="chequeDetails.scanUserId"
+            [(ngModel)]="chequeDetails.scan_user_id"
           />
         </div>
       </div>

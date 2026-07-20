@@ -3,14 +3,14 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { finalize } from 'rxjs';
+import * as XLSX from 'xlsx-js-style';
+import { ApiService } from '../../../services/api.service';
 import { ModuleService } from '../../../services/module-service/module-service';
 import { SummaryCard } from '../../../shared/summary-card/summary-card';
 import { Wrapper } from '../../../shared/wrapper/wrapper';
 import { RemoveInvoiceDetails } from '../../remove-invoice/remove-invoice-details/remove-invoice-details';
 import { UndoPaymentDetails } from '../../undo-payments/undo-payment-details/undo-payment-details';
-import { ApiService } from '../../../services/api.service';
-import { finalize } from 'rxjs';
-import * as XLSX from 'xlsx-js-style';
 
 interface Receipt {
   transactionNo?: string;
@@ -84,7 +84,7 @@ export class ReceiptComponent {
     this.loading = true;
 
     this.apiService
-      .get<Receipt[] | ReceiptResponse>('api/receipts')
+      .get<Receipt[] | ReceiptResponse>('api/receipts/retrive')
       .pipe(
         finalize(() => {
           this.loading = false;

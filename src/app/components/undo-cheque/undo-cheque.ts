@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { UserService } from '../../services/userService/user.service';
 import { Combobox } from '../../shared/combobox/combobox';
+import { ChequeService } from './service/undo-cheque-service';
 
 @Component({
   selector: 'app-undo-cheque',
@@ -12,7 +13,10 @@ import { Combobox } from '../../shared/combobox/combobox';
   styleUrls: ['./undo-cheque.scss'],
 })
 export class UndoCheque {
-  constructor(private router: Router) {}
+  constructor(
+    private user: UserService,
+    private chequeService: ChequeService,
+  ) {}
 
   /* Retrieve */
 
@@ -25,8 +29,8 @@ export class UndoCheque {
 
   chequeDetails = {
     bound: '',
-    bankName: '',
-    scanUserId: '',
+    bank_name: '',
+    scan_user_id: '',
   };
 
   /* Undo */
@@ -36,6 +40,7 @@ export class UndoCheque {
   };
 
   loading = false;
+  fullchequeBody = { chequeNo: '' };
 
   /* Dummy Combobox Data
       (Replace with API later) */
@@ -66,23 +71,14 @@ export class UndoCheque {
     },
   ];
 
-  /* Retrieve */
-
   retrieveCheque(): void {
-    console.log('Retrieve');
-
-    console.log(this.retrieve);
-
-    // Dummy Data
-
-    this.chequeDetails = {
-      bound: 'Inbound',
-      bankName: 'DBS Bank',
-      scanUserId: 'SSL001',
-    };
+    this.chequeService
+      .searchCheque(this.retrieve.chequeNo, this.retrieve.fullCheque)
+      .subscribe((res) => {
+        console.log(res);
+        this.chequeDetails = res;
+      });
   }
-
-  /* Undo */
 
   undoCheque(): void {
     if (!this.undo.remark.trim()) {
@@ -92,42 +88,27 @@ export class UndoCheque {
 
     const payload = {
       chequeNo: this.retrieve.chequeNo,
-      fullCheque: this.retrieve.fullCheque,
-      bound: this.chequeDetails.bound,
-      bankName: this.chequeDetails.bankName,
-      scanUserId: this.chequeDetails.scanUserId,
+      fullChequeNo: this.retrieve.fullCheque,
       remark: this.undo.remark,
+      userId: this.user.getUser().name,
     };
 
-    console.log(payload);
-
-    // TODO
-    // this.apiService.post(...)
+    this.chequeService.undoCheque(payload).subscribe((res) => {
+      console.log(res);
+    });
   }
-
-  /* Cancel */
 
   onCancel(): void {
     this.retrieve = { chequeNo: '', fullCheque: '' };
-    this.chequeDetails = { bound: '', bankName: '', scanUserId: '' };
+    this.chequeDetails = { bound: '', bank_name: '', scan_user_id: '' };
     this.undo = { remark: '' };
   }
 
-  /* Combobox Change */
-
   onChequeChange(value: any, item: any): void {
-    console.log('Cheque Changed');
-
-    console.log(value);
-
-    console.log(item);
+    this.fullchequeBody.chequeNo = item?.name ?? '';
+    this.retrieve.chequeNo = item?.name;
   }
-
   onFullChequeChange(value: any, item: any): void {
-    console.log('Full Cheque Changed');
-
-    console.log(value);
-
-    console.log(item);
+    this.retrieve.fullCheque = item?.name ?? '';
   }
 }
