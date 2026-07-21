@@ -75,7 +75,6 @@ export class NewReceiptComponent implements OnInit {
   docOutward = true;
   selectedPayment: any = null;
 
-  loading = false;
   gridData: any[] = [];
   selectedGridRows: any[] = [];
   totalPages: number = 1;
@@ -166,7 +165,7 @@ export class NewReceiptComponent implements OnInit {
     const isSingleSystemSelected =
       (this.docInward && !this.docOutward) || (!this.docInward && this.docOutward);
 
-    return this.loading || !hasCustomer || !isSingleSystemSelected;
+    return !hasCustomer || !isSingleSystemSelected;
   }
 
   private checkIsOverPayment(): boolean {
@@ -237,24 +236,19 @@ export class NewReceiptComponent implements OnInit {
       customerNames: [this.searchModel.customerName || ''],
     };
 
-    this.loading = true;
-
-    this.apiService
-      .post('api/receiptCheckOutstanding', payload)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: (res: any) => {
-          this.outstandingRecords = res || [];
-          this.isOutstandingModalOpen = true;
-        },
-        error: (error) => {
-          this.alert.showAlert(
-            'Error',
-            error?.error?.message || 'Unable to retrieve outstanding items.',
-            'error',
-          );
-        },
-      });
+    this.apiService.post('api/receiptCheckOutstanding', payload).subscribe({
+      next: (res: any) => {
+        this.outstandingRecords = res || [];
+        this.isOutstandingModalOpen = true;
+      },
+      error: (error) => {
+        this.alert.showAlert(
+          'Error',
+          error?.error?.message || 'Unable to retrieve outstanding items.',
+          'error',
+        );
+      },
+    });
   }
 
   onSearchClick(): void {
@@ -291,29 +285,24 @@ export class NewReceiptComponent implements OnInit {
       customerName: customer,
     };
 
-    this.loading = true;
-
-    this.apiService
-      .post('api/receiptRetrieve', payload)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: (res: any) => {
-          if (res?.success) {
-            this.handleApiResponse(res);
-          } else {
-            this.alert.showAlert('Information', res?.message || 'No records found.', 'info');
-            this.gridData = [];
-            this.showReferenceType = false;
-          }
-        },
-        error: (error) => {
-          this.alert.showAlert(
-            'Error',
-            error?.error?.message || 'Unable to retrieve records.',
-            'error',
-          );
-        },
-      });
+    this.apiService.post('api/receiptRetrieve', payload).subscribe({
+      next: (res: any) => {
+        if (res?.success) {
+          this.handleApiResponse(res);
+        } else {
+          this.alert.showAlert('Information', res?.message || 'No records found.', 'info');
+          this.gridData = [];
+          this.showReferenceType = false;
+        }
+      },
+      error: (error) => {
+        this.alert.showAlert(
+          'Error',
+          error?.error?.message || 'Unable to retrieve records.',
+          'error',
+        );
+      },
+    });
   }
 
   private handleApiResponse(res: any): void {
@@ -348,14 +337,14 @@ export class NewReceiptComponent implements OnInit {
       return null;
     }
 
-    if (!this.selectedGridRows || this.selectedGridRows.length === 0) {
-      this.alert.showAlert(
-        'Validation Error',
-        'Please select at least one row from the table.',
-        'warning',
-      );
-      return null;
-    }
+    // if (!this.selectedGridRows || this.selectedGridRows.length === 0) {
+    //   this.alert.showAlert(
+    //     'Validation Error',
+    //     'Please select at least one row from the table.',
+    //     'warning',
+    //   );
+    //   return null;
+    // }
 
     const mappedInvoices: ReceiptInvoicePayload[] = this.selectedGridRows.map((item) => ({
       selected: true,
@@ -397,28 +386,22 @@ export class NewReceiptComponent implements OnInit {
   }
 
   onConfirm(): void {
-    if (this.loading) return;
-
     const payload = this.buildReceiptPayload();
     if (!payload) return;
 
-    this.loading = true;
-    this.apiService
-      .post('api/receipts/confirm-payment', payload)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: () => {
-          this.alert.showAlert('Success', 'Receipt confirmed successfully.', 'success');
-          this.router.navigate(['/home/receipts']);
-        },
-        error: (error) => {
-          this.alert.showAlert(
-            'Error',
-            error?.error?.message || 'Unable to confirm receipt.',
-            'error',
-          );
-        },
-      });
+    this.apiService.post('api/receipts/confirm-payment', payload).subscribe({
+      next: () => {
+        this.alert.showAlert('Success', 'Receipt confirmed successfully.', 'success');
+        this.router.navigate(['/home/receipts']);
+      },
+      error: (error) => {
+        this.alert.showAlert(
+          'Error',
+          error?.error?.message || 'Unable to confirm receipt.',
+          'error',
+        );
+      },
+    });
   }
 
   onOverPayment(): void {
@@ -434,22 +417,19 @@ export class NewReceiptComponent implements OnInit {
 
   onConfirmRequest() {
     const payload = this.buildReceiptPayload();
-    this.apiService
-      .post('api/receipts/over-payment', payload)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: (res: any) => {
-          this.alert.showAlert('Success', 'Overpayment processed successfully.', 'success');
-          this.router.navigate(['/home/receipts']);
-        },
-        error: (error) => {
-          this.alert.showAlert(
-            'Error',
-            error?.error?.message || 'Unable to process overpayment.',
-            'error',
-          );
-        },
-      });
+    this.apiService.post('api/receipts/over-payment', payload).subscribe({
+      next: (res: any) => {
+        this.alert.showAlert('Success', 'Overpayment processed successfully.', 'success');
+        this.router.navigate(['/home/receipts']);
+      },
+      error: (error) => {
+        this.alert.showAlert(
+          'Error',
+          error?.error?.message || 'Unable to process overpayment.',
+          'error',
+        );
+      },
+    });
   }
 
   onCancelRequest() {
