@@ -4,18 +4,17 @@
 
     <div class="summary-header">
       <div class="summary-user">
-        <div class="summary-avatar">
-          {{ item.customerName?.charAt(0) }}
-        </div>
+        <div class="summary-avatar">{{ item.transactionNo }}</div>
 
         <div>
           <h4 class="summary-name">
-            {{ item.customerName }}
+            Office :
+            {{ item.officeCode }}
           </h4>
 
           <p class="summary-invoice">
-            Transaction No :
-            {{ item.transactionNo }}
+            Created By / On :
+            {{ item.createdUser }} / {{ item.createdDate }}
           </p>
         </div>
       </div>
@@ -37,13 +36,13 @@
       </div>
 
       <div class="detail-row">
-        <span class="detail-label"> Office / Bank </span>
-        <span class="detail-value"> {{ item.officeCode }} / {{ item.bank }} </span>
+        <span class="detail-label"> Payment Mode </span>
+        <span class="detail-value"> {{ item.paymentMode }} </span>
       </div>
 
       <div class="detail-row">
-        <span class="detail-label"> Payment Mode </span>
-        <span class="detail-value"> {{ item.paymentMode }} </span>
+        <span class="detail-label"> Bank </span>
+        <span class="detail-value"> {{ item.bank }} </span>
       </div>
 
       <div class="detail-row">
