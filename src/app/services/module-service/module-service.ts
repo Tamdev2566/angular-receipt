@@ -41,6 +41,16 @@ export class ModuleService {
         { title: 'Update TT Ref', link: '/home/update-tt-ref' },
       ],
     },
+    {
+      title: 'Cheque Reader',
+      icon: 'fa-solid fa-file-lines',
+      hasSubmenu: true,
+      isExpanded: false,
+      submodules: [
+        { title: 'Cheque Reader Information', link: '/home/cheque-reader-info' },
+        { title: 'Undo', link: '/home/undo-cheque' },
+      ],
+    },
     // {
     //   title: 'EDI to CODA',
     //   icon: 'fa-solid fa-file-invoice-dollar',
@@ -60,16 +70,7 @@ export class ModuleService {
     //     { title: 'Updated TT Ref Report', link: '/home/updated-tt-ref-report' },
     //   ],
     // },
-    // {
-    //   title: 'Cheque Reader',
-    //   icon: 'fa-solid fa-file-lines',
-    //   hasSubmenu: true,
-    //   isExpanded: false,
-    //   submodules: [
-    //     { title: 'Cheque Reader Inforomation', link: '/home/cheque-reader-info' },
-    //     { title: 'Undo', link: '/home/undo-cheque' },
-    //   ],
-    // },
+
     // {
     //   title: 'Cheque Reader Report',
     //   icon: 'fa-solid fa-file-lines',

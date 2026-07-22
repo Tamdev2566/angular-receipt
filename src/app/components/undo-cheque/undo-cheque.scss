@@ -1,15 +1,5 @@
 /* Undo Cheque */
 
-.input-readonly-flat {
-  background: #f8fafc !important;
-  color: #475569 !important;
-  font-weight: 600;
-}
-
-.receipt-form-card {
-  margin-bottom: 16px;
-}
-
 .user-management-flat-wrapper {
   height: calc(100vh - 110px);
   display: flex;
@@ -77,6 +67,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 16px 18px;
+  margin-bottom: 16px;
 
   h6 {
     font-size: 0.9rem;
@@ -112,6 +103,11 @@
     border-color: #33708f !important;
     box-shadow: 0 0 0 3px rgba(51, 112, 143, 0.15) !important;
     outline: none;
+  }
+
+  &.is-invalid {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
   }
 }
 
@@ -169,14 +165,38 @@
   }
 }
 
-/* Combobox Width */
+.retrieve-field-wrapper {
+  position: relative;
+  margin-bottom: 18px;
+}
 
+.retrieve-btn-wrapper {
+  padding-top: 24px;
+
+  .btn {
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+  }
+}
+
+.error-msg {
+  position: absolute;
+  left: 0;
+  bottom: -18px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Combobox Width */
 :host ::ng-deep app-combobox {
   width: 100%;
 }
 
 /* Responsive */
-
 @media (max-width: 992px) {
   .page-header-section {
     flex-direction: column;
@@ -201,10 +221,14 @@
 
   .receipt-form-card {
     padding: 14px;
+
+    .btn {
+      width: 100%;
+    }
   }
 
-  .receipt-form-card .btn {
-    width: 100%;
+  .retrieve-btn-wrapper {
+    padding-top: 0;
   }
 }
 

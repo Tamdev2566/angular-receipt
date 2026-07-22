@@ -7,13 +7,15 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnDestroy,
   OnChanges,
   OnInit,
   Output,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SKIP_LOADER } from '../../core/interceptors/loaderInterceptor/loader-interceptor-interceptor';
 import { ApiService } from '../../services/api.service';
@@ -30,7 +32,9 @@ export interface ComboboxSelection {
   templateUrl: './combobox.html',
   styleUrls: ['./combobox.scss'],
 })
-export class Combobox implements OnInit, OnChanges {
+export class Combobox implements OnInit, OnChanges, OnDestroy {
+  @ViewChild('dropdownList') dropdownListRef?: ElementRef;
+
   @Input() url?: string;
   @Input() apiMethod: 'GET' | 'POST' = 'GET';
   @Input() requestBody: any = null;
@@ -73,12 +77,12 @@ export class Combobox implements OnInit, OnChanges {
   selectedItem: any = null;
   searchText = '';
 
-  // Safe feature addition: Track active keyboard highlight index
   activeIndex = -1;
 
   private isTyping = false;
   private suppressSearch = false;
   private searchSubject = new Subject<string>();
+  private searchSubscription?: Subscription;
 
   constructor(
     private http: HttpClient,
@@ -90,9 +94,13 @@ export class Combobox implements OnInit, OnChanges {
   ngOnInit(): void {
     this.initializeStaticData();
 
-    this.searchSubject.pipe(debounceTime(300), distinctUntilChanged()).subscribe((value) => {
-      this.loadData(value || '*');
-    });
+    this.searchSubscription = this.searchSubject
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        if (!this.suppressSearch) {
+          this.loadData(value || '*');
+        }
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -103,6 +111,10 @@ export class Combobox implements OnInit, OnChanges {
         this.syncDisplayLabel();
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubscription?.unsubscribe();
   }
 
   private initializeStaticData(): void {
@@ -119,6 +131,11 @@ export class Combobox implements OnInit, OnChanges {
 
   onBlur(): void {
     this.isTouched = true;
+
+    if (this.isTyping && this.selectedItem) {
+      this.isTyping = false;
+      this.syncDisplayLabel();
+    }
   }
 
   onSearchInput(term: string): void {
@@ -129,7 +146,8 @@ export class Combobox implements OnInit, OnChanges {
 
     this.isTyping = true;
     this.searchText = term;
-    this.activeIndex = -1; // Reset selection index on new search string
+    this.activeIndex = -1;
+    this.isOpen = true;
 
     if (this.searchFromApi) {
       this.searchSubject.next(term?.trim() || '*');
@@ -145,7 +163,6 @@ export class Combobox implements OnInit, OnChanges {
         );
 
     this.isLoading = false;
-    this.isOpen = true;
   }
 
   onComboBoxInteract(): void {
@@ -153,10 +170,10 @@ export class Combobox implements OnInit, OnChanges {
 
     this.isOpen = true;
 
-    // If reload is true, force load every time.
-    // If reload is false, only load if data hasn't been fetched yet.
     if (this.reload || !this.isDataLoaded) {
       this.loadData('*');
+    } else {
+      this.scrollToSelectedItem();
     }
   }
 
@@ -185,15 +202,17 @@ export class Combobox implements OnInit, OnChanges {
       this.filteredItems = [...this.items];
 
       this.isLoading = false;
-      this.isOpen = true;
       this.isDataLoaded = true;
-      this.activeIndex = -1; // Clear highlight status post-fetch
+      this.activeIndex = -1;
+
+      this.cdr.detectChanges();
 
       if (!this.isTyping) {
         this.syncDisplayLabel();
       }
 
       this.cdr.detectChanges();
+      this.scrollToSelectedItem();
     };
 
     const error = () => {
@@ -236,7 +255,7 @@ export class Combobox implements OnInit, OnChanges {
   private syncDisplayLabel(): void {
     const lookupPool = Array.isArray(this.items) ? this.items : [];
 
-    if (this.value === null || this.value === undefined) {
+    if (this.value === null || this.value === undefined || this.value === '') {
       this.selectedItem = null;
       this.searchText = '';
       return;
@@ -258,6 +277,7 @@ export class Combobox implements OnInit, OnChanges {
       this.searchText = this.getNestedValue(this.value, this.displayExpr) || '';
       return;
     }
+
     if (this.url && lookupPool.length === 0 && !this.isDataLoaded && !this.isLoading) {
       this.loadData(this.value);
     }
@@ -270,20 +290,40 @@ export class Combobox implements OnInit, OnChanges {
 
     this.isOpen = !this.isOpen;
 
-    // Same rule applied here for manual arrow clicks
-    if (this.isOpen && (this.reload || !this.isDataLoaded)) {
-      this.loadData('*');
+    if (this.isOpen) {
+      if (this.reload || !this.isDataLoaded) {
+        this.loadData('*');
+      } else {
+        this.scrollToSelectedItem();
+      }
     }
+  }
+
+  isSelected(item: any): boolean {
+    if (this.value === null || this.value === undefined || !item) return false;
+    return item[this.valueExpr] === this.value;
+  }
+
+  private scrollToSelectedItem(): void {
+    setTimeout(() => {
+      if (!this.dropdownListRef) return;
+
+      const selectedEl = this.dropdownListRef.nativeElement.querySelector('.combo-item.selected');
+      if (selectedEl) {
+        selectedEl.scrollIntoView({ block: 'nearest' });
+      }
+    });
   }
 
   selectItem(item: any, event?: Event): void {
     if (event) {
       event.stopPropagation();
+      event.preventDefault();
     }
 
     this.isTyping = false;
-    this.selectedItem = item;
     this.suppressSearch = true;
+    this.selectedItem = item;
 
     this.searchText = this.codeExpr
       ? `${item[this.codeExpr]} - ${item[this.displayExpr]}`
@@ -299,11 +339,13 @@ export class Combobox implements OnInit, OnChanges {
     this.handleChange?.(finalValue, item);
 
     this.isOpen = false;
+    this.cdr.detectChanges();
   }
 
   clearSelection(event: Event): void {
     event.stopPropagation();
 
+    this.isTyping = false;
     this.value = null;
     this.selectedItem = null;
     this.searchText = '';
@@ -322,7 +364,6 @@ export class Combobox implements OnInit, OnChanges {
     }
   }
 
-  // Safe new feature: Isolated keyboard management hook
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent): void {
     if (!this.isOpen) return;
@@ -359,7 +400,7 @@ export class Combobox implements OnInit, OnChanges {
 
   private scrollActiveItemIntoView(): void {
     setTimeout(() => {
-      const activeEl = this.elementRef.nativeElement.querySelector('.combobox-item.active');
+      const activeEl = this.elementRef.nativeElement.querySelector('.combo-item.active');
       if (activeEl) {
         activeEl.scrollIntoView({ block: 'nearest' });
       }
@@ -370,6 +411,10 @@ export class Combobox implements OnInit, OnChanges {
   closeDropdown(event: Event): void {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.isOpen = false;
+      if (this.isTyping && this.selectedItem) {
+        this.isTyping = false;
+        this.syncDisplayLabel();
+      }
     }
   }
 }

@@ -2,6 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/userService/user.service';
+import { ApiService } from '../../services/api.service';
+import { AlertService } from '../../services/alertService/alert';
 
 @Component({
   selector: 'app-cheque-reader-info',
@@ -11,23 +14,33 @@ import { Router } from '@angular/router';
   styleUrls: ['./cheque-reader-info.scss'],
 })
 export class ChequeReaderInfo {
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private apiService: ApiService,
+    private alert: AlertService,
+  ) {
     this.loadCurrentDate();
   }
 
-  /* Form Model */
-
   formData = {
-    direction: 'BOTH',
+    direction: 'INBOUND',
     date: '',
     fullCheque: '',
     cheque: '',
     bank: '',
   };
 
-  loading = false;
+  errors: { [key: string]: boolean } = {};
+  isSubmitted = false;
 
-  /* Initialize Date */
+  validateFullCheque(): void {
+    if (this.formData.fullCheque?.trim()) {
+      this.errors['fullCheque'] = false;
+    } else {
+      this.errors['fullCheque'] = true;
+    }
+  }
 
   loadCurrentDate(): void {
     const now = new Date();
@@ -50,45 +63,50 @@ export class ChequeReaderInfo {
     this.formData.date = `${day}-${month}-${year} ${hh}:${minutes}:${seconds} ${ampm}`;
   }
 
-  /* Save */
-
   onSave(): void {
-    if (!this.formData.fullCheque.trim()) {
-      alert('Please enter Full Cheque.');
+    this.isSubmitted = true;
+    this.validateFullCheque();
+
+    if (this.errors['fullCheque']) {
       return;
     }
 
-    if (!this.formData.cheque.trim()) {
-      alert('Please enter Cheque.');
-      return;
-    }
-
-    if (!this.formData.bank.trim()) {
-      alert('Please enter Bank.');
-      return;
-    }
+    const user = this.userService.getUser();
 
     const payload = {
-      direction: this.formData.direction,
+      boundOption:
+        this.formData.direction === 'INBOUND'
+          ? 'I'
+          : this.formData.direction === 'OUTBOUND'
+            ? 'O'
+            : 'IO',
       date: this.formData.date,
-      fullCheque: this.formData.fullCheque,
-      cheque: this.formData.cheque,
+      fullChequeNo: this.formData.fullCheque,
+      chequeNo: this.formData.cheque,
       bank: this.formData.bank,
+      uid: user.name,
     };
 
-    console.log('Cheque Reader Information');
-
-    console.log(payload);
-
-    // TODO
-    // this.apiService.post(...)
-
-    alert('Cheque Reader Information Saved Successfully.');
+    this.apiService.post('api/cheque/save', payload).subscribe({
+      next: (res: any) => {
+        this.alert.showAlert('Success', res.message, 'success');
+        this.onCancel();
+      },
+      error: (err) => {
+        this.alert.showAlert('Error', err.error.message, 'error');
+      },
+    });
   }
 
-  /* Cancel */
-
   onCancel(): void {
-    this.router.navigate(['/home/dashboard']);
+    this.isSubmitted = false;
+    this.errors = {};
+    this.formData = {
+      direction: 'INBOUND',
+      date: '',
+      fullCheque: '',
+      cheque: '',
+      bank: '',
+    };
   }
 }

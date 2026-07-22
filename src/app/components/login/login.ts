@@ -155,7 +155,7 @@ export class LoginPage {
 
         error: (err) => {
           console.log('ERROR', err);
-          this.alertService.showAlert('Error', err?.error, 'error');
+          this.alertService.showAlert('Error', err?.error?.message, 'error');
         },
       });
   }

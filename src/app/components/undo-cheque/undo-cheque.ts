@@ -1,9 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Combobox, ComboboxSelection } from '../../shared/combobox/combobox';
 import { UserService } from '../../services/userService/user.service';
-import { Combobox } from '../../shared/combobox/combobox';
+import { AlertService } from '../../services/alertService/alert';
 import { ChequeService } from './service/undo-cheque-service';
+
+export interface RetrieveState {
+  chequeNo: string | number;
+  fullCheque: string | number;
+}
+
+export interface ChequeDetails {
+  bound: string;
+  bank_name: string;
+  scan_user_id: string;
+}
 
 @Component({
   selector: 'app-undo-cheque',
@@ -13,102 +26,103 @@ import { ChequeService } from './service/undo-cheque-service';
   styleUrls: ['./undo-cheque.scss'],
 })
 export class UndoCheque {
-  constructor(
-    private user: UserService,
-    private chequeService: ChequeService,
-  ) {}
+  private router = inject(Router);
+  private loginUser = inject(UserService);
+  private chequeService = inject(ChequeService);
+  private alert = inject(AlertService);
 
-  /* Retrieve */
+  isRetrieveSubmitted = false;
+  isUndoSubmitted = false;
 
-  retrieve = {
-    chequeNo: '',
-    fullCheque: '',
-  };
-
-  /* Cheque Reader Details */
-
-  chequeDetails = {
-    bound: '',
-    bank_name: '',
-    scan_user_id: '',
-  };
-
-  /* Undo */
-
-  undo = {
-    remark: '',
-  };
-
-  loading = false;
+  retrieve: RetrieveState = { chequeNo: '', fullCheque: '' };
+  chequeDetails: ChequeDetails = { bound: '', bank_name: '', scan_user_id: '' };
+  undo = { remark: '' };
   fullchequeBody = { chequeNo: '' };
+  isSubmitted = false;
 
-  /* Dummy Combobox Data
-      (Replace with API later) */
+  retrieveCheque(retrieveForm: NgForm): void {
+    this.isRetrieveSubmitted = true;
 
-  chequeList = [
-    {
-      cheque_id: 1,
-      cheque_no: 'CHQ000001',
-    },
-    {
-      cheque_id: 2,
-      cheque_no: 'CHQ000002',
-    },
-    {
-      cheque_id: 3,
-      cheque_no: 'CHQ000003',
-    },
-  ];
+    if (!this.retrieve.chequeNo && !this.retrieve.fullCheque) {
+      return;
+    }
 
-  fullChequeList = [
-    {
-      full_cheque_id: 1,
-      full_cheque_no: 'CHQ000001-000010',
-    },
-    {
-      full_cheque_id: 2,
-      full_cheque_no: 'CHQ000011-000020',
-    },
-  ];
+    if (retrieveForm && retrieveForm.invalid) {
+      retrieveForm.form.markAllAsTouched();
+      return;
+    }
 
-  retrieveCheque(): void {
     this.chequeService
-      .searchCheque(this.retrieve.chequeNo, this.retrieve.fullCheque)
-      .subscribe((res) => {
-        console.log(res);
-        this.chequeDetails = res;
+      .searchCheque(String(this.retrieve.chequeNo), String(this.retrieve.fullCheque))
+      .subscribe({
+        next: (res: any) => {
+          this.chequeDetails = res ?? { bound: '', bank_name: '', scan_user_id: '' };
+        },
+        error: (err: any) => {
+          this.alert.showAlert('Error', err?.error || 'Failed to search cheque', 'error');
+        },
       });
   }
 
-  undoCheque(): void {
-    if (!this.undo.remark.trim()) {
-      alert('Please enter Remark');
+  undoCheque(undoForm: NgForm): void {
+    this.isUndoSubmitted = true;
+
+    if (undoForm.invalid) {
+      undoForm.form.markAllAsTouched();
       return;
     }
 
     const payload = {
-      chequeNo: this.retrieve.chequeNo,
-      fullChequeNo: this.retrieve.fullCheque,
-      remark: this.undo.remark,
-      userId: this.user.getUser().name,
+      chequeNo: String(this.retrieve.chequeNo || ''),
+      fullChequeNo: String(this.retrieve.fullCheque || ''),
+      remark: this.undo.remark.trim(),
+      userId: String(this.loginUser.getUser()?.name || ''),
     };
 
-    this.chequeService.undoCheque(payload).subscribe((res) => {
-      console.log(res);
+    this.chequeService.undoCheque(payload).subscribe({
+      next: (res: any) => {
+        this.alert.showAlert('Success', res?.message || 'Cheque undone successfully', 'success');
+        this.onCancel(undoForm);
+      },
+      error: (err: any) => {
+        console.error('Failed to undo cheque', err);
+        this.alert.showAlert('Error', err?.error.message || 'Failed to undo cheque', 'error');
+      },
     });
   }
 
-  onCancel(): void {
+  onCancel(undoForm?: NgForm): void {
+    this.isRetrieveSubmitted = false;
+    this.isUndoSubmitted = false;
+
+    if (undoForm) {
+      undoForm.resetForm();
+    }
+
     this.retrieve = { chequeNo: '', fullCheque: '' };
     this.chequeDetails = { bound: '', bank_name: '', scan_user_id: '' };
     this.undo = { remark: '' };
+    this.fullchequeBody = { chequeNo: '' };
   }
 
   onChequeChange(value: any, item: any): void {
-    this.fullchequeBody.chequeNo = item?.name ?? '';
-    this.retrieve.chequeNo = item?.name;
+    this.fullchequeBody = { chequeNo: item?.name ?? '' };
   }
-  onFullChequeChange(value: any, item: any): void {
-    this.retrieve.fullCheque = item?.name ?? '';
+
+  onBackToLists(): void {
+    this.router.navigate(['/home/user-mgt-list']);
+  }
+
+  onChequeNoSelect(event: ComboboxSelection): void {
+    this.retrieve.chequeNo = event.item?.name;
+    if (event.item) {
+      this.fullchequeBody = { chequeNo: event.item?.name ?? '' };
+    } else {
+      this.retrieve.fullCheque = '';
+    }
+  }
+
+  onFullChequeSelect(event: ComboboxSelection): void {
+    this.retrieve.fullCheque = event.item.name;
   }
 }

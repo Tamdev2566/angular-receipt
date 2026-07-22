@@ -1,142 +1,183 @@
 <div class="user-management-flat-wrapper animate-fade-in">
-  <!-- Header -->
-
+  <!-- Header Section -->
   <div class="page-header-section mt-3">
     <h4 class="text-white m-0 fw-bold">Undo Cheque</h4>
 
     <div class="d-flex justify-content-between gap-3">
-      <button class="btn btn-flat-action-primary" (click)="undoCheque()">
-        <i class="fa-solid fa-rotate-left me-1"></i>
-        Undo Cheque
+      <button type="submit" form="undoChequeForm" class="btn btn-flat-action-primary">
+        <i class="fa-solid fa-rotate-left me-1"></i> Undo Cheque
       </button>
 
-      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">Cancel</button>
+      <button type="button" class="btn btn-flat-action-danger-outline" (click)="onCancel(undoForm)">
+        Cancel
+      </button>
     </div>
   </div>
 
-  <div class="main-scrollable-content-fluid p-4">
-    <!-- Retrieve By -->
+  <div class="main-scrollable-content-fluid">
+    <!-- Retrieve By Card -->
+    <div class="receipt-form-card mb-4">
+      <h6>Retrieve By</h6>
 
-    <div class="receipt-form-card">
-      <div class="row g-3">
-        <div class="col-12">
-          <h6>Retrieve By</h6>
+      <form #retrieveForm="ngForm" autocomplete="off">
+        <div class="row g-3 align-items-start">
+          <!-- Cheque No -->
+          <div class="col-12 col-md-5">
+            <div class="retrieve-field-wrapper">
+              <label class="form-label custom-flat-label">
+                Cheque No<span class="text-danger">*</span> :
+              </label>
+
+              <app-combobox
+                name="chequeNo"
+                [url]="'api/chequeBox/cheque-numbers'"
+                [responsePath]="''"
+                displayExpr="name"
+                valueExpr="id"
+                [(value)]="retrieve.chequeNo"
+                apiMethod="POST"
+                [reload]="true"
+                [onChange]="onChequeChange.bind(this)"
+                (selectionChange)="onChequeNoSelect($event)"
+              >
+              </app-combobox>
+
+              <div
+                class="error-msg text-danger mt-1"
+                style="font-size: 12px"
+                *ngIf="isRetrieveSubmitted && !retrieve.chequeNo"
+              >
+                Cheque No is required
+              </div>
+            </div>
+          </div>
+
+          <!-- Full Cheque -->
+          <div class="col-12 col-md-5">
+            <div class="retrieve-field-wrapper">
+              <label class="form-label custom-flat-label">
+                Full Cheque<span class="text-danger">*</span> :
+              </label>
+
+              <app-combobox
+                name="fullCheque"
+                [url]="'api/chequeBox/full-cheque-numbers'"
+                [responsePath]="''"
+                displayExpr="name"
+                valueExpr="id"
+                [(value)]="retrieve.fullCheque"
+                apiMethod="POST"
+                [requestBody]="fullchequeBody || {}"
+                [reload]="true"
+                (selectionChange)="onFullChequeSelect($event)"
+              >
+              </app-combobox>
+
+              <div
+                class="error-msg text-danger mt-1"
+                style="font-size: 12px"
+                *ngIf="isRetrieveSubmitted && !retrieve.fullCheque"
+              >
+                Full Cheque is required
+              </div>
+            </div>
+          </div>
+
+          <!-- Retrieve Button -->
+          <div class="col-12 col-md-2">
+            <div class="retrieve-btn-wrapper">
+              <button
+                type="button"
+                class="btn btn-flat-action-primary-fill w-100"
+                (click)="retrieveCheque(retrieveForm)"
+              >
+                Retrieve
+              </button>
+            </div>
+          </div>
         </div>
-
-        <!-- Cheque No -->
-
-        <div class="col-md-4">
-          <label class="form-label custom-flat-label"> Cheque No : </label>
-
-          <app-combobox
-            [url]="'api/chequeBox/cheque-numbers'"
-            [responsePath]="''"
-            displayExpr="name"
-            valueExpr="id"
-            [(value)]="retrieve.chequeNo"
-            apiMethod="POST"
-            [reload]="true"
-            [onChange]="onChequeChange.bind(this)"
-          >
-          </app-combobox>
-        </div>
-
-        <!-- Full Cheque -->
-
-        <div class="col-md-4">
-          <label class="form-label custom-flat-label"> Full Cheque : </label>
-
-          <app-combobox
-            [url]="'api/chequeBox/full-cheque-numbers'"
-            [responsePath]="''"
-            displayExpr="name"
-            valueExpr="id"
-            [(value)]="retrieve.fullCheque"
-            apiMethod="POST"
-            [requestBody]="fullchequeBody || {}"
-            [reload]="true"
-            [onChange]="onFullChequeChange.bind(this)"
-          >
-          </app-combobox>
-        </div>
-
-        <!-- Retrieve -->
-
-        <div class="col-md-2 d-flex align-items-end">
-          <button class="btn btn-flat-action-primary-fill mb-1" (click)="retrieveCheque()">
-            Retrieve
-          </button>
-        </div>
-      </div>
+      </form>
     </div>
 
     <!-- Cheque Reader Details -->
-
-    <div class="receipt-form-card mt-3">
+    <div class="receipt-form-card mb-4">
+      <h6>Cheque Reader Details</h6>
       <div class="row g-3">
-        <div class="col-12">
-          <h6>Cheque Reader Details</h6>
-        </div>
-
         <!-- Bound -->
-
-        <div class="col-md-4">
-          <label class="form-label custom-flat-label"> Bound : </label>
-
+        <div class="col-12 col-sm-6 col-md-4">
+          <label class="form-label custom-flat-label">Bound:</label>
           <input
+            type="text"
             readonly
             class="form-control custom-flat-input input-readonly-flat"
-            [(ngModel)]="chequeDetails.bound"
+            [value]="chequeDetails.bound"
           />
         </div>
 
-        <!-- Bank -->
-
-        <div class="col-md-4">
-          <label class="form-label custom-flat-label"> Bank Name : </label>
-
+        <!-- Bank Name -->
+        <div class="col-12 col-sm-6 col-md-4">
+          <label class="form-label custom-flat-label">Bank Name:</label>
           <input
+            type="text"
             readonly
             class="form-control custom-flat-input input-readonly-flat"
-            [(ngModel)]="chequeDetails.bank_name"
+            [value]="chequeDetails.bank_name"
           />
         </div>
 
-        <!-- Scan User -->
-
-        <div class="col-md-4">
-          <label class="form-label custom-flat-label"> Scan User ID : </label>
-
+        <!-- Scan User ID -->
+        <div class="col-12 col-sm-6 col-md-4">
+          <label class="form-label custom-flat-label">Scan User ID:</label>
           <input
+            type="text"
             readonly
             class="form-control custom-flat-input input-readonly-flat"
-            [(ngModel)]="chequeDetails.scan_user_id"
+            [value]="chequeDetails.scan_user_id"
           />
         </div>
       </div>
     </div>
 
-    <!-- Undo Cheque -->
+    <!-- Undo Cheque Action Card -->
+    <div class="receipt-form-card">
+      <h6>Undo Cheque Action</h6>
 
-    <div class="receipt-form-card mt-3">
-      <div class="row g-3 align-items-end">
-        <div class="col-12">
-          <h6>Undo Cheque</h6>
+      <form
+        id="undoChequeForm"
+        #undoForm="ngForm"
+        (ngSubmit)="undoCheque(undoForm)"
+        autocomplete="off"
+      >
+        <div class="row g-3">
+          <!-- Remark -->
+          <div class="col-12 col-md-9">
+            <div class="retrieve-field-wrapper mb-0">
+              <label class="form-label custom-flat-label">
+                Remark<span class="text-danger">*</span> :
+              </label>
+
+              <input
+                type="text"
+                name="remark"
+                [(ngModel)]="undo.remark"
+                #remark="ngModel"
+                class="form-control custom-flat-input"
+                [class.is-invalid]="remark.invalid && (remark.touched || isUndoSubmitted)"
+                placeholder="Enter Remark"
+                required
+              />
+
+              <div
+                class="text-danger mt-1"
+                style="font-size: 12px"
+                *ngIf="remark.invalid && (remark.touched || isUndoSubmitted)"
+              >
+                Remark is required
+              </div>
+            </div>
+          </div>
         </div>
-
-        <!-- Remark -->
-
-        <div class="col-md-9">
-          <label class="form-label custom-flat-label"> Remark : </label>
-
-          <input
-            type="text"
-            class="form-control custom-flat-input"
-            [(ngModel)]="undo.remark"
-            placeholder="Enter Remark"
-          />
-        </div>
-      </div>
+      </form>
     </div>
   </div>
 </div>

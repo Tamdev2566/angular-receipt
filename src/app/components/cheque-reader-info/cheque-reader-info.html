@@ -1,6 +1,5 @@
 <div class="user-management-flat-wrapper animate-fade-in">
   <!-- Header -->
-
   <div class="page-header-section mt-3">
     <h4 class="text-white m-0 fw-bold">Cheque Reader Information</h4>
 
@@ -14,11 +13,10 @@
     </div>
   </div>
 
-  <div class="main-scrollable-content-fluid p-4">
+  <div class="main-scrollable-content-fluid">
     <div class="receipt-form-card">
       <div class="row g-4">
         <!-- Radio Buttons -->
-
         <div class="col-12">
           <div class="d-flex flex-wrap align-items-center gap-4">
             <div class="form-check">
@@ -30,7 +28,6 @@
                 value="INBOUND"
                 [(ngModel)]="formData.direction"
               />
-
               <label class="form-check-label" for="inbound"> Inbound </label>
             </div>
 
@@ -44,7 +41,7 @@
                 [(ngModel)]="formData.direction"
               />
 
-              <label class="form-check-label text-danger" for="outbound"> Outbound </label>
+              <label class="form-check-label" for="outbound"> Outbound </label>
             </div>
 
             <div class="form-check">
@@ -63,7 +60,6 @@
         </div>
 
         <!-- Date -->
-
         <div class="col-md-3">
           <label class="form-label custom-flat-label"> Date </label>
 
@@ -75,21 +71,30 @@
           />
         </div>
 
-        <!-- Full Cheque -->
-
         <div class="col-md-3">
-          <label class="form-label custom-flat-label"> Full Cheque </label>
+          <label class="form-label custom-flat-label">
+            Full Cheque <span class="text-danger">*</span>
+          </label>
 
           <input
             type="text"
             class="form-control custom-flat-input"
+            [class.is-invalid]="errors['fullCheque'] && isSubmitted"
             placeholder="Enter Full Cheque"
             [(ngModel)]="formData.fullCheque"
+            (ngModelChange)="validateFullCheque()"
           />
+
+          <div
+            *ngIf="errors['fullCheque'] && isSubmitted"
+            class="invalid-feedback d-flex align-items-center mt-1"
+            style="font-size: 0.72rem; font-weight: 600"
+          >
+            Full Cheque is required
+          </div>
         </div>
 
         <!-- Cheque -->
-
         <div class="col-md-3">
           <label class="form-label custom-flat-label"> Cheque </label>
 
@@ -102,7 +107,6 @@
         </div>
 
         <!-- Bank -->
-
         <div class="col-md-3">
           <label class="form-label custom-flat-label"> Bank </label>
 
