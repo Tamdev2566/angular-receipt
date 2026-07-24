@@ -77,8 +77,8 @@
 .receipt-form-card h6 {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 16px;
+  color: #33708f;
+  // margin-bottom: 16px;
   padding-bottom: 8px;
   border-bottom: 1px solid #e2e8f0;
 }
@@ -89,7 +89,7 @@
   display: block;
   font-size: 0.78rem;
   font-weight: 700;
-  color: #475569;
+  color: #33708f;
   margin-bottom: 6px;
 }
 
@@ -235,4 +235,34 @@
 
 .btn-flat-action-primary-fill:hover {
   transform: translateY(-1px);
+}
+
+.error-text {
+  font-size: 11px;
+  margin-top: 4px;
+  display: block;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.retrieve-btn-col {
+  min-height: 62px;
+  padding-bottom: 2px;
+
+  .btn-flat-action-primary-fill {
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .retrieve-btn-col {
+    min-height: auto;
+
+    .btn-flat-action-primary-fill {
+      width: 100%;
+    }
+  }
 }

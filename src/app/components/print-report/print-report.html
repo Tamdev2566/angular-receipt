@@ -3,68 +3,95 @@
     <h4 class="text-white m-0 fw-bold">Print Report</h4>
 
     <div class="d-flex justify-content-between gap-3">
-      <button class="btn btn-flat-action-primary" (click)="onReportClick()">
-        <i class="fa-solid fa-file-lines"></i>
+      <button class="btn btn-flat-action-primary" (click)="retrieveReport()">
+        <i class="bi bi-clipboard2-data-fill"></i>
         Generate Report
       </button>
 
       <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">
-        <i class="fa-solid fa-xmark me-1"></i>
-        Cancel
+        <i class="bi bi-arrow-clockwise"></i>
+        Reset
       </button>
     </div>
   </div>
 
-  <div class="main-scrollable-content-fluid p-1">
+  <div class="main-scrollable-content-fluid">
     <div class="receipt-form-card">
       <div class="row g-3">
         <div class="col-12">
           <h6>Retrieve By</h6>
         </div>
-        <div class="col-md-2">
+
+        <!-- Transaction Date -->
+        <div class="col-md-3">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">
+            Transaction Date: <span class="required text-danger">*</span>
+          </label>
           <app-date-picker
-            label="Transaction Date"
             [required]="true"
-            helperText="Select transaction start date"
+            helperText="Select transaction date"
+            [error]="transactionDateErr"
+            [(value)]="transactionDate"
+            (valueChange)="transactionDateErr = false"
           >
           </app-date-picker>
         </div>
-        <div class="col-12 col-sm-6 col-md-2">
-          <label class="form-label fw-bold custom-flat-label mb-1.5">Payment Mode:</label>
+
+        <!-- Payment Mode -->
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">
+            Payment Mode: <span class="required text-danger">*</span>
+          </label>
           <app-combobox
             displayExpr="name"
             valueExpr="id"
             name="paymentMode"
             [data]="paymentTypes"
+            [class.input-error]="paymentModeErr"
             [onChange]="onPaymentChange.bind(this)"
           >
           </app-combobox>
+          <small *ngIf="paymentModeErr" class="text-danger error-text">
+            Payment Mode is required
+          </small>
         </div>
-        <div class="col-12 col-sm-6 col-md-2">
-          <label class="form-label fw-bold custom-flat-label mb-1.5">Currency:</label>
+
+        <!-- Currency -->
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">
+            Currency: <span class="required text-danger">*</span>
+          </label>
           <app-combobox
             displayExpr="name"
             valueExpr="id"
-            name="paymentMode"
+            name="currency"
             [data]="currency"
+            [class.input-error]="currencyErr"
             [onChange]="onCurrencyChange.bind(this)"
           >
           </app-combobox>
+          <small *ngIf="currencyErr" class="text-danger error-text"> Currency is required </small>
         </div>
-        <div class="col-12 col-sm-6 col-md-2">
-          <label class="form-label fw-bold custom-flat-label mb-1.5">Report For:</label>
+
+        <!-- Report For -->
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label fw-bold custom-flat-label mb-1.5">
+            Report For: <span class="required text-danger">*</span>
+          </label>
           <app-combobox
-            displayExpr="name"
-            valueExpr="id"
-            name="paymentMode"
-            [onChange]="onCurrencyChange.bind(this)"
+            [url]="'api/users/getUsers'"
+            [responsePath]="'data'"
+            displayExpr="userName"
+            valueExpr="userId"
+            name="reportFor"
+            [class.input-error]="reportForErr"
+            [onChange]="onReportForChange.bind(this)"
+            [searchFromApi]="false"
           >
           </app-combobox>
-        </div>
-        <div class="col-md-3 d-flex align-items-end mb-2">
-          <button class="btn btn-flat-action-primary-fill" (click)="retrieveReport()">
-            Retrieve
-          </button>
+          <small *ngIf="reportForErr" class="text-danger error-text">
+            Report For is required
+          </small>
         </div>
       </div>
     </div>

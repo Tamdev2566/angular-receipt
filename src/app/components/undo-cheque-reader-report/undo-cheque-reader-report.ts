@@ -3,66 +3,83 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatepickerComponent } from '../../shared/date-picker/date-picker';
 import { Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
+import { ReportService } from '../../services/reportService/report-service';
+import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
 
 @Component({
   selector: 'app-undo-cheque-reader-report',
-  imports: [CommonModule, FormsModule, DatepickerComponent],
+  imports: [CommonModule, FormsModule, DatepickerComponent, DataGrid],
   templateUrl: './undo-cheque-reader-report.html',
   styleUrl: './undo-cheque-reader-report.scss',
 })
 export class UndoChequeReaderReport {
-  constructor(private router: Router) {
-    const today = new Date().toISOString().split('T')[0];
-
-    this.reportForm.fromDate = today;
-    this.reportForm.toDate = today;
-  }
-
-  reportForm = {
-    fromDate: '',
-    toDate: '',
-    directoryPath: 'C:\\',
-  };
-
+  formattedFromToDate: string = '';
+  reportForm = { fromDate: '', toDate: '' };
   loading = false;
+  gridData: any[] = [];
 
-  browseDirectory(): void {
-    console.log('Browse Folder');
+  gridColumns: ColumnDef[] = [
+    { label: 'Cancelled Cheque No', field: 'cancelledChequeNo', width: '130px' },
+    { label: 'Full Cheque No', field: 'fullChequeNo', width: '120px' },
+    { label: 'Reason', field: 'reason', width: '130px' },
+    { label: 'User Id', field: 'userId', align: 'center', width: '90px' },
+    { label: 'Action Date', field: 'actionDateString', width: '140px' },
+  ];
+
+  constructor(
+    private router: Router,
+    private apiservice: ReportService,
+  ) {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+
+    const formattedToday = `${day}/${month}/${year}`;
+
+    this.reportForm.fromDate = formattedToday;
+    this.reportForm.toDate = formattedToday;
+    this.formattedFromToDate = formattedToday;
   }
 
-  generateReport(): void {
-    if (!this.reportForm.fromDate) {
-      alert('Please select From Date');
-      return;
-    }
-
-    if (!this.reportForm.toDate) {
-      alert('Please select To Date');
-      return;
-    }
-
-    if (!this.reportForm.directoryPath.trim()) {
-      alert('Please select Directory Path');
-      return;
-    }
-
-    const payload = {
-      fromDate: this.reportForm.fromDate,
-      toDate: this.reportForm.toDate,
-      directoryPath: this.reportForm.directoryPath,
-    };
-
-    console.log('Updated Cheque Report Payload');
-    console.log(payload);
-
-    // TODO: Call API
+  private formatForApi(dateStr: string): string {
+    if (!dateStr || !dateStr.includes('/')) return dateStr;
+    const [day, month, year] = dateStr.split('/');
+    return `${year}-${month}-${day}`;
   }
 
   onGenerate(): void {
-    this.generateReport();
+    const fromDateApi = this.formatForApi(this.reportForm.fromDate);
+    const toDateApi = this.formatForApi(this.reportForm.toDate);
+    this.apiservice.getReport('api/reports/undo-cheque/getdata', fromDateApi, toDateApi).subscribe({
+      next: (res: any) => {
+        console.log('res', res);
+        this.gridData = res || [];
+      },
+      error: (err) => {
+        console.log('err', err);
+      },
+    });
+  }
+
+  onDownloadClick() {
+    const fromDateApi = this.formatForApi(this.reportForm.fromDate);
+    const toDateApi = this.formatForApi(this.reportForm.toDate);
+    this.apiservice
+      .downloadReport('api/reports/undo-cheque/download', fromDateApi, toDateApi)
+      .subscribe({
+        next: (res: Blob) => {
+          console.log('res', res);
+          this.apiservice.exportToExcel(res, 'UndoChequeReaderReport', fromDateApi, toDateApi);
+        },
+        error: (err) => {
+          console.log('err', err);
+        },
+      });
   }
 
   onCancel(): void {
-    this.router.navigate(['/home/dashboard']);
+    this.reportForm = { fromDate: this.formattedFromToDate, toDate: this.formattedFromToDate };
   }
 }

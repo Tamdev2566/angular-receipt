@@ -51,37 +51,37 @@ export class ModuleService {
         { title: 'Undo', link: '/home/undo-cheque' },
       ],
     },
-    // {
-    //   title: 'EDI to CODA',
-    //   icon: 'fa-solid fa-file-invoice-dollar',
-    //   hasSubmenu: true,
-    //   isExpanded: false,
-    //   submodules: [{ title: 'EDI to CODA', link: '/home/edi-to-coda' }],
-    // },
-    // {
-    //   title: 'Reports',
-    //   icon: 'fa-solid fa-file-lines',
-    //   hasSubmenu: true,
-    //   isExpanded: false,
-    //   submodules: [
-    //     { title: 'Print Reports', link: '/home/print-report' },
-    //     { title: 'Updated Cheque No Report', link: '/home/updated-cheque-report' },
-    //     { title: 'Removed Invoice Report', link: '/home/removed-invoice-report' },
-    //     { title: 'Updated TT Ref Report', link: '/home/updated-tt-ref-report' },
-    //   ],
-    // },
+    {
+      title: 'EDI to CODA',
+      icon: 'fa-solid fa-file-invoice-dollar',
+      hasSubmenu: true,
+      isExpanded: false,
+      submodules: [{ title: 'EDI to CODA', link: '/home/edi-to-coda' }],
+    },
+    {
+      title: 'Reports',
+      icon: 'fa-solid fa-file-lines',
+      hasSubmenu: true,
+      isExpanded: false,
+      submodules: [
+        { title: 'Print Reports', link: '/home/print-report' },
+        { title: 'Updated Cheque No Report', link: '/home/updated-cheque-report' },
+        { title: 'Removed Invoice Report', link: '/home/removed-invoice-report' },
+        { title: 'Updated TT Ref Report', link: '/home/updated-tt-ref-report' },
+      ],
+    },
 
-    // {
-    //   title: 'Cheque Reader Report',
-    //   icon: 'fa-solid fa-file-lines',
-    //   hasSubmenu: true,
-    //   isExpanded: false,
-    //   submodules: [
-    //     { title: 'Aging Report', link: '/home/aging-report' },
-    //     { title: 'Daily Scan Report', link: '/home/daily-scan-report' },
-    //     { title: 'Undo ChequeNo Report', link: '/home/undo-cheque-reader-report' },
-    //   ],
-    // },
+    {
+      title: 'Cheque Reader Report',
+      icon: 'fa-solid fa-file-lines',
+      hasSubmenu: true,
+      isExpanded: false,
+      submodules: [
+        { title: 'Aging Report', link: '/home/aging-report' },
+        { title: 'Daily Scan Report', link: '/home/daily-scan-report' },
+        { title: 'Undo ChequeNo Report', link: '/home/undo-cheque-reader-report' },
+      ],
+    },
   ];
   getModalState(): boolean {
     return this.modalState.getValue();

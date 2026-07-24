@@ -104,7 +104,7 @@
   display: block;
   font-size: 0.78rem;
   font-weight: 700;
-  color: #475569;
+  color: #33708f;
   margin-bottom: 6px;
 }
 
@@ -239,5 +239,22 @@
 
   .custom-flat-input {
     font-size: 0.8rem !important;
+  }
+}
+
+.btn-flat-action-primary-fill {
+  background: #33708f !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px;
+  padding: 8px 18px !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  box-shadow: 0 2px 5px rgba(51, 112, 143, 0.15);
+  transition: 0.2s;
+
+  &:hover {
+    transform: translateY(-1px);
   }
 }

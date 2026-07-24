@@ -16,13 +16,16 @@
       (click)="togglePicker($event)"
     />
 
-    <i *ngIf="value && !disabled" class="fa fa-times clear-icon" (click)="clear()"></i>
+    <i *ngIf="value && !disabled" class="fa fa-times clear-icon" (click)="clear()"> </i>
 
-    <i class="fa fa-calendar calendar-icon" (click)="togglePicker($event)"></i>
+    <i class="fa fa-calendar calendar-icon" (click)="togglePicker($event)"> </i>
   </div>
 
-  <div *ngIf="error" class="helper-text">
-    {{ helperText }}
+  <!-- Reserve space always -->
+  <div class="helper-container">
+    <div class="error-text" [class.show]="error">
+      {{ error ? helperText : '' }}
+    </div>
   </div>
 
   <div *ngIf="isOpen" class="calendar-dropdown">

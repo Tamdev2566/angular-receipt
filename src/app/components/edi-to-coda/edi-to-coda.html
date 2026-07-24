@@ -3,34 +3,56 @@
     <h4 class="text-white m-0 fw-bold">EDI to CODA</h4>
     <div class="d-flex justify-content-between gap-3">
       <button class="btn btn-flat-action-primary" (click)="onExport()">
-        <i class="fa-solid fa-arrow-up-from-bracket"></i> Export
+        <i class="bi bi-cloud-arrow-down-fill"></i>
+        Export
       </button>
 
       <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">
-        <i class="fa-solid fa-xmark me-1"></i>
-        Cancel
+        <i class="bi bi-arrow-clockwise"></i>
+        Reset
       </button>
     </div>
   </div>
 
   <div class="main-scrollable-content-fluid p-1">
     <div class="receipt-form-card">
-      <div class="row g-3">
+      <div class="row g-3 align-items-end">
         <div class="col-12">
           <h6>Transaction Date</h6>
         </div>
 
         <div class="col-md-3">
-          <app-date-picker label="From Date" helperText="Select transaction start date">
-          </app-date-picker>
+          <label class="form-label fw-bold custom-flat-label mb-1.5">From Date:</label>
+
+          <div class="date-picker-wrapper">
+            <app-date-picker
+              label=""
+              helperText="Please select a start date"
+              [required]="true"
+              [error]="fromDateError"
+              [(value)]="fromDate"
+              (valueChange)="fromDateError = false"
+            >
+            </app-date-picker>
+          </div>
         </div>
 
         <div class="col-md-3">
-          <app-date-picker label="To Date" helperText="Select transaction start date">
-          </app-date-picker>
+          <div class="date-picker-wrapper">
+            <label class="form-label fw-bold custom-flat-label mb-1.5">From Date:</label>
+
+            <app-date-picker
+              helperText="Please select an end date"
+              [required]="true"
+              [error]="toDateError"
+              [(value)]="toDate"
+              (valueChange)="toDateError = false"
+            >
+            </app-date-picker>
+          </div>
         </div>
 
-        <div class="col-md-3 d-flex align-items-end">
+        <div class="col-md-3 mb-4">
           <button class="btn btn-flat-action-primary-fill" (click)="retrieveInvoice()">
             Retrieve
           </button>

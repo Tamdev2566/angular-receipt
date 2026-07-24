@@ -65,7 +65,11 @@
       </tr>
 
       <tr *ngIf="records().length === 0">
-        <td [attr.colspan]="totalColSpan()" class="text-center py-4 text-muted">
+        <td
+          [attr.colspan]="totalColSpan()"
+          class="text-center py-4 text-muted"
+          style="color: #33708f !important"
+        >
           No records found
         </td>
       </tr>

@@ -74,11 +74,21 @@ $date-primary-hover: #27566f;
   color: #64748b;
 }
 
-.error-text {
+.helper-container {
+  height: 18px;
   margin-top: 4px;
+}
+
+.error-text {
   font-size: 11px;
   color: #dc2626;
   font-weight: 500;
+  visibility: hidden;
+  line-height: 18px;
+}
+
+.error-text.show {
+  visibility: visible;
 }
 
 .calendar-dropdown {
@@ -176,5 +186,5 @@ $date-primary-hover: #27566f;
 
 .custom-flat-label {
   font-size: 0.8rem !important;
-  color: #334155 !important;
+  color: #33708f !important;
 }
