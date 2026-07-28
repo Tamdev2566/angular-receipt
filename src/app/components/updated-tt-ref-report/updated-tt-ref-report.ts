@@ -14,6 +14,8 @@ import { AlertService } from '../../services/alertService/alert';
   styleUrl: './updated-tt-ref-report.scss',
 })
 export class UpdatedTtRefReport {
+  formattedFromToDate: string = '';
+
   constructor(
     private alert: AlertService,
     private apiservice: ReportService,
@@ -27,6 +29,7 @@ export class UpdatedTtRefReport {
 
     this.reportForm.fromDate = formattedToday;
     this.reportForm.toDate = formattedToday;
+    this.formattedFromToDate = formattedToday;
   }
 
   reportForm = {
@@ -86,9 +89,7 @@ export class UpdatedTtRefReport {
   }
 
   onCancel(): void {
-    this.reportForm = {
-      fromDate: '',
-      toDate: '',
-    };
+    this.reportForm = { fromDate: this.formattedFromToDate, toDate: this.formattedFromToDate };
+    this.gridData = [];
   }
 }

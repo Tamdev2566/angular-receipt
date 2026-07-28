@@ -15,6 +15,7 @@ import { AlertService } from '../../services/alertService/alert';
   styleUrls: ['./updated-cheque-report.scss'],
 })
 export class UpdatedChequeReport {
+  formattedFromToDate: string = '';
   constructor(
     private alert: AlertService,
     private apiservice: ReportService,
@@ -28,6 +29,7 @@ export class UpdatedChequeReport {
 
     this.reportForm.fromDate = formattedToday;
     this.reportForm.toDate = formattedToday;
+    this.formattedFromToDate = formattedToday;
   }
 
   reportForm = {
@@ -83,9 +85,7 @@ export class UpdatedChequeReport {
   }
 
   onCancel(): void {
-    this.reportForm = {
-      fromDate: '',
-      toDate: '',
-    };
+    this.reportForm = { fromDate: this.formattedFromToDate, toDate: this.formattedFromToDate };
+    this.gridData = [];
   }
 }

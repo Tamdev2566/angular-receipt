@@ -81,5 +81,6 @@ export class UndoChequeReaderReport {
 
   onCancel(): void {
     this.reportForm = { fromDate: this.formattedFromToDate, toDate: this.formattedFromToDate };
+    this.gridData = [];
   }
 }

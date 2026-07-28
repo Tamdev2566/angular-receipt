@@ -48,6 +48,7 @@ export class RemovedInvoiceReport {
     const [day, month, year] = dateStr.split('/');
     return `${year}-${month}-${day}`;
   }
+
   onGenerate(): void {
     const fromDateApi = this.formatForApi(this.reportForm.fromDate);
     const toDateApi = this.formatForApi(this.reportForm.toDate);
@@ -82,5 +83,6 @@ export class RemovedInvoiceReport {
 
   onCancel(): void {
     this.reportForm = { fromDate: this.formattedFromToDate, toDate: this.formattedFromToDate };
+    this.gridData = [];
   }
 }
