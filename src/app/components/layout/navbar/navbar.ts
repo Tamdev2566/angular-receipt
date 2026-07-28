@@ -93,7 +93,6 @@ export class Navbar implements OnInit {
   }
 
   onPasswordUpdatedSuccessfully(payload: any): void {
-    console.log('Password updated metadata payload data:', payload);
     this.showPasswordModal = false;
   }
 

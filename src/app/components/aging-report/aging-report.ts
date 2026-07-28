@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Combobox } from '../../shared/combobox/combobox';
 import { ReportService } from '../../services/reportService/report-service';
 import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
+import { AlertService } from '../../services/alertService/alert';
 
 @Component({
   selector: 'app-aging-report',
@@ -17,6 +18,7 @@ export class AgingReport {
   constructor(
     private router: Router,
     private apiservice: ReportService,
+    private alert: AlertService,
   ) {}
 
   loading = false;
@@ -53,11 +55,10 @@ export class AgingReport {
   generateReport(): void {
     this.apiservice.getAgingReport('api/reports/aging/getdata', this.formData.agingDays).subscribe({
       next: (res: any) => {
-        console.log('res', res);
         this.gridData = res || [];
       },
       error: (err) => {
-        console.log('err', err);
+        this.alert.showAlert('Error', err.error.message, 'error');
       },
     });
   }
@@ -67,7 +68,6 @@ export class AgingReport {
       .downloadAgingReport('api/reports/aging/download', this.formData.agingDays)
       .subscribe({
         next: (res: Blob) => {
-          console.log('res', res);
           this.apiservice.exportToExcelAging(
             res,
             'UndoChequeReaderReport',
@@ -75,7 +75,7 @@ export class AgingReport {
           );
         },
         error: (err) => {
-          console.log('err', err);
+          this.alert.showAlert('Error', err.error.message, 'error');
         },
       });
   }

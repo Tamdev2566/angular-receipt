@@ -62,7 +62,6 @@ export class PasswordMgmt implements OnInit {
       return;
     }
 
-    this.isLoading = true;
     this.auth.forgotPassword(this.email).subscribe({
       next: () => {
         this.isLoading = false;
@@ -75,7 +74,6 @@ export class PasswordMgmt implements OnInit {
         );
       },
       error: (err) => {
-        this.isLoading = false;
         this.alertService.showAlert(
           'Error',
           err?.error?.message || 'Failed to send token.',

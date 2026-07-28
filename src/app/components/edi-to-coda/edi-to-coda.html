@@ -2,7 +2,11 @@
   <div class="page-header-section receipt-header mt-3">
     <h4 class="text-white m-0 fw-bold">EDI to CODA</h4>
     <div class="d-flex justify-content-between gap-3">
-      <button class="btn btn-flat-action-primary" (click)="onExport()">
+      <button
+        class="btn btn-flat-action-primary"
+        (click)="onExport()"
+        [disabled]="!gridData.length"
+      >
         <i class="bi bi-cloud-arrow-down-fill"></i>
         Export
       </button>
@@ -22,11 +26,10 @@
         </div>
 
         <div class="col-md-3">
-          <label class="form-label fw-bold custom-flat-label mb-1.5">From Date:</label>
-
           <div class="date-picker-wrapper">
+            <label class="form-label fw-bold custom-flat-label mb-1">From Date:</label>
+
             <app-date-picker
-              label=""
               helperText="Please select a start date"
               [required]="true"
               [error]="fromDateError"
@@ -39,7 +42,7 @@
 
         <div class="col-md-3">
           <div class="date-picker-wrapper">
-            <label class="form-label fw-bold custom-flat-label mb-1.5">From Date:</label>
+            <label class="form-label fw-bold custom-flat-label mb-1">To Date:</label>
 
             <app-date-picker
               helperText="Please select an end date"
@@ -60,12 +63,23 @@
       </div>
     </div>
 
-    <app-data-grid
-      [records]="gridData"
-      [columns]="columns"
-      [showAction]="false"
-      [tableHeight]="'380px'"
-    >
-    </app-data-grid>
+    <div class="receipt-form-card mt-3">
+      <div class="col-12">
+        <div class="d-flex justify-content-end mb-2">
+          <button class="btn btn-sm btn-flat-action-primary" (click)="onDownloadClick()">
+            <i class="bi bi-arrow-down-square-fill"></i>
+            Download
+          </button>
+        </div>
+      </div>
+
+      <app-data-grid
+        [records]="gridData"
+        [columns]="columns"
+        [showAction]="false"
+        [tableHeight]="'380px'"
+      >
+      </app-data-grid>
+    </div>
   </div>
 </div>

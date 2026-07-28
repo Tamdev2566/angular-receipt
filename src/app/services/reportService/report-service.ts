@@ -9,6 +9,11 @@ import { Observable } from 'rxjs';
 export class ReportService {
   private apiService = inject(ApiService);
 
+  postEdiToCoda(url: string, fromDate: string, toDate: string): Observable<any> {
+    const params = new HttpParams().set('fromDate', fromDate).set('toDate', toDate);
+    return this.apiService.post(url, {}, { params });
+  }
+
   getReport(url: string, fromDate: string, toDate: string): Observable<any> {
     const params = new HttpParams().set('fromDate', fromDate).set('toDate', toDate);
     return this.apiService.get(url, { params });
@@ -20,18 +25,12 @@ export class ReportService {
 
   downloadReport(url: string, fromDate: string, toDate: string): Observable<Blob> {
     const params = new HttpParams().set('fromDate', fromDate).set('toDate', toDate);
-    return this.apiService.get(url, {
-      params: params,
-      responseType: 'blob',
-    });
+    return this.apiService.get(url, { params: params, responseType: 'blob' });
   }
 
   downloadAgingReport(url: string, days: string): Observable<Blob> {
     const params = new HttpParams().set('days', days);
-    return this.apiService.get(url, {
-      params: params,
-      responseType: 'blob',
-    });
+    return this.apiService.get(url, { params: params, responseType: 'blob' });
   }
 
   exportToExcel(data: Blob, fileName: string, fromDate: string, toDate: string) {

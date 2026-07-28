@@ -71,16 +71,12 @@ export class RemoveInvoiceDetails {
 
     this.invoiceService.removeInvoices(referenceNos, user.name, this.remark).subscribe({
       next: (res: any) => {
-        console.log('res', res);
-
         this.alertService.showAlert('Success', res.message, 'success');
         this.retrieveInvoice();
         this.onCancel();
         this.remark = '';
       },
       error: (err) => {
-        console.log('err', err);
-
         this.alertService.showAlert('Error', err.error.message, 'error');
       },
     });
@@ -99,7 +95,6 @@ export class RemoveInvoiceDetails {
 
   onRowSelect(record: any): void {
     this.trackSelectionLogs();
-    console.log('record', record);
     // this.rowData.setRowData(record);
   }
 

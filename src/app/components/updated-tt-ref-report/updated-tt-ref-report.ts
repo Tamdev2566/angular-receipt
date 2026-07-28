@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { DatepickerComponent } from '../../shared/date-picker/date-picker';
 import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
 import { ReportService } from '../../services/reportService/report-service';
+import { AlertService } from '../../services/alertService/alert';
 
 @Component({
   selector: 'app-updated-tt-ref-report',
@@ -14,7 +15,7 @@ import { ReportService } from '../../services/reportService/report-service';
 })
 export class UpdatedTtRefReport {
   constructor(
-    private router: Router,
+    private alert: AlertService,
     private apiservice: ReportService,
   ) {
     const today = new Date();
@@ -61,11 +62,10 @@ export class UpdatedTtRefReport {
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice.getReport('api/reports/updated-tt/getdata', fromDateApi, toDateApi).subscribe({
       next: (res: any) => {
-        console.log('res', res);
         this.gridData = res || [];
       },
       error: (err: any) => {
-        console.log('err', err);
+        this.alert.showAlert('Error', err.error.message, 'error');
       },
     });
   }
@@ -77,11 +77,10 @@ export class UpdatedTtRefReport {
       .downloadReport('api/reports/updated-tt/download', fromDateApi, toDateApi)
       .subscribe({
         next: (res: Blob) => {
-          console.log('res', res);
           this.apiservice.exportToExcel(res, 'UpdateTTRefReoprt', fromDateApi, toDateApi);
         },
         error: (error: any) => {
-          console.log('err', error);
+          this.alert.showAlert('Error', error.error.message, 'error');
         },
       });
   }

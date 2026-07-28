@@ -151,9 +151,7 @@ export class ReceiptComponent {
     XLSX.writeFile(workbook, `receipts-${new Date().toISOString().slice(0, 10)}.xlsx`);
   }
 
-  onClickHistory() {
-    console.log('History Button Triggered');
-  }
+  onClickHistory() {}
 
   onSearch(): void {
     const query = this.searchQuery.toLowerCase().trim();

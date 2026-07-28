@@ -38,13 +38,9 @@ export class RemoveInvoiceList {
     this.router.navigate(['/home/remove-invoice-details']);
   }
 
-  onPrintClick() {
-    console.log('Print Button Triggered');
-  }
+  onPrintClick() {}
 
-  onClickHistory() {
-    console.log('History Button Triggered');
-  }
+  onClickHistory() {}
 
   onSearch(value?: any): void {
     const query = this.searchQuery.toLowerCase().trim() || value.toLowerCase().trim();
@@ -65,7 +61,6 @@ export class RemoveInvoiceList {
 
   onRowSelect(record: any): void {
     this.trackSelectionLogs();
-    console.log('record', record);
     // this.rowData.setRowData(record);
   }
 

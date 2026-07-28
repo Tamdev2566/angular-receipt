@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
 import { ReportService } from '../../services/reportService/report-service';
+import { AlertService } from '../../services/alertService/alert';
 
 @Component({
   selector: 'app-removed-invoice-report',
@@ -27,7 +28,7 @@ export class RemovedInvoiceReport {
   ];
 
   constructor(
-    private router: Router,
+    private alert: AlertService,
     private apiservice: ReportService,
   ) {
     const today = new Date();
@@ -54,11 +55,11 @@ export class RemovedInvoiceReport {
       .getReport('api/reports/removed-invoice/getdata', fromDateApi, toDateApi)
       .subscribe({
         next: (res: any) => {
-          console.log('res', res);
           this.gridData = res || [];
         },
         error: (err) => {
           console.log('err', err);
+          this.alert.showAlert('Error', err.error.message, 'error');
         },
       });
   }
@@ -70,11 +71,11 @@ export class RemovedInvoiceReport {
       .downloadReport('api/reports/removed-invoice/download', fromDateApi, toDateApi)
       .subscribe({
         next: (res: Blob) => {
-          console.log('res', res);
           this.apiservice.exportToExcel(res, 'RemovedInvoiceReport', fromDateApi, toDateApi);
         },
         error: (err) => {
           console.log('err', err);
+          this.alert.showAlert('Error', 'Something went wrong!', 'error');
         },
       });
   }

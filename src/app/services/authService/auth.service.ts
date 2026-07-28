@@ -1,19 +1,20 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiService } from '../api.service';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { environment } from '../../../environment/environment';
+import { AlertService } from '../alertService/alert';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiService = inject(ApiService);
   private http = inject(HttpClient);
+  private router = inject(Router);
+  private alert = inject(AlertService);
 
   endpoint = 'api/login/glosys';
   baseUrl = environment.loginURL;
-  apiURL = environment.apiUrl;
 
   login(payload: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/${this.endpoint}`, {
@@ -22,28 +23,53 @@ export class AuthService {
     });
   }
 
+  isLoggedIn(): boolean {
+    const token = this.getToken();
+    const expiryStr = localStorage.getItem('token_expire');
+    if (!token || !expiryStr) {
+      return false;
+    }
+
+    const formattedExpiryStr = expiryStr.trim().replace(' ', 'T');
+    const expiryTime = new Date(formattedExpiryStr).getTime();
+    const currentTime = new Date().getTime();
+
+    if (isNaN(expiryTime)) {
+      return false;
+    }
+
+    if (currentTime < expiryTime) {
+      return true;
+    } else {
+      this.alert.showAlert('Error', 'Your Session is Expired!', 'error');
+      this.logout();
+      return false;
+    }
+  }
+
   getUserInfo(): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/info`);
   }
 
   forgotPassword(email: string): Observable<any> {
-    return this.http.post(`http://localhost:22000/auth/forgot-password`, { email });
-    // return this.http.post(`${this.baseUrl}/auth/forgot-password`, { email });
-    // return this.apiService.post('auth/forgot-password', { email });
+    // return this.http.post(`http://localhost:22000/auth/forgot-password`, { email });
+    return this.http.post(`${this.baseUrl}/api/auth/forgot-password`, { email });
   }
 
   resetPassword(email: string, token: string, newPassword: string): Observable<any> {
-    return this.http.post(`http://localhost:22000/auth/reset-password`, {
-      email,
-      token,
-      newPassword,
-    });
+    // return this.http.post(`http://localhost:22000/auth/reset-password`, {
+    //   email,
+    //   token,
+    //   newPassword,
+    // });
 
-    // return this.apiService.post('auth/reset-password', { email, token, newPassword });
+    return this.http.post(`${this.baseUrl}/api/auth/reset-password`, { email, token, newPassword });
   }
 
   logout(): void {
+    this.alert.showAlert('Error', 'Your Session is Expired!', 'error');
     localStorage.clear();
+    this.router.navigate(['/login']);
   }
 
   getToken(): string | null {

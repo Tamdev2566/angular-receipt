@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ReportService } from '../../services/reportService/report-service';
 import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
+import { AlertService } from '../../services/alertService/alert';
 
 @Component({
   selector: 'app-undo-cheque-reader-report',
@@ -30,6 +31,7 @@ export class UndoChequeReaderReport {
   constructor(
     private router: Router,
     private apiservice: ReportService,
+    private alert: AlertService,
   ) {
     const today = new Date();
     const day = String(today.getDate()).padStart(2, '0');
@@ -54,11 +56,10 @@ export class UndoChequeReaderReport {
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice.getReport('api/reports/undo-cheque/getdata', fromDateApi, toDateApi).subscribe({
       next: (res: any) => {
-        console.log('res', res);
         this.gridData = res || [];
       },
       error: (err) => {
-        console.log('err', err);
+        this.alert.showAlert('Error', err.error.message, 'error');
       },
     });
   }
@@ -70,11 +71,10 @@ export class UndoChequeReaderReport {
       .downloadReport('api/reports/undo-cheque/download', fromDateApi, toDateApi)
       .subscribe({
         next: (res: Blob) => {
-          console.log('res', res);
           this.apiservice.exportToExcel(res, 'UndoChequeReaderReport', fromDateApi, toDateApi);
         },
         error: (err) => {
-          console.log('err', err);
+          this.alert.showAlert('Error', err.error.message, 'error');
         },
       });
   }

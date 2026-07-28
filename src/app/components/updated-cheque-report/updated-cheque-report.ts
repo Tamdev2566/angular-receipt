@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { DatepickerComponent } from '../../shared/date-picker/date-picker';
 import { ReportService } from '../../services/reportService/report-service';
 import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
+import { AlertService } from '../../services/alertService/alert';
 
 @Component({
   selector: 'app-updated-cheque-report',
@@ -15,7 +16,7 @@ import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
 })
 export class UpdatedChequeReport {
   constructor(
-    private router: Router,
+    private alert: AlertService,
     private apiservice: ReportService,
   ) {
     const today = new Date();
@@ -58,11 +59,10 @@ export class UpdatedChequeReport {
       .getReport('api/reports/updated-cheque/getdata', fromDateApi, toDateApi)
       .subscribe({
         next: (res: any) => {
-          console.log('res', res);
           this.gridData = res || [];
         },
         error: (err) => {
-          console.log('err', err);
+          this.alert.showAlert('Error', err.error.message, 'error');
         },
       });
   }
@@ -74,11 +74,10 @@ export class UpdatedChequeReport {
       .downloadReport('api/reports/updated-cheque/download', fromDateApi, toDateApi)
       .subscribe({
         next: (res: Blob) => {
-          console.log('res', res);
           this.apiservice.exportToExcel(res, 'UpdatedChequeReport', fromDateApi, toDateApi);
         },
         error: (err) => {
-          console.log('err', err);
+          this.alert.showAlert('Error', err.error.message, 'error');
         },
       });
   }

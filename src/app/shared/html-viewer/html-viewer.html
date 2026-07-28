@@ -1,10 +1,22 @@
-<div #modalRef class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+<div
+  #modalRef
+  class="modal fade"
+  style="height: 100% !important"
+  tabindex="-1"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+>
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content border-0 shadow">
       <!-- Header -->
-      <div class="modal-header bg-light py-2">
-        <h6 class="modal-title fw-bold text-secondary">Document Preview</h6>
-        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      <div
+        class="modal-header bg-light py-2 d-flex justify-content-between"
+        style="color: #33708f !important"
+      >
+        <h6 class="modal-title fw-bold">Document Preview</h6>
+        <button type="button" class="btn" (click)="closeModal()">
+          <i class="bi bi-x-circle-fill"></i>
+        </button>
       </div>
 
       <!-- Body -->
@@ -14,10 +26,17 @@
 
       <!-- Footer -->
       <div class="modal-footer bg-light py-2">
-        <button type="button" class="btn btn-secondary btn-sm" (click)="closeModal()">Close</button>
         <button
           type="button"
-          class="btn btn-primary btn-sm d-flex align-items-center gap-1"
+          class="btn btn-flat-action-danger-outline btn-sm"
+          (click)="closeModal()"
+        >
+          <i class="bi bi-x-circle"></i>
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-flat-action-primary-fill btn-sm d-flex align-items-center gap-1"
           (click)="printDocument()"
         >
           <i class="bi bi-printer"></i> Print

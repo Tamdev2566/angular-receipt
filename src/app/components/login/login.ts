@@ -118,7 +118,6 @@ export class LoginPage {
 
               this.alertService.showAlert('Success', 'Logged In Successfully!', 'success');
 
-              // Check password expiry (90-day policy)
               const userId = userInfo.userId || userInfo.user_id;
               if (userId) {
                 this.authService.checkPasswordStatus(userId).subscribe({
@@ -132,7 +131,6 @@ export class LoginPage {
                     }
                   },
                   error: () => {
-                    // If check fails, allow login normally
                     this.router.navigate(['/home']);
                   },
                 });
@@ -142,8 +140,6 @@ export class LoginPage {
             },
 
             error: (err) => {
-              console.error('/info error', err);
-
               this.alertService.showAlert(
                 'Error',
                 err?.error?.message || 'Unable to fetch user information',
@@ -154,7 +150,6 @@ export class LoginPage {
         },
 
         error: (err) => {
-          console.log('ERROR', err);
           this.alertService.showAlert('Error', err?.error?.message, 'error');
         },
       });

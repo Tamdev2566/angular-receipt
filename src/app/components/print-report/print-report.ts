@@ -2,20 +2,25 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DatepickerComponent } from '../../shared/date-picker/date-picker';
 import { Combobox } from '../../shared/combobox/combobox';
+import { ReceiptItem, reportPrint } from '../../report-template/reportPrint';
+import { HtmlViewer } from '../../shared/html-viewer/html-viewer';
+import { ApiService } from '../../services/api.service';
+import { animationFrameProvider } from 'rxjs/internal/scheduler/animationFrameProvider';
 
 @Component({
   selector: 'app-print-report',
   standalone: true,
-  imports: [CommonModule, DatepickerComponent, Combobox],
+  imports: [CommonModule, DatepickerComponent, Combobox, HtmlViewer],
   templateUrl: './print-report.html',
   styleUrl: './print-report.scss',
 })
 export class PrintReport implements OnInit {
-  // Current date by default bind aagum
   transactionDate: string | null = null;
   selectedPaymentMode: any = null;
   selectedCurrency: any = null;
   selectedReportFor: any = null;
+
+  formattedDate: string = '';
 
   // Error flags
   transactionDateErr = false;
@@ -34,6 +39,11 @@ export class PrintReport implements OnInit {
     { id: 2, name: 'USD' },
   ];
 
+  htmlTemplate: string = '';
+  isModalOpen: boolean = false;
+
+  constructor(private apiService: ApiService) {}
+
   ngOnInit(): void {
     this.setCurrentDate();
   }
@@ -44,48 +54,52 @@ export class PrintReport implements OnInit {
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const year = today.getFullYear();
 
-    this.transactionDate = `${day}/${month}/${year}`;
+    const formattedToday = `${day}/${month}/${year}`;
+    this.transactionDate = formattedToday;
+    this.formattedDate = formattedToday;
+  }
+
+  private formatForApi(dateStr: string | null): string {
+    if (!dateStr || !dateStr.includes('/')) return dateStr || '';
+    const [day, month, year] = dateStr.split('/');
+    return `${year}-${month}-${day}`;
   }
 
   onPaymentChange(value: any, item: any): void {
     this.selectedPaymentMode = item?.name || null;
     this.paymentModeErr = !value;
-    console.log('Payment Mode:', item);
   }
 
   onCurrencyChange(value: any, item: any): void {
     this.selectedCurrency = item?.name || null;
     this.currencyErr = !value;
-    console.log('Currency:', item);
   }
 
   onReportForChange(value: any, item: any): void {
-    this.selectedReportFor = item?.name || null;
+    this.selectedReportFor = item?.userName || null;
     this.reportForErr = !value;
-    console.log('Report For:', item);
   }
 
-  onReportClick() {
-    console.log('Generating Report...');
-  }
-
-  onCancel() {
+  onCancel(): void {
     this.setCurrentDate();
     this.selectedPaymentMode = null;
     this.selectedCurrency = null;
     this.selectedReportFor = null;
-
     this.resetErrors();
   }
 
-  private resetErrors() {
+  private resetErrors(): void {
     this.transactionDateErr = false;
     this.paymentModeErr = false;
     this.currencyErr = false;
     this.reportForErr = false;
   }
 
-  retrieveReport() {
+  onModalClose(data: boolean) {
+    this.isModalOpen = data;
+  }
+
+  retrieveReport(): void {
     this.transactionDateErr = !this.transactionDate;
     this.paymentModeErr = !this.selectedPaymentMode;
     this.currencyErr = !this.selectedCurrency;
@@ -95,11 +109,67 @@ export class PrintReport implements OnInit {
       return;
     }
 
-    console.log('Fetching records for:', {
-      transactionDate: this.transactionDate,
+    const payload = {
+      transactionDate: this.formatForApi(this.transactionDate),
       paymentMode: this.selectedPaymentMode,
       currency: this.selectedCurrency,
       reportFor: this.selectedReportFor,
+    };
+
+    this.apiService.post('api/receipts/getReports', payload).subscribe({
+      next: (res: any) => {
+        if (res && (Array.isArray(res) ? res.length > 0 : true)) {
+          const rawList = Array.isArray(res) ? res : res?.details || [];
+
+          const parseAmount = (val: any): number => {
+            if (val === null || val === undefined) return 0;
+            const num = typeof val === 'string' ? parseFloat(val.replace(/,/g, '')) : Number(val);
+            return isNaN(num) ? 0 : num;
+          };
+
+          const mappedDetails: ReceiptItem[] = rawList.map((item: any, index: number) => ({
+            seqNo: index + 1,
+            transactionNo: item.transactionNo || 'N/A',
+            customerName: item.customer || 'N/A',
+            description: `Ref: ${item.referenceNo || 'N/A'} | Bank: ${item.bank || 'N/A'}`,
+            currency: item.currencyCode || this.selectedCurrency || 'SGD',
+            amount: parseAmount(item.amount).toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }),
+          }));
+
+          const totalAmount = rawList.reduce((acc: number, item: any) => {
+            return acc + parseAmount(item.amount);
+          }, 0);
+
+          const formattedTotal = totalAmount.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+
+          const firstItem = rawList[0] || {};
+
+          this.htmlTemplate = reportPrint({
+            receiptNo: firstItem.transactionNo || '',
+            txtTitle: 'OFFICIAL PAYMENT RECEIPT',
+            receiptDate: this.transactionDate || firstItem.receiptDate || '',
+            paymentMethod: firstItem.paymentMode,
+            customerName: firstItem.customer || '',
+            customerAddress: res?.customerAddress || '',
+            txtUserID: firstItem.createdUser || this.selectedReportFor,
+            txtTotal: formattedTotal,
+            details: mappedDetails,
+          });
+
+          this.isModalOpen = true;
+        } else {
+          console.warn('No records returned from API');
+        }
+      },
+      error: (err) => {
+        console.error('Failed to retrieve report:', err);
+      },
     });
   }
 }
