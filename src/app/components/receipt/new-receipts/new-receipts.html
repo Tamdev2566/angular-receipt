@@ -230,6 +230,7 @@
             apiMethod="POST"
             [requestBody]="vesselValue || {}"
             [reload]="true"
+            (selectionChange)="onVoyageChange($event)"
           >
           </app-combobox>
         </div>

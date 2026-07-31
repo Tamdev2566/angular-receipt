@@ -224,6 +224,10 @@ export class NewReceiptComponent implements OnInit {
     this.vesselValue = { vessel: selection.item?.vesselName || '' };
   }
 
+  onVoyageChange(selection: ComboboxSelection): void {
+    this.searchModel.voyageId = selection.item.voyageNo;
+  }
+
   onPaymentValueChange(value: unknown): void {
     if (value === null || value === undefined || value === '') {
       this.onPaymentChange(value, null);
@@ -276,14 +280,14 @@ export class NewReceiptComponent implements OnInit {
     }
 
     const payload = {
-      source,
       invoiceNo: invNo,
       blNo: blNo,
       vesselName: vessel,
-      vesselId: this.searchModel.vesselId || '',
       voyageNo: voyage,
       customerName: customer,
     };
+
+    console.log(payload);
 
     this.apiService.post('api/receiptRetrieve', payload).subscribe({
       next: (res: any) => {
