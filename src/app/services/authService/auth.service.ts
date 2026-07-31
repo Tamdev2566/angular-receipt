@@ -83,4 +83,8 @@ export class AuthService {
   checkPasswordStatus(userId: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/UserManagements/users/${userId}/password-status`);
   }
+
+  getAppMenus(locationId: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/MenuManagements/menus/${locationId}`);
+  }
 }

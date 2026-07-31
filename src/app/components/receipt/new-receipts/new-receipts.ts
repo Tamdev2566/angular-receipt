@@ -396,7 +396,7 @@ export class NewReceiptComponent implements OnInit {
     this.apiService.post('api/receipts/confirm-payment', payload).subscribe({
       next: () => {
         this.alert.showAlert('Success', 'Receipt confirmed successfully.', 'success');
-        this.router.navigate(['/home/receipts']);
+        this.router.navigate(['/main/receipts']);
       },
       error: (error) => {
         this.alert.showAlert(
@@ -424,7 +424,7 @@ export class NewReceiptComponent implements OnInit {
     this.apiService.post('api/receipts/over-payment', payload).subscribe({
       next: (res: any) => {
         this.alert.showAlert('Success', 'Overpayment processed successfully.', 'success');
-        this.router.navigate(['/home/receipts']);
+        this.router.navigate(['/main/receipts']);
       },
       error: (error) => {
         this.alert.showAlert(
@@ -446,7 +446,7 @@ export class NewReceiptComponent implements OnInit {
   }
 
   onCancel() {
-    this.router.navigate(['/home/receipts']);
+    this.router.navigate(['/main/receipts']);
   }
 
   onRowSelect(selectedRecords: any): void {

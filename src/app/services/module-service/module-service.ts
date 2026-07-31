@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { AuthService } from '../authService/auth.service';
 
 export interface SubMenu {
   title: string;
@@ -15,81 +17,110 @@ export interface MenuItem {
   submodules?: SubMenu[];
 }
 
+export interface ApiMenuItem {
+  menuId: string;
+  menuName: string;
+  menuLink: string;
+  menuParent: string;
+  menuIconString: string;
+  menuOrder: number;
+  mandatory: string;
+  fullAccess: number;
+  canRead: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ModuleService {
   private modalState = new BehaviorSubject<boolean>(false);
   modalState$ = this.modalState.asObservable();
 
-  private appMenus: MenuItem[] = [
-    // {
-    //   title: 'Dashboard',
-    //   icon: 'fa-solid fa-chart-line',
-    //   link: '/home/dashboard',
-    //   hasSubmenu: false,
-    // },
+  private menuListSubject = new BehaviorSubject<MenuItem[]>([]);
+  menuList$ = this.menuListSubject.asObservable();
 
-    {
-      title: 'Receipts',
-      icon: 'fa-solid fa-receipt',
-      hasSubmenu: true,
-      isExpanded: false,
-      submodules: [
-        { title: 'Glossys & Docsys', link: '/home/receipts' },
-        { title: 'Undo Payments', link: '/home/undo-payment' },
-        { title: 'Remove Invoice', link: '/home/remove-invoice' },
-        { title: 'Update Cheque', link: '/home/update-cheque' },
-        { title: 'Update TT Ref', link: '/home/update-tt-ref' },
-      ],
-    },
-    {
-      title: 'Cheque Reader',
-      icon: 'fa-solid fa-file-lines',
-      hasSubmenu: true,
-      isExpanded: false,
-      submodules: [
-        { title: 'Cheque Reader Information', link: '/home/cheque-reader-info' },
-        { title: 'Undo', link: '/home/undo-cheque' },
-      ],
-    },
-    {
-      title: 'EDI to CODA',
-      icon: 'fa-solid fa-file-invoice-dollar',
-      hasSubmenu: true,
-      isExpanded: false,
-      submodules: [{ title: 'EDI to CODA', link: '/home/edi-to-coda' }],
-    },
-    {
-      title: 'Reports',
-      icon: 'fa-solid fa-file-lines',
-      hasSubmenu: true,
-      isExpanded: false,
-      submodules: [
-        { title: 'Print Reports', link: '/home/print-report' },
-        { title: 'Updated Cheque No Report', link: '/home/updated-cheque-report' },
-        { title: 'Removed Invoice Report', link: '/home/removed-invoice-report' },
-        { title: 'Updated TT Ref Report', link: '/home/updated-tt-ref-report' },
-      ],
-    },
+  constructor(private authService: AuthService) {}
 
-    {
-      title: 'Cheque Reader Report',
-      icon: 'fa-solid fa-file-lines',
-      hasSubmenu: true,
-      isExpanded: false,
-      submodules: [
-        { title: 'Aging Report', link: '/home/aging-report' },
-        { title: 'Daily Scan Report', link: '/home/daily-scan-report' },
-        { title: 'Undo ChequeNo Report', link: '/home/undo-cheque-reader-report' },
-      ],
-    },
-  ];
   getModalState(): boolean {
     return this.modalState.getValue();
   }
+
   setModalState(isOpen: boolean) {
     this.modalState.next(isOpen);
   }
+
   getMenus(): MenuItem[] {
-    return this.appMenus;
+    return this.menuListSubject.getValue();
+  }
+
+  fetchUserMenus(usersLocationId: string): Observable<ApiMenuItem[]> {
+    return this.authService.getAppMenus(usersLocationId).pipe(
+      tap((apiItems: ApiMenuItem[]) => {
+        this.setMenuItemsFromApi(apiItems);
+      }),
+      catchError((err) => {
+        console.error('Failed to load dynamic menus', err);
+        return of([]);
+      }),
+    );
+  }
+
+  setMenuItemsFromApi(apiItems: ApiMenuItem[]) {
+    if (!apiItems || apiItems.length === 0) {
+      this.menuListSubject.next([]);
+      return;
+    }
+
+    const dynamicTree = this.transformApiToDynamicTree(apiItems);
+    this.menuListSubject.next(dynamicTree);
+  }
+
+  private capitalizeTitle(text: string): string {
+    if (!text) return '';
+    return text
+      .toLowerCase()
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  private transformApiToDynamicTree(apiItems: ApiMenuItem[]): MenuItem[] {
+    const parents = apiItems.filter((item) => item.menuId === item.menuParent);
+    const children = apiItems.filter((item) => item.menuId !== item.menuParent);
+
+    parents.sort((a, b) => a.menuOrder - b.menuOrder);
+
+    const resultMenus: MenuItem[] = [];
+
+    for (const parent of parents) {
+      const allowedChildren = children
+        .filter((child) => child.menuParent === parent.menuId && child.canRead === 1)
+        .sort((a, b) => a.menuOrder - b.menuOrder);
+
+      const hasValidChildren = allowedChildren.length > 0;
+      const isParentReadable = parent.canRead === 1;
+
+      if (hasValidChildren) {
+        resultMenus.push({
+          title: this.capitalizeTitle(parent.menuName),
+          icon: parent.menuIconString || 'fa-solid fa-folder',
+          hasSubmenu: true,
+          isExpanded: false,
+          submodules: allowedChildren.map((child) => ({
+            title: this.capitalizeTitle(child.menuName),
+            link: child.menuLink,
+          })),
+        });
+      } else if (isParentReadable && parent.menuLink && parent.menuLink !== '-') {
+        resultMenus.push({
+          title: this.capitalizeTitle(parent.menuName),
+          icon: parent.menuIconString ? `fa-solid fa-${parent.menuIconString}` : 'fa-solid fa-link',
+          link: parent.menuLink,
+          hasSubmenu: false,
+          isExpanded: false,
+          submodules: [],
+        });
+      }
+    }
+
+    return resultMenus;
   }
 }

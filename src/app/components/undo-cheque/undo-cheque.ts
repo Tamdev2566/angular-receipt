@@ -109,10 +109,6 @@ export class UndoCheque {
     this.fullchequeBody = { chequeNo: item?.name ?? '' };
   }
 
-  onBackToLists(): void {
-    this.router.navigate(['/home/user-mgt-list']);
-  }
-
   onChequeNoSelect(event: ComboboxSelection): void {
     this.retrieve.chequeNo = event.item?.name;
     if (event.item) {

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { MenuItem, ModuleService } from '../../../services/module-service/module-service';
 
 @Component({
@@ -10,14 +11,23 @@ import { MenuItem, ModuleService } from '../../../services/module-service/module
   styleUrls: ['./sidebar.scss'],
   imports: [RouterLink, RouterLinkActive, CommonModule],
 })
-export class Sidebar implements OnInit {
+export class Sidebar implements OnInit, OnDestroy {
   private modulesService = inject(ModuleService);
+  private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
 
   appMenus: MenuItem[] = [];
-  constructor(private router: Router) {}
+  private menuSubscription?: Subscription;
 
   ngOnInit(): void {
-    this.appMenus = this.modulesService.getMenus();
+    this.menuSubscription = this.modulesService.menuList$.subscribe({
+      next: (menus: MenuItem[]) => {
+        console.log('Sidebar received updated menus from API:', menus);
+        this.appMenus = menus;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error receiving menu stream in sidebar', err),
+    });
   }
 
   toggleSubmenu(menu: MenuItem): void {
@@ -30,5 +40,11 @@ export class Sidebar implements OnInit {
 
   trackBySubmoduleId(index: number, sub: any): string {
     return sub.id || sub.title;
+  }
+
+  ngOnDestroy(): void {
+    if (this.menuSubscription) {
+      this.menuSubscription.unsubscribe();
+    }
   }
 }

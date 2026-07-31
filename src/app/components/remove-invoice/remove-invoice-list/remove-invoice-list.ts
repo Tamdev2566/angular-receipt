@@ -29,13 +29,10 @@ export class RemoveInvoiceList {
     { label: 'Amount', field: 'amount', width: '120px' },
   ];
 
-  constructor(
-    private router: Router,
-    private loader: LoaderService,
-  ) {}
+  constructor(private router: Router) {}
 
   onCreateClick() {
-    this.router.navigate(['/home/remove-invoice-details']);
+    this.router.navigate(['/main/remove-invoice-details']);
   }
 
   onPrintClick() {}

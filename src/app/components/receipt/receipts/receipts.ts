@@ -104,11 +104,11 @@ export class ReceiptComponent {
   }
 
   onCreateClick() {
-    this.router.navigate(['/home/new-receipt']);
+    this.router.navigate(['/main/new-receipt']);
   }
 
   onUpdateClick() {
-    this.router.navigate(['/home/new-receipt']);
+    this.router.navigate(['/main/new-receipt']);
   }
 
   onPrintClick(): void {

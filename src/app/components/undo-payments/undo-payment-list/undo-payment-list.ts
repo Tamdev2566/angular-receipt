@@ -29,13 +29,10 @@ export class UndoPaymentList {
     { label: 'Amount', field: 'amount', width: '120px' },
   ];
 
-  constructor(
-    private router: Router,
-    private loader: LoaderService,
-  ) {}
+  constructor(private router: Router) {}
 
   onCreateClick() {
-    this.router.navigate(['/home/undo-payment-details']);
+    this.router.navigate(['/main/undo-payment-details']);
   }
 
   onPrintClick() {}

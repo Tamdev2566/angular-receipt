@@ -6,6 +6,7 @@ import { finalize } from 'rxjs';
 import { AlertService } from '../../services/alertService/alert';
 import { AuthService } from '../../services/authService/auth.service';
 import { UserService } from '../../services/userService/user.service';
+import { ModuleService } from '../../services/module-service/module-service'; // Import ModuleService
 import { PasswordMgmt } from '../password-mgmt/password-mgmt';
 
 @Component({
@@ -33,12 +34,13 @@ export class LoginPage {
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
     private userService: UserService,
+    private moduleService: ModuleService, // Injected ModuleService
   ) {}
 
   ngOnInit() {
     const token = localStorage.getItem('angular_token');
     if (token) {
-      this.router.navigate(['/home']);
+      this.router.navigate(['/main']);
     }
   }
 
@@ -118,6 +120,23 @@ export class LoginPage {
 
               this.alertService.showAlert('Success', 'Logged In Successfully!', 'success');
 
+              // --- FETCH MENU DATA AND SET TO MODULE SERVICE ---
+              if (userInfo?.masterLocations[0]?.groups.length) {
+                this.authService
+                  .getAppMenus(userInfo.masterLocations[0]?.usersLocationId)
+                  .subscribe({
+                    next: (menuApiData: any) => {
+                      console.log('Menu API Response:', menuApiData);
+                      // Update the reactive state in ModuleService
+                      this.moduleService.setMenuItemsFromApi(menuApiData);
+                    },
+                    error: (err) => {
+                      console.error('Failed to load dynamic menus', err);
+                    },
+                  });
+              }
+
+              // --- ROUTING LOGIC ---
               const userId = userInfo.userId || userInfo.user_id;
               if (userId) {
                 this.authService.checkPasswordStatus(userId).subscribe({
@@ -127,15 +146,15 @@ export class LoginPage {
                       this.router.navigate(['/change-password']);
                     } else {
                       localStorage.removeItem('passwordExpired');
-                      this.router.navigate(['/home']);
+                      this.router.navigate(['main/welcome']);
                     }
                   },
                   error: () => {
-                    this.router.navigate(['/home']);
+                    this.router.navigate(['main/welcome']);
                   },
                 });
               } else {
-                this.router.navigate(['/home']);
+                this.router.navigate(['main/welcome']);
               }
             },
 

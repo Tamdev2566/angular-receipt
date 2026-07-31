@@ -14,7 +14,7 @@ export const routes: Routes = [
       import('./components/change-password/change-password').then((m) => m.ChangePasswordPage),
   },
   {
-    path: 'home',
+    path: 'main',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./components/layout/main-layout/main-layout').then((m) => m.MainLayout),
@@ -176,5 +176,5 @@ export const routes: Routes = [
     ],
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: '**', redirectTo: 'home/404' },
+  { path: '**', redirectTo: 'main/404' },
 ];
