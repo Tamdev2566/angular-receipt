@@ -2,7 +2,12 @@
   <div class="page-header-section mt-3">
     <h4 class="text-white m-0 fw-bold">Undo Payments</h4>
     <div class="d-flex justify-content-between gap-3">
-      <button class="btn btn-flat-action-primary" (click)="undoReceipt()">
+      <button
+        class="btn btn-flat-action-primary"
+        (click)="undoReceipt()"
+        [disabled]="!isUndoAllowed"
+        [class.disabled-btn]="!isUndoAllowed"
+      >
         <i class="fa-solid fa-rotate-left"></i> Undo Payment
       </button>
 
@@ -50,7 +55,9 @@
           <button
             class="btn btn-flat-action-primary-fill"
             (click)="retrieveReceipt()"
-            [disabled]="!retrieve.invoiceNo && !retrieve.blNo && !retrieve.chequeNo"
+            [disabled]="
+              (!retrieve.invoiceNo && !retrieve.blNo && !retrieve.chequeNo) || !isUndoAllowed
+            "
           >
             Retrieve
           </button>

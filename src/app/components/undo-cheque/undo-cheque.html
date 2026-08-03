@@ -4,7 +4,13 @@
     <h4 class="text-white m-0 fw-bold">Undo Cheque</h4>
 
     <div class="d-flex justify-content-between gap-3">
-      <button type="submit" form="undoChequeForm" class="btn btn-flat-action-primary">
+      <button
+        type="submit"
+        form="undoChequeForm"
+        class="btn btn-flat-action-primary"
+        [disabled]="!isUndoAllowed"
+        [class.disabled-btn]="!isUndoAllowed"
+      >
         <i class="fa-solid fa-rotate-left me-1"></i> Undo Cheque
       </button>
 
@@ -90,6 +96,8 @@
                 type="button"
                 class="btn btn-flat-action-primary-fill w-100"
                 (click)="retrieveCheque(retrieveForm)"
+                [disabled]="!isUndoAllowed"
+                [class.disabled-btn]="!isUndoAllowed"
               >
                 Retrieve
               </button>

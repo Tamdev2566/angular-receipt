@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../../services/alertService/alert';
 import { UserService } from '../../../services/userService/user.service';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { RemoveInvoiceService } from '../service/remove-invoice-service';
+import { MenuAccessService } from '../../../services/menu-access';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-remove-invoice-details',
@@ -12,7 +14,7 @@ import { RemoveInvoiceService } from '../service/remove-invoice-service';
   templateUrl: './remove-invoice-details.html',
   styleUrl: './remove-invoice-details.scss',
 })
-export class RemoveInvoiceDetails {
+export class RemoveInvoiceDetails implements OnInit {
   paginatedRecords: any[] = [];
   selectedRecord: any = null;
 
@@ -25,7 +27,6 @@ export class RemoveInvoiceDetails {
   remark = '';
 
   invoiceGrid: any[] = [];
-
   loading: boolean = false;
   recordData = input<any>();
 
@@ -39,11 +40,22 @@ export class RemoveInvoiceDetails {
     { label: 'USD Amount', field: 'original_usd', width: '120px' },
   ];
 
+  private menuAccessService = inject(MenuAccessService);
+
   constructor(
+    private router: Router,
     private userService: UserService,
     private alertService: AlertService,
     private invoiceService: RemoveInvoiceService,
   ) {}
+
+  get isCreateAllowed(): boolean {
+    return this.menuAccessService.currentPermission().fullAccess;
+  }
+
+  ngOnInit() {
+    this.menuAccessService.checkPermissionForUrl(this.router.url);
+  }
 
   retrieveInvoice() {
     this.invoiceService

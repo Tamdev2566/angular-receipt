@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { AuthService } from '../authService/auth.service';
+import { MenuAccessService } from '../menu-access';
 
 export interface SubMenu {
   title: string;
@@ -37,6 +38,8 @@ export class ModuleService {
   private menuListSubject = new BehaviorSubject<MenuItem[]>([]);
   menuList$ = this.menuListSubject.asObservable();
 
+  private menuAccessService = inject(MenuAccessService);
+
   constructor(private authService: AuthService) {}
 
   getModalState(): boolean {
@@ -54,6 +57,10 @@ export class ModuleService {
   fetchUserMenus(usersLocationId: string): Observable<ApiMenuItem[]> {
     return this.authService.getAppMenus(usersLocationId).pipe(
       tap((apiItems: ApiMenuItem[]) => {
+        if (apiItems && apiItems.length > 0) {
+          this.menuAccessService.setMenuList(apiItems as any);
+        }
+
         this.setMenuItemsFromApi(apiItems);
       }),
       catchError((err) => {

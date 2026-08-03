@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../services/alertService/alert';
 import { UserService } from '../../services/userService/user.service';
 import { UpdateChequeService } from './service/update-cheque-service';
+import { MenuAccessService } from '../../services/menu-access';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-update-cheque',
@@ -12,7 +14,7 @@ import { UpdateChequeService } from './service/update-cheque-service';
   templateUrl: './update-cheque.html',
   styleUrls: ['./update-cheque.scss'],
 })
-export class UpdateCheque {
+export class UpdateCheque implements OnInit {
   loading = false;
 
   retrieve = {
@@ -28,18 +30,25 @@ export class UpdateCheque {
     paidInvoiceTotal: '',
   };
 
-  update = {
-    newChequeNo: '',
-    remark: '',
-  };
+  update = { newChequeNo: '', remark: '' };
 
   isSubmitted = false;
+  private menuAccessService = inject(MenuAccessService);
 
   constructor(
     private updateChequeService: UpdateChequeService,
     private user: UserService,
     private alert: AlertService,
+    private router: Router,
   ) {}
+
+  get isUpdateAllowed(): boolean {
+    return this.menuAccessService.currentPermission().fullAccess;
+  }
+
+  ngOnInit() {
+    this.menuAccessService.checkPermissionForUrl(this.router.url);
+  }
 
   retrieveCheque(): void {
     this.isSubmitted = true;

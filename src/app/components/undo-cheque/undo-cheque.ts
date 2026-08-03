@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Combobox, ComboboxSelection } from '../../shared/combobox/combobox';
 import { UserService } from '../../services/userService/user.service';
 import { AlertService } from '../../services/alertService/alert';
 import { ChequeService } from './service/undo-cheque-service';
+import { MenuAccessService } from '../../services/menu-access';
 
 export interface RetrieveState {
   chequeNo: string | number;
@@ -25,11 +26,12 @@ export interface ChequeDetails {
   templateUrl: './undo-cheque.html',
   styleUrls: ['./undo-cheque.scss'],
 })
-export class UndoCheque {
+export class UndoCheque implements OnInit {
   private router = inject(Router);
   private loginUser = inject(UserService);
   private chequeService = inject(ChequeService);
   private alert = inject(AlertService);
+  private menuAccessService = inject(MenuAccessService);
 
   isRetrieveSubmitted = false;
   isUndoSubmitted = false;
@@ -39,6 +41,14 @@ export class UndoCheque {
   undo = { remark: '' };
   fullchequeBody = { chequeNo: '' };
   isSubmitted = false;
+
+  get isUndoAllowed(): boolean {
+    return this.menuAccessService.currentPermission().fullAccess;
+  }
+
+  ngOnInit() {
+    this.menuAccessService.checkPermissionForUrl(this.router.url);
+  }
 
   retrieveCheque(retrieveForm: NgForm): void {
     this.isRetrieveSubmitted = true;

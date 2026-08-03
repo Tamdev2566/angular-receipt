@@ -1,8 +1,12 @@
 <div class="user-management-flat-wrapper animate-fade-in">
-  <!-- Header — identical pattern to group-mgt-list -->
   <div class="page-header-section mt-3">
     <h4 class="text-header-title m-0 fw-bold">Receipt System</h4>
-    <button class="btn btn-flat-action-primary" (click)="onCreateClick()">
+    <button
+      class="btn btn-flat-action-primary"
+      [disabled]="!isCreateAllowed"
+      [class.disabled-btn]="!isCreateAllowed"
+      (click)="onCreateClick()"
+    >
       <i class="fa-solid fa-plus small"></i> Create
     </button>
   </div>

@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/userService/user.service';
 import { ApiService } from '../../services/api.service';
 import { AlertService } from '../../services/alertService/alert';
+import { MenuAccessService } from '../../services/menu-access';
 
 @Component({
   selector: 'app-cheque-reader-info',
@@ -13,7 +14,7 @@ import { AlertService } from '../../services/alertService/alert';
   templateUrl: './cheque-reader-info.html',
   styleUrls: ['./cheque-reader-info.scss'],
 })
-export class ChequeReaderInfo {
+export class ChequeReaderInfo implements OnInit {
   constructor(
     private router: Router,
     private userService: UserService,
@@ -33,6 +34,16 @@ export class ChequeReaderInfo {
 
   errors: { [key: string]: boolean } = {};
   isSubmitted = false;
+
+  private menuAccessService = inject(MenuAccessService);
+
+  get isSaveAllowed(): boolean {
+    return this.menuAccessService.currentPermission().fullAccess;
+  }
+
+  ngOnInit() {
+    this.menuAccessService.checkPermissionForUrl(this.router.url);
+  }
 
   validateFullCheque(): void {
     if (this.formData.fullCheque?.trim()) {

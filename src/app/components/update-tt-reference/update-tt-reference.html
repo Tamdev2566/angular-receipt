@@ -5,7 +5,12 @@
     <h4 class="text-white m-0 fw-bold">Update TT Reference</h4>
 
     <div class="d-flex justify-content-between gap-3">
-      <button class="btn btn-flat-action-primary" (click)="onUpdate()">
+      <button
+        class="btn btn-flat-action-primary"
+        (click)="onUpdate()"
+        [disabled]="!isUpdateAllowed"
+        [class.disabled-btn]="!isUpdateAllowed"
+      >
         <i class="fa-solid fa-floppy-disk me-1"></i>
         Update
       </button>
@@ -40,7 +45,12 @@
         </div>
 
         <div class="col-md-2 d-flex align-items-end">
-          <button class="btn btn-flat-action-primary-fill" (click)="retrieveTTReference()">
+          <button
+            class="btn btn-flat-action-primary-fill"
+            (click)="retrieveTTReference()"
+            [disabled]="!isUpdateAllowed"
+            [class.disabled-btn]="!isUpdateAllowed"
+          >
             Retrieve
           </button>
         </div>

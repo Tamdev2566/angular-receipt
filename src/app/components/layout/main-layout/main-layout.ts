@@ -1,11 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { AlertService } from '../../../services/alertService/alert';
 import { ModuleService } from '../../../services/module-service/module-service';
 import { Navbar } from '../navbar/navbar';
 import { Sidebar } from '../sidebar/sidebar';
+import { ApiService } from '../../../services/api.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environment/environment';
 
 @Component({
   selector: 'app-main-layout',
@@ -14,12 +18,9 @@ import { Sidebar } from '../sidebar/sidebar';
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',
 })
-export class MainLayout {
-  constructor(
-    private router: Router,
-    private alertService: AlertService,
-    public stateService: ModuleService,
-  ) {}
+export class MainLayout implements OnInit, OnDestroy {
+  private http = inject(HttpClient);
+  baseUrl = environment.loginURL;
 
   isGlobalLoading: boolean = false;
   isSidebarOpen: boolean = false;
@@ -27,29 +28,72 @@ export class MainLayout {
   modalOpen = false;
   private sub: Subscription = new Subscription();
 
-  ngOnInit() {
+  constructor(
+    private router: Router,
+    private alertService: AlertService,
+    public stateService: ModuleService,
+    private api: ApiService,
+  ) {}
+
+  ngOnInit(): void {
     this.sub = this.stateService.modalState$.subscribe((state) => {
       this.modalOpen = state;
     });
+
+    const locationListStr = localStorage.getItem('locationList');
+    if (locationListStr) {
+      try {
+        const locationList = JSON.parse(locationListStr);
+        const userLocationId = locationList[0]?.usersLocationId;
+        if (userLocationId) {
+          this.stateService.fetchUserMenus(userLocationId).subscribe();
+        }
+      } catch (e) {
+        console.error('Error reading location info from localStorage', e);
+      }
+    }
   }
 
-  ngOnDestroy() {
-    this.sub.unsubscribe();
+  ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
-  toggleSidebar() {
+  toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
-  handleGlobalLogout() {
+  handleGlobalLogout(): void {
     this.isGlobalLoading = true;
 
-    setTimeout(() => {
-      this.isGlobalLoading = false;
-      localStorage.removeItem('angular_token');
-      localStorage.removeItem('user');
-      this.router.navigate(['/login']);
-      this.alertService.showAlert('Success', 'You have been Logged Out Successfully!', 'success');
-    }, 1000);
+    this.http
+      .post(`${this.baseUrl}/api/logout`, {})
+      .pipe(
+        finalize(() => {
+          this.isGlobalLoading = false;
+          this.clearSessionAndRedirect();
+        }),
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.alertService.showAlert('Success', response.message, 'success');
+        },
+        error: (err) => {
+          this.alertService.showAlert('Error', err.error.message, 'error');
+        },
+      });
+  }
+
+  private clearSessionAndRedirect(): void {
+    localStorage.removeItem('angular_token');
+    localStorage.removeItem('token_expire');
+    localStorage.removeItem('user');
+    localStorage.removeItem('passwordExpired');
+    localStorage.removeItem('defaultLocation');
+    localStorage.removeItem('locationList');
+
+    this.router.navigate(['/login']);
+    // this.alertService.showAlert('Success', 'You have been Logged Out Successfully!', 'success');
   }
 }

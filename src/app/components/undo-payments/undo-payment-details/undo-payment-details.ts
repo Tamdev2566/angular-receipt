@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { UserService } from '../../../services/userService/user.service';
@@ -8,6 +8,7 @@ import { finalize } from 'rxjs';
 import { AlertService } from '../../../services/alertService/alert';
 import { Router } from '@angular/router';
 import { UndoPaymentService } from '../undopayment-service';
+import { MenuAccessService } from '../../../services/menu-access';
 
 @Component({
   selector: 'app-undo-receipt',
@@ -16,7 +17,7 @@ import { UndoPaymentService } from '../undopayment-service';
   templateUrl: './undo-payment-details.html',
   styleUrl: './undo-payment-details.scss',
 })
-export class UndoPaymentDetails {
+export class UndoPaymentDetails implements OnInit {
   paginatedRecords: any[] = [];
   selectedRecord: any = null;
   selectedRecords: any[] = [];
@@ -35,11 +36,8 @@ export class UndoPaymentDetails {
   };
 
   receiptGrid: any[] = [];
-
   invoiceGrid: any[] = [];
-
   outstandingGrid: any[] = [];
-
   recordData = input<any>();
 
   receiptColumns: ColumnDef[] = [
@@ -71,6 +69,12 @@ export class UndoPaymentDetails {
     { label: 'Amount', field: 'amount', width: '130px' },
   ];
 
+  private menuAccessService = inject(MenuAccessService);
+
+  get isUndoAllowed(): boolean {
+    return this.menuAccessService.currentPermission().fullAccess;
+  }
+
   constructor(
     private userService: UserService,
     private apiService: ApiService,
@@ -79,7 +83,9 @@ export class UndoPaymentDetails {
     private undoService: UndoPaymentService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.menuAccessService.checkPermissionForUrl(this.router.url);
+  }
 
   // onRowSelect(record: any): void {
   //   if (record) {

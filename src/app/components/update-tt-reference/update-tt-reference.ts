@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../services/alertService/alert';
 import { UserService } from '../../services/userService/user.service';
 import { TtReferene } from './service/tt-referene';
+import { Router } from '@angular/router';
+import { MenuAccessService } from '../../services/menu-access';
 
 @Component({
   selector: 'app-update-tt-reference',
@@ -12,11 +14,12 @@ import { TtReferene } from './service/tt-referene';
   templateUrl: './update-tt-reference.html',
   styleUrls: ['./update-tt-reference.scss'],
 })
-export class UpdateTtReference {
+export class UpdateTtReference implements OnInit {
   constructor(
     private alert: AlertService,
     private ttrefService: TtReferene,
     private user: UserService,
+    private router: Router,
   ) {}
 
   retrieve = {
@@ -32,12 +35,19 @@ export class UpdateTtReference {
     paid_invoice_total: '',
   };
 
-  update = {
-    newTTRefNo: '',
-    remark: '',
-  };
+  update = { newTTRefNo: '', remark: '' };
 
   loading = false;
+
+  private menuAccessService = inject(MenuAccessService);
+
+  get isUpdateAllowed(): boolean {
+    return this.menuAccessService.currentPermission().fullAccess;
+  }
+
+  ngOnInit() {
+    this.menuAccessService.checkPermissionForUrl(this.router.url);
+  }
 
   retrieveTTReference(): void {
     if (!this.retrieve.ttRefNo.trim()) {

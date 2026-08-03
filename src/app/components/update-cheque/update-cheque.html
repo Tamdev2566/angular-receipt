@@ -2,7 +2,12 @@
   <div class="page-header-section receipt-header mt-3">
     <h4 class="text-white m-0 fw-bold">Update Cheque</h4>
     <div class="d-flex justify-content-between gap-3">
-      <button class="btn btn-flat-action-primary" (click)="updateCheque()">
+      <button
+        class="btn btn-flat-action-primary"
+        (click)="updateCheque()"
+        [disabled]="!isUpdateAllowed"
+        [class.disabled-btn]="!isUpdateAllowed"
+      >
         <i class="fa-solid fa-floppy-disk me-1"></i>
         Update
       </button>
@@ -45,7 +50,12 @@
           </div>
 
           <div class="retrieve-btn-wrapper">
-            <button class="btn btn-flat-action-primary-fill" (click)="retrieveCheque()">
+            <button
+              class="btn btn-flat-action-primary-fill"
+              (click)="retrieveCheque()"
+              [disabled]="!isUpdateAllowed"
+              [class.disabled-btn]="!isUpdateAllowed"
+            >
               Retrieve
             </button>
           </div>

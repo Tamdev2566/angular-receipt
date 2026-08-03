@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -11,6 +11,7 @@ import { SummaryCard } from '../../../shared/summary-card/summary-card';
 import { Wrapper } from '../../../shared/wrapper/wrapper';
 import { RemoveInvoiceDetails } from '../../remove-invoice/remove-invoice-details/remove-invoice-details';
 import { UndoPaymentDetails } from '../../undo-payments/undo-payment-details/undo-payment-details';
+import { MenuAccessService } from '../../../services/menu-access';
 
 interface Receipt {
   transactionNo?: string;
@@ -49,25 +50,21 @@ interface ReceiptResponse {
   templateUrl: './receipts.html',
   styleUrls: ['./receipts.scss'],
 })
-export class ReceiptComponent {
+export class ReceiptComponent implements OnInit {
   undoReceipt = UndoPaymentDetails;
   removeReceipt = RemoveInvoiceDetails;
 
   showUndoModal = false;
-
   showRemoveModal = false;
 
   selectedRecord: any = null;
-
   toastMessage: string | null = null;
-
   searchQuery = '';
-
   filteredReceipts: Receipt[] = [];
-
   receipts: Receipt[] = [];
-
   loading = false;
+
+  private menuAccessService = inject(MenuAccessService);
 
   constructor(
     private router: Router,
@@ -76,7 +73,12 @@ export class ReceiptComponent {
     private cdr: ChangeDetectorRef,
   ) {}
 
+  get isCreateAllowed(): boolean {
+    return this.menuAccessService.currentPermission().fullAccess;
+  }
+
   ngOnInit() {
+    this.menuAccessService.checkPermissionForUrl(this.router.url);
     this.loadReceipts();
   }
 
@@ -104,10 +106,12 @@ export class ReceiptComponent {
   }
 
   onCreateClick() {
+    if (!this.isCreateAllowed) return;
     this.router.navigate(['/main/new-receipt']);
   }
 
   onUpdateClick() {
+    if (!this.isCreateAllowed) return;
     this.router.navigate(['/main/new-receipt']);
   }
 
