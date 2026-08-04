@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Combobox } from '../../shared/combobox/combobox';
-import { ReportService } from '../../services/reportService/report-service';
-import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
 import { AlertService } from '../../services/alertService/alert';
+import { MenuAccessService } from '../../services/menu-access';
+import { ReportService } from '../../services/reportService/report-service';
+import { Combobox } from '../../shared/combobox/combobox';
+import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
 
 @Component({
   selector: 'app-aging-report',
@@ -19,6 +20,7 @@ export class AgingReport {
     private router: Router,
     private apiservice: ReportService,
     private alert: AlertService,
+    private menuAccessService: MenuAccessService,
   ) {}
 
   loading = false;
@@ -47,6 +49,14 @@ export class AgingReport {
     { label: 'User Id', field: 'userId', align: 'center', width: '90px' },
     { label: 'Action Date', field: 'actionDateString', width: '140px' },
   ];
+
+  get isAllowed(): boolean {
+    return this.menuAccessService.currentPermission().fullAccess;
+  }
+
+  ngOnInit() {
+    this.menuAccessService.checkPermissionForUrl(this.router.url);
+  }
 
   onAgingChange(value: any, item: any): void {
     this.formData.agingDays = value;

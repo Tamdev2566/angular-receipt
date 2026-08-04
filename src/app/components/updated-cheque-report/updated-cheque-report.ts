@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { DatepickerComponent } from '../../shared/date-picker/date-picker';
+import { AlertService } from '../../services/alertService/alert';
+import { MenuAccessService } from '../../services/menu-access';
 import { ReportService } from '../../services/reportService/report-service';
 import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
-import { AlertService } from '../../services/alertService/alert';
+import { DatepickerComponent } from '../../shared/date-picker/date-picker';
 
 @Component({
   selector: 'app-updated-cheque-report',
@@ -19,6 +20,8 @@ export class UpdatedChequeReport {
   constructor(
     private alert: AlertService,
     private apiservice: ReportService,
+    private menuAccessService: MenuAccessService,
+    private router: Router,
   ) {
     const today = new Date();
     const day = String(today.getDate()).padStart(2, '0');
@@ -47,6 +50,14 @@ export class UpdatedChequeReport {
     { label: 'Action Date', field: 'actionDate', width: '140px' },
     { label: 'Reason', field: 'reason', width: '140px' },
   ];
+
+  get isAllowed(): boolean {
+    return this.menuAccessService.currentPermission().fullAccess;
+  }
+
+  ngOnInit() {
+    this.menuAccessService.checkPermissionForUrl(this.router.url);
+  }
 
   private formatForApi(dateStr: string): string {
     if (!dateStr || !dateStr.includes('/')) return dateStr;

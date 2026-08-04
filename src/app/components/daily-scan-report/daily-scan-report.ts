@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
+import { HttpParams } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DatepickerComponent } from '../../shared/date-picker/date-picker';
-import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
+import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
-import { HttpParams } from '@angular/common/http';
+import { MenuAccessService } from '../../services/menu-access';
+import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
+import { DatepickerComponent } from '../../shared/date-picker/date-picker';
 
 @Component({
   selector: 'app-cheque-reader-report',
@@ -30,6 +32,8 @@ export class DailyScanReport {
   ];
 
   private apiService = inject(ApiService);
+  private menuAccessService = inject(MenuAccessService);
+  private router = inject(Router);
 
   constructor() {
     const today = new Date();
@@ -42,6 +46,14 @@ export class DailyScanReport {
     this.formData.fromDate = formattedToday;
     this.formData.toDate = formattedToday;
     this.formattedFromToDate = formattedToday;
+  }
+
+  get isAllowed(): boolean {
+    return this.menuAccessService.currentPermission().fullAccess;
+  }
+
+  ngOnInit() {
+    this.menuAccessService.checkPermissionForUrl(this.router.url);
   }
 
   private formatForApi(dateStr: string): string {

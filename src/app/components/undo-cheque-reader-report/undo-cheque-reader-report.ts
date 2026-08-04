@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DatepickerComponent } from '../../shared/date-picker/date-picker';
 import { Router } from '@angular/router';
-import { ApiService } from '../../services/api.service';
+import { AlertService } from '../../services/alertService/alert';
+import { MenuAccessService } from '../../services/menu-access';
 import { ReportService } from '../../services/reportService/report-service';
 import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
-import { AlertService } from '../../services/alertService/alert';
+import { DatepickerComponent } from '../../shared/date-picker/date-picker';
 
 @Component({
   selector: 'app-undo-cheque-reader-report',
@@ -32,6 +32,7 @@ export class UndoChequeReaderReport {
     private router: Router,
     private apiservice: ReportService,
     private alert: AlertService,
+    private menuAccessService: MenuAccessService,
   ) {
     const today = new Date();
     const day = String(today.getDate()).padStart(2, '0');
@@ -43,6 +44,13 @@ export class UndoChequeReaderReport {
     this.reportForm.fromDate = formattedToday;
     this.reportForm.toDate = formattedToday;
     this.formattedFromToDate = formattedToday;
+  }
+  get isAllowed(): boolean {
+    return this.menuAccessService.currentPermission().fullAccess;
+  }
+
+  ngOnInit() {
+    this.menuAccessService.checkPermissionForUrl(this.router.url);
   }
 
   private formatForApi(dateStr: string): string {

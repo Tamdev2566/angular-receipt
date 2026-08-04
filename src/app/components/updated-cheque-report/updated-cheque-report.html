@@ -5,7 +5,12 @@
     <h4 class="text-white m-0 fw-bold">Updated Cheque Report</h4>
 
     <div class="d-flex justify-content-between gap-3">
-      <button class="btn btn-flat-action-primary" (click)="onGenerate()">
+      <button
+        class="btn btn-flat-action-primary"
+        (click)="onGenerate()"
+        [disabled]="!isAllowed"
+        [class.disabled-btn]="!isAllowed"
+      >
         <i class="bi bi-clipboard2-data-fill"></i>
         Generate Report
       </button>

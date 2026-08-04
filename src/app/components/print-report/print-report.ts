@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DatepickerComponent } from '../../shared/date-picker/date-picker';
-import { Combobox } from '../../shared/combobox/combobox';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ReceiptItem, reportPrint } from '../../report-template/reportPrint';
-import { HtmlViewer } from '../../shared/html-viewer/html-viewer';
 import { ApiService } from '../../services/api.service';
-import { animationFrameProvider } from 'rxjs/internal/scheduler/animationFrameProvider';
+import { MenuAccessService } from '../../services/menu-access';
+import { Combobox } from '../../shared/combobox/combobox';
+import { DatepickerComponent } from '../../shared/date-picker/date-picker';
+import { HtmlViewer } from '../../shared/html-viewer/html-viewer';
 
 @Component({
   selector: 'app-print-report',
@@ -42,10 +43,19 @@ export class PrintReport implements OnInit {
   htmlTemplate: string = '';
   isModalOpen: boolean = false;
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private menuAccessService: MenuAccessService,
+    private router: Router,
+  ) {}
+
+  get isAllowed(): boolean {
+    return this.menuAccessService.currentPermission().fullAccess;
+  }
 
   ngOnInit(): void {
     this.setCurrentDate();
+    this.menuAccessService.checkPermissionForUrl(this.router.url);
   }
 
   private setCurrentDate(): void {
