@@ -38,7 +38,7 @@ export class LoginPage {
   ) {}
 
   ngOnInit() {
-    const token = localStorage.getItem('angular_token');
+    const token = localStorage.getItem('receipt_token');
     if (token) {
       this.router.navigate(['/main']);
     }
@@ -91,8 +91,8 @@ export class LoginPage {
       )
       .subscribe({
         next: (res: any) => {
-          localStorage.setItem('angular_token', res.token);
-          localStorage.setItem('token_expire', res.expire);
+          localStorage.setItem('receipt_token', res.token);
+          localStorage.setItem('receipt_token_expire', res.expire);
 
           this.authService.getUserInfo().subscribe({
             next: (userInfo: any) => {

@@ -16,6 +16,9 @@ export interface MenuItem {
   hasSubmenu: boolean;
   isExpanded?: boolean;
   submodules?: SubMenu[];
+  menuId?: string;
+  menuName?: string;
+  menuLink?: string;
 }
 
 export interface ApiMenuItem {

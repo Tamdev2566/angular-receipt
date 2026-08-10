@@ -86,8 +86,8 @@ export class MainLayout implements OnInit, OnDestroy {
   }
 
   private clearSessionAndRedirect(): void {
-    localStorage.removeItem('angular_token');
-    localStorage.removeItem('token_expire');
+    localStorage.removeItem('receipt_token');
+    localStorage.removeItem('receipt_token_expire');
     localStorage.removeItem('user');
     localStorage.removeItem('passwordExpired');
     localStorage.removeItem('defaultLocation');

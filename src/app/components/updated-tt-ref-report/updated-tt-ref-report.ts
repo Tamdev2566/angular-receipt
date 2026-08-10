@@ -91,6 +91,8 @@ export class UpdatedTtRefReport {
       .downloadReport('api/reports/updated-tt/download', fromDateApi, toDateApi)
       .subscribe({
         next: (res: Blob) => {
+          console.log(res, 'res');
+
           this.apiservice.exportToExcel(res, 'UpdateTTRefReoprt', fromDateApi, toDateApi);
         },
         error: (error: any) => {

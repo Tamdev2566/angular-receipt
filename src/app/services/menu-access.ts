@@ -10,8 +10,12 @@ export interface MenuItem {
   menuIconString: string;
   menuOrder: number;
   mandatory: string;
-  fullAccess: number | string;
-  canRead: number | string;
+  fullAccess: number | string | boolean;
+  canRead: number | string | boolean;
+  submodules?: MenuItem[];
+  modules?: MenuItem[];
+  groups?: MenuItem[];
+  menus?: MenuItem[];
 }
 
 @Injectable({
@@ -57,8 +61,12 @@ export class MenuAccessService {
     if (!list || list.length === 0) {
       const stored = localStorage.getItem('app_user_menus');
       if (stored) {
-        list = JSON.parse(stored);
-        this.menuList.set(list);
+        try {
+          list = JSON.parse(stored);
+          this.menuList.set(list);
+        } catch (e) {
+          list = [];
+        }
       }
     }
 
@@ -68,29 +76,64 @@ export class MenuAccessService {
       return;
     }
 
+    const flatList = this.getAllMenusRecursive(list);
     let cleanUrl = currentUrl.split('?')[0].split('#')[0].toLowerCase().trim();
     if (!cleanUrl.startsWith('/')) {
       cleanUrl = '/' + cleanUrl;
     }
 
-    const matchedMenu = list.find((item) => {
-      if (!item.menuLink || item.menuLink === '-') return false;
+    const matchedMenu = flatList.find((item) => {
+      if (!item || !item.menuLink || item.menuLink === '-') return false;
 
       let itemLink = item.menuLink.toLowerCase().trim();
       if (!itemLink.startsWith('/')) {
         itemLink = '/' + itemLink;
       }
 
-      return cleanUrl === itemLink || cleanUrl.startsWith(itemLink + '/');
+      const isExactMatch = cleanUrl === itemLink;
+      const isParentRouteMatch = cleanUrl.startsWith(itemLink + '/');
+      const isChildRouteMatch = itemLink.startsWith(cleanUrl) && cleanUrl !== '/main';
+
+      return isExactMatch || isParentRouteMatch || isChildRouteMatch;
     });
 
     if (matchedMenu) {
-      const hasFullAccess = Number(matchedMenu.fullAccess) === 1;
-      const hasCanRead = Number(matchedMenu.canRead) === 1;
+      const hasFullAccess = this.parseBooleanValue(matchedMenu.fullAccess);
+      const hasCanRead = this.parseBooleanValue(matchedMenu.canRead);
+
       this.activePermissionSet(hasFullAccess, hasCanRead);
     } else {
+      console.warn('No menu match found for URL:', cleanUrl);
       this.activePermissionSet(false, false);
     }
+  }
+
+  private getAllMenusRecursive(items: any[]): MenuItem[] {
+    let menus: MenuItem[] = [];
+    if (!Array.isArray(items)) return menus;
+
+    items.forEach((item) => {
+      if (item && item.menuLink) {
+        menus.push(item);
+      }
+
+      const children =
+        item.submodules || item.menus || item.modules || item.groups || item.children;
+      if (Array.isArray(children) && children.length > 0) {
+        menus = menus.concat(this.getAllMenusRecursive(children));
+      }
+    });
+
+    return menus;
+  }
+
+  private parseBooleanValue(val: any): boolean {
+    if (val === null || val === undefined) return false;
+    if (typeof val === 'boolean') return val;
+    if (typeof val === 'number') return val === 1;
+
+    const strVal = String(val).trim().toUpperCase();
+    return strVal === '1' || strVal === 'Y' || strVal === 'TRUE' || strVal === 'YES';
   }
 
   private activePermissionSet(fullAccess: boolean, canRead: boolean = false) {

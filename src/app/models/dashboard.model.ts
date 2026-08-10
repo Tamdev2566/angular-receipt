@@ -29,11 +29,9 @@ export interface UserSession {
 }
 
 export interface DashboardData {
-  kpis: {
-    today: KpiStat[];
-    monthly: KpiStat[];
-    yearly: KpiStat[];
-  };
-  recentReceipts: ReceiptActivity[];
-  userSessions: UserSession[];
+  kpis: Record<string, any[]>;
+  recentReceipts: any[];
+  userSessions: any[];
+  trends?: Record<string, { data: number[]; labels: string[] }>;
+  statusDistribution?: number[];
 }

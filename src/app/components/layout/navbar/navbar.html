@@ -138,12 +138,12 @@
       >
         <div class="text-end d-none d-sm-flex flex-column justify-content-center me-1">
           <span class="m-0 lh-1 fw-semibold" style="font-size: 0.85rem; color: #1f2937">
-            {{ user.email }}</span
+            {{ user?.email }}</span
           >
           <span
             class="m-0 lh-1 mt-1"
             style="font-size: 0.72rem; color: #9ca3af; font-weight: 500"
-            >{{ user.userLocation }}</span
+            >{{ user?.userLocation }}</span
           >
         </div>
 
@@ -158,7 +158,7 @@
               letter-spacing: 0.5px;
             "
           >
-            {{ user.userInitial }}
+            {{ user?.userInitial }}
           </div>
           <span
             class="position-absolute rounded-circle"
@@ -195,11 +195,11 @@
               letter-spacing: 0.5px;
             "
           >
-            {{ user.userInitial }}
+            {{ user?.userInitial }}
           </div>
           <div class="d-flex flex-column lh-sm">
             <span class="fw-bold text-body text-capitalize" style="font-size: 1rem">
-              {{ user.name }}
+              {{ user?.name }}
             </span>
             <span
               class="text-body-secondary fw-semibold mt-1"
@@ -215,23 +215,13 @@
         <div class="p-2 d-flex flex-column gap-1">
           <a
             href="javascript:void(0)"
-            (click)="onAccountSettings()"
+            (click)="onChangeLocation()"
             class="d-flex align-items-center gap-3 px-3 py-2 text-decoration-none rounded text-body-secondary custom-menu-item"
             style="font-size: 0.9rem; font-weight: 500"
           >
             <i class="fa-solid fa-pen-to-square" style="width: 16px"></i>
             <span>Change Location</span>
           </a>
-
-          <!-- <a
-            href="javascript:void(0)"
-            (click)="onChangePassword()"
-            class="d-flex align-items-center gap-3 px-3 py-2 text-decoration-none rounded text-body-secondary custom-menu-item"
-            style="font-size: 0.9rem; font-weight: 500"
-          >
-            <i class="fa-solid fa-key text-body-secondary" style="width: 16px"></i>
-            <span>Change Password</span>
-          </a> -->
         </div>
 
         <hr class="border-secondary-subtle my-0 opacity-25" />
@@ -258,3 +248,71 @@
   (closeModal)="showPasswordModal = false"
   (passwordChanged)="onPasswordUpdatedSuccessfully($event)"
 ></app-change-password>
+
+<div
+  *ngIf="showLocationModal"
+  class="modal fade show d-block"
+  tabindex="-1"
+  style="background-color: rgba(0, 0, 0, 0.5); z-index: 1060"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+      <div class="modal-header border-0 pb-0 pt-4 px-4">
+        <div class="d-flex align-items-center gap-3">
+          <div
+            class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+            style="width: 42px; height: 42px; background: rgba(51, 112, 143, 0.12)"
+          >
+            <i class="fa-solid fa-location-dot" style="color: #33708f; font-size: 1.1rem"></i>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bold text-dark m-0" style="font-size: 1.15rem">
+              Change Location
+            </h5>
+            <small class="text-muted">Select your location to switch</small>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="closeLocationModal()"
+        ></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <app-combobox
+          [label]="'LOCATION LIST'"
+          [data]="locationsList"
+          [displayExpr]="'locationName'"
+          [valueExpr]="'usersLocationId'"
+          [value]="selectedLocationId"
+          [searchFromApi]="false"
+          [required]="true"
+          [extraProp]="{ placeholder: 'Select Location' }"
+          (selectionChange)="onLocationComboboxChange($event)"
+        ></app-combobox>
+      </div>
+
+      <div class="modal-footer border-0 pt-0 px-4 pb-4">
+        <button
+          type="button"
+          class="btn btn-light fw-medium rounded-3 px-4 py-2"
+          (click)="closeLocationModal()"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="btn text-white fw-medium rounded-3 px-4 py-2 shadow-sm"
+          style="background-color: #33708f"
+          [disabled]="!selectedLocationId"
+          (click)="onSaveLocation()"
+        >
+          Update Location
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

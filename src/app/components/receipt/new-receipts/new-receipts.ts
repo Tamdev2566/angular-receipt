@@ -309,6 +309,16 @@ export class NewReceiptComponent implements OnInit {
     });
   }
 
+  onClearClick(): void {
+    this.searchModel = {
+      invoiceNo: '',
+      blNo: '',
+      vesselId: null,
+      voyageId: null,
+      customerName: '',
+    };
+  }
+
   private handleApiResponse(res: any): void {
     const invoices = res.invoices || [];
     const outstandings = res.outstandings || [];

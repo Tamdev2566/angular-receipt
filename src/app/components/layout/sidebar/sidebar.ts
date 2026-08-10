@@ -22,8 +22,14 @@ export class Sidebar implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.menuSubscription = this.modulesService.menuList$.subscribe({
       next: (menus: MenuItem[]) => {
-        console.log('Sidebar received updated menus from API:', menus);
-        this.appMenus = menus;
+        if (menus) {
+          this.appMenus = menus.filter(
+            (item) => item.link !== '/main/welcome' && item.title?.toLowerCase() !== 'home',
+          );
+        } else {
+          this.appMenus = [];
+        }
+
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Error receiving menu stream in sidebar', err),
