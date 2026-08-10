@@ -74,10 +74,14 @@
     </div>
     <!-- Footer -->
 
-    <!-- <div class="summary-actions">
-      <button class="btn-undo" (click)="undo.emit(item)">Undo Payment</button>
-      <button class="btn-remove" (click)="remove.emit(item)">Remove Invoice</button>
-    </div> -->
+    <div class="summary-actions">
+      @if (item.availableAction === 'UNDO_PAYMENT') {
+        <button class="btn-undo" (click)="undo.emit(item)">Undo Payment</button>
+      }
+      @if (item.availableAction === 'POSTED_TO_CODA') {
+        <button class="btn-remove" (click)="remove.emit(item)">Remove Invoice</button>
+      }
+    </div>
   </div>
 </div>
 

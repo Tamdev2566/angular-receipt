@@ -155,28 +155,18 @@
 
 .summary-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  //   padding-top: 14px;
-  //   border-top: 1px solid #f1f5f9;
+  grid-template-columns: 1fr;
 }
 
 .btn-undo {
+  border: 1px solid #e2e8f0;
   background: #fff;
-
-  border: 1px solid #d1d5db;
-
-  color: #111827;
-
   border-radius: 8px;
-
+  padding: 10px;
   font-size: 10px;
-
   font-weight: 700;
-
   text-transform: uppercase;
-
-  transition: all 0.25s ease;
+  transition: 0.2s;
 }
 
 .btn-undo:hover {

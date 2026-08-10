@@ -6,12 +6,13 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import * as XLSX from 'xlsx-js-style';
 import { ApiService } from '../../../services/api.service';
+import { MenuAccessService } from '../../../services/menu-access';
 import { ModuleService } from '../../../services/module-service/module-service';
+import { UndoService } from '../../../services/undoServices/undo-service';
 import { SummaryCard } from '../../../shared/summary-card/summary-card';
 import { Wrapper } from '../../../shared/wrapper/wrapper';
 import { RemoveInvoiceDetails } from '../../remove-invoice/remove-invoice-details/remove-invoice-details';
 import { UndoPaymentDetails } from '../../undo-payments/undo-payment-details/undo-payment-details';
-import { MenuAccessService } from '../../../services/menu-access';
 
 interface Receipt {
   transactionNo?: string;
@@ -71,6 +72,7 @@ export class ReceiptComponent implements OnInit {
     private stateService: ModuleService,
     private apiService: ApiService,
     private cdr: ChangeDetectorRef,
+    private undoService: UndoService,
   ) {}
 
   get isCreateAllowed(): boolean {
@@ -185,12 +187,14 @@ export class ReceiptComponent implements OnInit {
     this.selectedRecord = item;
     this.showUndoModal = true;
     this.stateService.setModalState(true);
+    this.undoService.setInvoice(item);
   }
 
   openRemoveModal(item: any) {
     this.selectedRecord = item;
     this.showRemoveModal = true;
     this.stateService.setModalState(true);
+    this.undoService.setRemoveInvoice(item);
   }
 
   closeModal() {

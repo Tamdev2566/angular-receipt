@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
-import { UserService } from '../../../services/userService/user.service';
-import { ApiService } from '../../../services/api.service';
-import { finalize } from 'rxjs';
-import { AlertService } from '../../../services/alertService/alert';
 import { Router } from '@angular/router';
-import { UndoPaymentService } from '../undopayment-service';
+import { AlertService } from '../../../services/alertService/alert';
+import { ApiService } from '../../../services/api.service';
 import { MenuAccessService } from '../../../services/menu-access';
+import { UndoService } from '../../../services/undoServices/undo-service';
+import { UserService } from '../../../services/userService/user.service';
+import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
+import { UndoPaymentService } from '../undopayment-service';
 
 @Component({
   selector: 'app-undo-receipt',
@@ -81,9 +81,17 @@ export class UndoPaymentDetails implements OnInit {
     private alertService: AlertService,
     private router: Router,
     private undoService: UndoPaymentService,
+    private undogGlobalService: UndoService,
   ) {}
 
   ngOnInit(): void {
+    const invoiceData = this.undogGlobalService.getInvoice();
+
+    if (invoiceData?.['transactionNo']) {
+      this.retrieve.invoiceNo = invoiceData?.['transactionNo'];
+      this.retrieveReceipt(invoiceData['transactionNo']);
+    }
+
     this.menuAccessService.checkPermissionForUrl(this.router.url);
   }
 
@@ -99,9 +107,13 @@ export class UndoPaymentDetails implements OnInit {
     this.selectedRecords = this.receiptGrid.filter((row) => row.isSelected);
   }
 
-  retrieveReceipt(): void {
+  retrieveReceipt(invoiceNo: string): void {
     this.undoService
-      .retrieveRecords(this.retrieve.invoiceNo, this.retrieve.blNo, this.retrieve.chequeNo)
+      .retrieveRecords(
+        this.retrieve.invoiceNo || invoiceNo,
+        this.retrieve.blNo,
+        this.retrieve.chequeNo,
+      )
       .subscribe({
         next: (res: any) => {
           if (res) {

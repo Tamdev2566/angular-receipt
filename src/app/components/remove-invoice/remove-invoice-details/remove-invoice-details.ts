@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AlertService } from '../../../services/alertService/alert';
+import { MenuAccessService } from '../../../services/menu-access';
+import { UndoService } from '../../../services/undoServices/undo-service';
 import { UserService } from '../../../services/userService/user.service';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { RemoveInvoiceService } from '../service/remove-invoice-service';
-import { MenuAccessService } from '../../../services/menu-access';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-remove-invoice-details',
@@ -47,6 +48,7 @@ export class RemoveInvoiceDetails implements OnInit {
     private userService: UserService,
     private alertService: AlertService,
     private invoiceService: RemoveInvoiceService,
+    private undogGlobalService: UndoService,
   ) {}
 
   get isCreateAllowed(): boolean {
@@ -54,6 +56,21 @@ export class RemoveInvoiceDetails implements OnInit {
   }
 
   ngOnInit() {
+    const invoiceData = this.undogGlobalService.getRemoveInvoice();
+    if (invoiceData) {
+      this.retrieve.customerName = invoiceData?.['customer_name'];
+      this.retrieve.vesselName = invoiceData?.['vessel_name'];
+      this.retrieve.voyageNo = invoiceData?.['voyage_no'];
+      this.invoiceService
+        .searchInvoices(
+          invoiceData?.['customer_name'],
+          invoiceData?.['vessel_name'],
+          invoiceData?.['voyage_no'],
+        )
+        .subscribe((res) => {
+          this.invoiceGrid = res;
+        });
+    }
     this.menuAccessService.checkPermissionForUrl(this.router.url);
   }
 
