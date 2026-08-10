@@ -104,31 +104,55 @@
           </div>
 
           <div class="col-12 col-sm-6 col-md-2">
-            <label class="form-label fw-bold custom-flat-label mb-2"> Currency: </label>
+            <label class="form-label fw-bold text-muted small text-uppercase mb-2">
+              Currency
+            </label>
 
-            <div class="d-flex align-items-center gap-3 mt-1">
-              <div class="form-check">
+            <div class="d-flex bg-white border rounded-3 p-1 shadow-sm">
+              <div class="w-50">
                 <input
-                  class="form-check-input"
                   type="radio"
+                  class="btn-check"
                   name="currency"
                   id="sgd"
                   value="SGD"
                   [(ngModel)]="formData.currency"
+                  autocomplete="off"
                 />
-                <label class="form-check-label" for="sgd">SGD</label>
+                <label
+                  class="btn btn-sm border-0 w-100 fw-semibold rounded-2"
+                  [ngStyle]="
+                    formData.currency === 'SGD'
+                      ? { 'background-color': '#306B89', color: 'white' }
+                      : { color: '#6c757d' }
+                  "
+                  for="sgd"
+                >
+                  SGD
+                </label>
               </div>
 
-              <div class="form-check">
+              <div class="w-50">
                 <input
-                  class="form-check-input"
                   type="radio"
+                  class="btn-check"
                   name="currency"
                   id="usd"
                   value="USD"
                   [(ngModel)]="formData.currency"
+                  autocomplete="off"
                 />
-                <label class="form-check-label" for="usd">USD</label>
+                <label
+                  class="btn btn-sm border-0 w-100 fw-semibold rounded-2"
+                  [ngStyle]="
+                    formData.currency === 'USD'
+                      ? { 'background-color': '#306B89', color: 'white' }
+                      : { color: '#6c757d' }
+                  "
+                  for="usd"
+                >
+                  USD
+                </label>
               </div>
             </div>
           </div>
