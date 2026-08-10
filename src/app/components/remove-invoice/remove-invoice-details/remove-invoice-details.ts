@@ -56,21 +56,24 @@ export class RemoveInvoiceDetails implements OnInit {
   }
 
   ngOnInit() {
-    const invoiceData = this.undogGlobalService.getRemoveInvoice();
-    if (invoiceData) {
-      this.retrieve.customerName = invoiceData?.['customer_name'];
-      this.retrieve.vesselName = invoiceData?.['vessel_name'];
-      this.retrieve.voyageNo = invoiceData?.['voyage_no'];
-      this.invoiceService
-        .searchInvoices(
-          invoiceData?.['customer_name'],
-          invoiceData?.['vessel_name'],
-          invoiceData?.['voyage_no'],
-        )
-        .subscribe((res) => {
-          this.invoiceGrid = res;
-        });
-    }
+    this.undogGlobalService.currentRemoveInvoice.subscribe((invoiceData) => {
+      if (invoiceData?.['customer_name']) {
+        this.retrieve.customerName = invoiceData['customer_name'];
+        this.retrieve.vesselName = invoiceData['vessel_name'];
+        this.retrieve.voyageNo = invoiceData['voyage_no'];
+
+        this.invoiceService
+          .searchInvoices(
+            this.retrieve.customerName,
+            this.retrieve.vesselName,
+            this.retrieve.voyageNo,
+          )
+          .subscribe((res) => {
+            this.invoiceGrid = res;
+          });
+      }
+    });
+
     this.menuAccessService.checkPermissionForUrl(this.router.url);
   }
 
