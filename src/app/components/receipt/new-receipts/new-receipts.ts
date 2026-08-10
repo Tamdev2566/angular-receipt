@@ -334,7 +334,7 @@ export class NewReceiptComponent implements OnInit {
     const amount = this.toNumber(this.formData.amount);
     const bankCharge = this.toNumber(this.formData.bankCharges);
     const bank = this.getAccountName();
-    const user = this.userService.getUser()?.username || 'admin';
+    const user = this.userService.getUser()?.name;
 
     if (
       !this.selectedPayment ||
