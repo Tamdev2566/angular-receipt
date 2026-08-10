@@ -107,10 +107,10 @@ export class UndoPaymentDetails implements OnInit {
     this.selectedRecords = this.receiptGrid.filter((row) => row.isSelected);
   }
 
-  retrieveReceipt(invoiceNo: string): void {
+  retrieveReceipt(invoiceNo?: string): void {
     this.undoService
       .retrieveRecords(
-        this.retrieve.invoiceNo || invoiceNo,
+        this.retrieve.invoiceNo || invoiceNo || '',
         this.retrieve.blNo,
         this.retrieve.chequeNo,
       )
