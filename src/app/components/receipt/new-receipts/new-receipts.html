@@ -121,10 +121,15 @@
                 />
                 <label
                   class="btn btn-sm border-0 w-100 fw-semibold rounded-2"
+                  style="
+                    transition:
+                      background-color 0.3s ease-in-out,
+                      color 0.3s ease-in-out;
+                  "
                   [ngStyle]="
                     formData.currency === 'SGD'
-                      ? { 'background-color': '#306B89', color: 'white' }
-                      : { color: '#6c757d' }
+                      ? { 'background-color': '#ffc107', color: '#212529' }
+                      : { 'background-color': 'transparent', color: '#6c757d' }
                   "
                   for="sgd"
                 >
@@ -144,10 +149,15 @@
                 />
                 <label
                   class="btn btn-sm border-0 w-100 fw-semibold rounded-2"
+                  style="
+                    transition:
+                      background-color 0.3s ease-in-out,
+                      color 0.3s ease-in-out;
+                  "
                   [ngStyle]="
                     formData.currency === 'USD'
-                      ? { 'background-color': '#306B89', color: 'white' }
-                      : { color: '#6c757d' }
+                      ? { 'background-color': '#dc3545', color: '#ffffff' }
+                      : { 'background-color': 'transparent', color: '#6c757d' }
                   "
                   for="usd"
                 >
@@ -196,7 +206,7 @@
         </div>
 
         <!-- Invoice No -->
-        <div class="col-md-2">
+        <div class="col-md-2 p-2">
           <label class="form-label fw-bold custom-flat-label"> Invoice No: </label>
           <input
             type="text"
@@ -207,7 +217,7 @@
           />
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-2 p-2">
           <label class="form-label fw-bold custom-flat-label"> BL No: </label>
           <input
             type="text"
@@ -218,7 +228,7 @@
           />
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-2 p-2">
           <label class="form-label fw-bold custom-flat-label"> Vessel Name: </label>
           <app-combobox
             [url]="'api/getvessel'"
@@ -232,7 +242,7 @@
           </app-combobox>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-2 p-2">
           <label class="form-label fw-bold custom-flat-label"> Customer Name: </label>
           <input
             type="text"
@@ -243,7 +253,7 @@
           />
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-2 p-2">
           <label class="form-label fw-bold custom-flat-label"> Voyage No: </label>
           <app-combobox
             [url]="'api/getvoyage'"
@@ -258,22 +268,39 @@
           >
           </app-combobox>
         </div>
+        <div class="col-md-2 p-2">
+          <div class="d-flex justify-content-center mb-3">
+            <button
+              type="button"
+              class="btn shadow-sm w-100 fw-semibold py-2 border-0"
+              style="background-color: #2d6582; color: white"
+              [disabled]="isCheckOutstandingDisabled"
+              (click)="onCheckOutstanding()"
+            >
+              <i class="bi bi-wallet2 me-2"></i> Check Outstanding
+            </button>
+          </div>
 
-        <div class="col-md-12 d-flex align-items-center justify-content-end gap-2">
-          <button
-            type="button"
-            class="btn btn-flat-action-primary-fill"
-            [disabled]="isCheckOutstandingDisabled"
-            (click)="onCheckOutstanding()"
+          <div
+            class="btn-group d-flex shadow-sm overflow-hidden w-100"
+            role="group"
+            aria-label="Search and Clear Actions"
           >
-            Check Outstanding
-          </button>
-          <button type="button" class="btn btn-flat-action-warning" (click)="onSearchClick()">
-            Search
-          </button>
-          <button type="button" class="btn btn-flat-action-danger" (click)="onClearClick()">
-            Clear
-          </button>
+            <button
+              type="button"
+              class="btn btn-warning bg-gradient fw-semibold border-0 py-2 text-dark"
+              (click)="onSearchClick()"
+            >
+              <i class="bi bi-search me-1"></i> Search
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger bg-gradient fw-semibold border-0 py-2"
+              (click)="onClearClick()"
+            >
+              <i class="bi bi-arrow-clockwise" [class.spin-icon]="isClearing"></i> Clear
+            </button>
+          </div>
         </div>
       </div>
     </div>

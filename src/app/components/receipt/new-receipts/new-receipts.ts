@@ -1,16 +1,16 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
-import { Combobox, ComboboxSelection } from '../../../shared/combobox/combobox';
-import { DatepickerComponent } from '../../../shared/date-picker/date-picker';
-import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
-import { ApiService } from '../../../services/api.service';
-import { UserService } from '../../../services/userService/user.service';
-import { OutstandingModal } from '../modals/outstanding-modal/outstanding-modal';
-import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-dialog';
 import { AlertService } from '../../../services/alertService/alert';
+import { ApiService } from '../../../services/api.service';
+import { ModuleService } from '../../../services/module-service/module-service';
+import { UserService } from '../../../services/userService/user.service';
+import { Combobox, ComboboxSelection } from '../../../shared/combobox/combobox';
+import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-dialog';
+import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
+import { DatepickerComponent } from '../../../shared/date-picker/date-picker';
+import { OutstandingModal } from '../modals/outstanding-modal/outstanding-modal';
 
 interface ReceiptInvoicePayload {
   selected: boolean;
@@ -93,6 +93,7 @@ export class NewReceiptComponent implements OnInit {
   };
 
   accounts: AccountOption[] = [];
+  isClearing: boolean = false;
 
   private readonly cashAccounts: AccountOption[] = [{ id: 'CASH', name: 'Cash' }];
   private readonly chequeAccounts: AccountOption[] = [{ id: 'CHEQUE', name: 'Cheque' }];
@@ -147,6 +148,7 @@ export class NewReceiptComponent implements OnInit {
     private apiService: ApiService,
     private alert: AlertService,
     private userService: UserService,
+    private stateService: ModuleService,
   ) {}
 
   ngOnInit() {
@@ -162,10 +164,11 @@ export class NewReceiptComponent implements OnInit {
       this.searchModel.customerName && this.searchModel.customerName.trim().length > 0
     );
 
-    const isSingleSystemSelected =
-      (this.docInward && !this.docOutward) || (!this.docInward && this.docOutward);
+    // const isSingleSystemSelected =
+    //   (this.docInward && !this.docOutward) || (!this.docInward && this.docOutward);
 
-    return !hasCustomer || !isSingleSystemSelected;
+    return !hasCustomer;
+    // || !isSingleSystemSelected;
   }
 
   private checkIsOverPayment(): boolean {
@@ -236,7 +239,7 @@ export class NewReceiptComponent implements OnInit {
 
   onCheckOutstanding(): void {
     const payload = {
-      source: this.docInward ? 'DocSys' : 'Glossys',
+      // source: this.docInward ? 'DocSys' : 'Glossys',
       customerNames: [this.searchModel.customerName || ''],
     };
 
@@ -244,7 +247,9 @@ export class NewReceiptComponent implements OnInit {
       next: (res: any) => {
         this.outstandingRecords = res || [];
         this.isOutstandingModalOpen = true;
+        this.stateService.setModalState(true);
       },
+
       error: (error) => {
         this.alert.showAlert(
           'Error',
@@ -287,8 +292,6 @@ export class NewReceiptComponent implements OnInit {
       customerName: customer,
     };
 
-    console.log(payload);
-
     this.apiService.post('api/receiptRetrieve', payload).subscribe({
       next: (res: any) => {
         if (res?.success) {
@@ -310,6 +313,7 @@ export class NewReceiptComponent implements OnInit {
   }
 
   onClearClick(): void {
+    this.isClearing = true;
     this.searchModel = {
       invoiceNo: '',
       blNo: '',
@@ -317,6 +321,10 @@ export class NewReceiptComponent implements OnInit {
       voyageId: null,
       customerName: '',
     };
+
+    setTimeout(() => {
+      this.isClearing = false;
+    }, 500);
   }
 
   private handleApiResponse(res: any): void {
