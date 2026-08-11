@@ -240,6 +240,7 @@ export class Navbar implements OnInit, OnDestroy {
           this.menuAccessService.setMenuList(menuApiData);
           this.menuAccessService.checkPermissionForUrl(this.router.url);
           this.alertService.showAlert('Success', 'Location Changed Successfully!', 'success');
+          this.router.navigate(['/main/welcome']);
           this.changeLocationTriggered.emit();
           this.closeLocationModal();
           this.cdr.detectChanges();

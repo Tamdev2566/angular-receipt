@@ -78,7 +78,7 @@ export class UndoPaymentDetails implements OnInit {
   constructor(
     private userService: UserService,
     private apiService: ApiService,
-    private alertService: AlertService,
+    private alert: AlertService,
     private router: Router,
     private undoService: UndoPaymentService,
     private undogGlobalService: UndoService,
@@ -142,20 +142,21 @@ export class UndoPaymentDetails implements OnInit {
               }));
             } else {
               this.invoiceGrid = [];
+              this.alert.showAlert('Error', res.message, 'error');
             }
 
             this.outstandingGrid = res.outstandings || [];
           }
         },
         error: (err) => {
-          this.alertService.showAlert('Error', 'Failed to retrieve records.', 'error');
+          this.alert.showAlert('Error', 'Failed to retrieve records.', 'error');
         },
       });
   }
 
   undoReceipt(): void {
     if (this.selectedRecords.length === 0) {
-      this.alertService.showAlert(
+      this.alert.showAlert(
         'Warning',
         'Please select at least one record from the Receipt grid to undo.',
         'warning',
@@ -167,7 +168,7 @@ export class UndoPaymentDetails implements OnInit {
 
     this.undoService.processUndo(payload).subscribe({
       next: (res: any) => {
-        this.alertService.showAlert(
+        this.alert.showAlert(
           'Success',
           res.message || 'Undo Payment Processed Successfully',
           'success',
@@ -177,7 +178,7 @@ export class UndoPaymentDetails implements OnInit {
         this.onCancel();
       },
       error: (error) => {
-        this.alertService.showAlert(
+        this.alert.showAlert(
           'Error',
           error?.error?.message || 'Unable to Undo the Selected Receipts.',
           'error',

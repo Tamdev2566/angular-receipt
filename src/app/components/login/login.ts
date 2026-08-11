@@ -77,18 +77,11 @@ export class LoginPage {
       return;
     }
 
-    const payload = {
-      email: this.username,
-      password: this.password,
-    };
+    const payload = { email: this.username, password: this.password };
 
     this.authService
       .login(payload)
-      .pipe(
-        finalize(() => {
-          this.cdr.detectChanges();
-        }),
-      )
+      .pipe(finalize(() => this.cdr.detectChanges()))
       .subscribe({
         next: (res: any) => {
           localStorage.setItem('receipt_token', res.token);
@@ -126,8 +119,6 @@ export class LoginPage {
                   .getAppMenus(userInfo.masterLocations[0]?.usersLocationId)
                   .subscribe({
                     next: (menuApiData: any) => {
-                      console.log('Menu API Response:', menuApiData);
-                      // Update the reactive state in ModuleService
                       this.moduleService.setMenuItemsFromApi(menuApiData);
                     },
                     error: (err) => {

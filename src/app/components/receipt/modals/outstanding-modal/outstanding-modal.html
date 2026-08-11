@@ -1,7 +1,6 @@
 @if (isOpen) {
   <div class="modal-backdrop" (click)="close()">
     <div class="modal-container" (click)="$event.stopPropagation()">
-      <!-- Header -->
       <div class="modal-header">
         <h5 class="modal-title">
           <i class="fa-solid fa-list-check me-2 text-primary"></i>
@@ -12,37 +11,19 @@
         </button>
       </div>
 
-      <!-- Customer Subheader -->
       @if (customerName) {
         <div class="modal-subheader"><span class="fw-bold">Customer:</span> {{ customerName }}</div>
       }
 
-      <!-- Modal Body / DataGrid -->
       <div class="modal-body">
-        <!-- @if (records && records.length > 0) { -->
         <app-data-grid
           [records]="records"
           [columns]="columns"
           [showAction]="false"
-          [tableHeight]="'350px'"
+          [tableHeight]="'450px'"
         >
         </app-data-grid>
-        <!-- } -->
       </div>
-
-      <!-- Modal Footer
-      <div class="modal-footer">
-        <button type="button" class="btn btn-flat-action-danger" (click)="close()">Cancel</button>
-        <button
-          type="button"
-          class="btn btn-flat-action-primary-fill"
-          [disabled]="selectedRows.length === 0"
-          (click)="confirmSelection()"
-        >
-          <i class="fa-solid fa-check me-1"></i>
-          Apply Selected ({{ selectedRows.length }})
-        </button>
-      </div> -->
     </div>
   </div>
 }
