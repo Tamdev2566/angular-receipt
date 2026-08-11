@@ -1,16 +1,137 @@
-<div class="dashboard-welcome">
-  <div class="welcome-banner">
-    <div class="banner-content">
-      <div class="company-header">
-        <img src="asset/images/logo.png" alt="Glossys Logo" class="company-logo" />
+<div class="main-content-area">
+  <div class="receipt-container">
+    <div class="receipt">
+      <svg class="bg-shapes" viewBox="0 0 500 700" preserveAspectRatio="none">
+        <path d="M 430 -20 C 430 40, 480 80, 520 80 L 520 -20 Z" fill="#FAD05D" />
+        <path
+          d="M 460 110 C 420 100, 430 180, 470 190 C 510 200, 520 130, 520 120 Z"
+          fill="#7AA4B4"
+        />
+        <path d="M 0 450 C 40 450, 50 500, 0 530 Z" fill="#7AA4B4" />
+        <path d="M 80 700 C 120 650, 180 650, 230 700 Z" fill="#FAD05D" />
+        <path d="M 230 700 C 270 670, 320 670, 350 700 Z" fill="#FAD05D" />
+      </svg>
+      <div>
+        <div class="header-section">
+          <div class="company-info">
+            <div class="logo-wrap">
+              <img src="asset/images/logo.png" class="img-logo" alt="logo" />
+              <span class="logo-text">SAMEUDRA SHIPPING LINES</span>
+            </div>
+            <p class="address-text">
+              6 Raffles Quay #25-01, Singapore 048580<br />
+              TEL: 6532 3688 &nbsp;|&nbsp; FAX: 6534 1310
+            </p>
+          </div>
+          <div class="receipt-no-wrap">
+            <div class="datetime-container">
+              <div class="date">
+                {{ todayDate }}
+              </div>
 
-        <div>
-          <h1 class="company-name">Samudera Shipping Line Ltd</h1>
+              <div class="time">
+                {{ currentTime }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <h2>Welcome to Glossys & Docsys Receipt Web Portal</h2>
-      <p>Manage receipt transactions efficiently.</p>
+      <div class="middle-section dashboard-welcome">
+        <div class="welcome-text-content">
+          <h1 class="welcome-title">Receipt Management System</h1>
+
+          <p class="welcome-desc">
+            Welcome to the digital receipt portal. Efficiently create, track, and manage all your
+            transactions in one secure place. Use the tools below to generate new receipts or get a
+            complete overview of your billing history.
+          </p>
+
+          <div class="action-buttons">
+            <button
+              class="btn"
+              style="background-color: #33708f !important ; color: white"
+              (click)="onCreateReceipt()"
+            >
+              Create Receipt
+            </button>
+            <button class="btn btn-outline" (click)="onViewReports()">Overview</button>
+          </div>
+        </div>
+
+        <div class="welcome-image-content">
+          <svg viewBox="0 0 200 250" class="receipt-illustration">
+            <rect x="25" y="25" width="150" height="200" rx="8" fill="#CBD6DC" opacity="0.3" />
+
+            <rect
+              x="15"
+              y="15"
+              width="150"
+              height="200"
+              rx="8"
+              fill="#FFFFFF"
+              stroke="#CBD6DC"
+              stroke-width="1.5"
+            />
+            <circle cx="45" cy="45" r="12" fill="#FAD05D" />
+            <rect x="65" y="40" width="70" height="10" rx="5" fill="#5B6E77" />
+            <rect x="35" y="75" width="110" height="6" rx="3" fill="#E8F0F3" />
+            <rect x="35" y="95" width="80" height="6" rx="3" fill="#E8F0F3" />
+            <rect x="35" y="115" width="95" height="6" rx="3" fill="#E8F0F3" />
+            <rect x="35" y="135" width="60" height="6" rx="3" fill="#E8F0F3" />
+            <rect x="35" y="160" width="110" height="30" rx="6" fill="#7AA4B4" opacity="0.15" />
+            <rect x="45" y="170" width="40" height="10" rx="5" fill="#7AA4B4" />
+            <circle cx="150" cy="180" r="22" fill="#20c997" />
+            <path
+              d="M142 180 l 5 5 l 12 -12"
+              fill="none"
+              stroke="#FFFFFF"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <div class="footer-section">
+        <div class="qr-placeholder">
+          <svg viewBox="0 0 100 100">
+            <rect x="5" y="5" width="30" height="30" rx="2" />
+            <rect x="10" y="10" width="20" height="20" fill="#FFFFFF" />
+            <rect x="15" y="15" width="10" height="10" />
+            <rect x="65" y="5" width="30" height="30" rx="2" />
+            <rect x="70" y="10" width="20" height="20" fill="#FFFFFF" />
+            <rect x="75" y="15" width="10" height="10" />
+            <rect x="5" y="65" width="30" height="30" rx="2" />
+            <rect x="10" y="70" width="20" height="20" fill="#FFFFFF" />
+            <rect x="15" y="75" width="10" height="10" />
+            <rect x="42" y="5" width="8" height="8" />
+            <rect x="55" y="12" width="6" height="6" />
+            <rect x="45" y="22" width="12" height="8" />
+            <rect x="5" y="42" width="8" height="12" />
+            <rect x="18" y="42" width="10" height="10" />
+            <rect x="35" y="38" width="12" height="12" />
+            <rect x="52" y="35" width="15" height="10" />
+            <rect x="75" y="42" width="8" height="8" />
+            <rect x="88" y="40" width="7" height="15" />
+            <rect x="42" y="55" width="10" height="10" />
+            <rect x="58" y="52" width="12" height="12" />
+            <rect x="78" y="62" width="8" height="8" />
+            <rect x="72" y="75" width="10" height="10" />
+            <rect x="85" y="72" width="10" height="10" />
+            <rect x="45" y="72" width="12" height="8" />
+            <rect x="52" y="85" width="10" height="10" />
+            <rect x="65" y="90" width="8" height="5" />
+            <rect x="88" y="88" width="7" height="7" />
+            <rect x="40" y="88" width="6" height="6" />
+          </svg>
+        </div>
+        <div class="signature-wrap">
+          <div class="sig-line"></div>
+          <span class="sig-text">Authorized Signature</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
