@@ -321,6 +321,7 @@ export class NewReceiptComponent implements OnInit {
       voyageId: null,
       customerName: '',
     };
+    this.gridData = [];
 
     setTimeout(() => {
       this.isClearing = false;
