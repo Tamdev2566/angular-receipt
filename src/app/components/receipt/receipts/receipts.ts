@@ -202,6 +202,8 @@ export class ReceiptComponent implements OnInit {
     this.showRemoveModal = false;
     this.selectedRecord = null;
     this.stateService.setModalState(false);
+    this.undoService.clearInvoice();
+    this.undoService.clearRemoveInvoice();
   }
 
   triggerToast(msg: string) {
