@@ -1,232 +1,218 @@
 <div class="dashboard-container container-fluid py-4">
-  <!-- Filters -->
-  <div class="d-flex justify-content-end mb-4 gap-2">
-    <button
-      class="btn btn-filter"
-      [class.active]="currentFilter() === 'today'"
-      (click)="setFilter('today')"
-    >
-      Today
-    </button>
-
-    <button
-      class="btn btn-filter"
-      [class.active]="currentFilter() === 'monthly'"
-      (click)="setFilter('monthly')"
-    >
-      This Month
-    </button>
-
-    <button
-      class="btn btn-filter"
-      [class.active]="currentFilter() === 'yearly'"
-      (click)="setFilter('yearly')"
-    >
-      This Year
-    </button>
-  </div>
-
   @if (isLoading()) {
     <div class="d-flex justify-content-center py-5">
-      <div class="spinner-border text-primary"></div>
+      <div class="spinner-border text-primary" style="width: 3rem; height: 3rem"></div>
     </div>
   } @else {
-    <!-- KPI CARDS -->
     <div class="row g-4 mb-4">
-      @for (kpi of activeKpis(); track kpi.title) {
-        <div class="col-12 col-md-6 col-xl-3">
+      @for (card of summaryCards(); track card.title) {
+        <div class="col-12 col-md-3">
           <div
             class="glass-card p-4 rounded-4 h-100 position-relative overflow-hidden"
-            [ngClass]="{
-              'kpi-card-1': $index === 0,
-              'kpi-card-2': $index === 1,
-              'kpi-card-3': $index === 2,
-              'kpi-card-4': $index === 3,
-            }"
+            [ngClass]="card.colorClass"
           >
             <div class="d-flex justify-content-between align-items-start">
               <div>
-                <p class="text-white-50 fw-semibold mb-2">
-                  {{ kpi.title }}
-                </p>
-
-                <h2 class="text-white fw-bold mb-0">
-                  {{ kpi.count }}
-                </h2>
+                <p class="text-white-50 fw-semibold mb-2">{{ card.title }}</p>
+                <h2 class="text-white fw-bold mb-0">{{ card.count }}</h2>
               </div>
-
               <div class="icon-box d-flex align-items-center justify-content-center">
-                <i class="bi {{ kpi.icon }} text-white fs-4"></i>
+                <i class="bi {{ card.icon }} text-white fs-4"></i>
               </div>
             </div>
-
-            <div class="mt-4 d-flex align-items-center gap-2">
-              <span class="badge bg-white text-dark rounded-pill px-3 py-2">
-                <i
-                  class="bi"
-                  [ngClass]="kpi.trend === 'up' ? 'bi-arrow-up-right' : 'bi-arrow-down-right'"
-                ></i>
-
-                {{ kpi.percentage }}%
-              </span>
-
-              <small class="text-white fw-medium"> vs last period </small>
-            </div>
-
             <div class="card-glow"></div>
           </div>
         </div>
       }
     </div>
 
-    <!-- CHARTS -->
-    <div class="row g-4 mb-4">
-      <div class="col-12 col-lg-8">
-        <div class="chart-card p-4 h-100">
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="fw-bold text-dark m-0">Receipt Creation Trend</h4>
-          </div>
-
-          <apx-chart
-            [series]="receiptTrendChart.series"
-            [chart]="receiptTrendChart.chart"
-            [xaxis]="receiptTrendChart.xaxis"
-            [yaxis]="receiptTrendChart.yaxis"
-            [colors]="receiptTrendChart.colors"
-            [stroke]="receiptTrendChart.stroke"
-          >
-          </apx-chart>
-        </div>
-      </div>
-
-      <div class="col-12 col-lg-4">
-        <div class="chart-card p-4 h-100">
-          <h4 class="fw-bold text-dark mb-4">Status Distribution</h4>
-
-          <apx-chart
-            [series]="receiptStatusChart.series"
-            [chart]="receiptStatusChart.chart"
-            [labels]="receiptStatusChart.labels"
-            [colors]="receiptStatusChart.colors"
-            [plotOptions]="receiptStatusChart.plotOptions"
-          >
-          </apx-chart>
-        </div>
-      </div>
-    </div>
-
-    <!-- TABLE + USERS -->
-    <div class="row g-4">
-      <!-- TABLE -->
-      <div class="col-12 col-xl-8">
-        <div class="table-card p-4 h-100">
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="fw-bold text-dark m-0">Recent Receipt Activity</h4>
-
-            <button class="btn btn-export">
-              <i class="bi bi-download me-2"></i>
-              Export
-            </button>
-          </div>
-
-          <div class="table-responsive">
-            <table class="table custom-table align-middle">
-              <thead>
-                <tr>
-                  <th>Receipt ID</th>
-                  <th>Customer</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                @for (receipt of dashboardData()?.recentReceipts; track receipt.id) {
-                  <tr>
-                    <td>
-                      <span class="fw-bold text-primary">
-                        {{ receipt.id }}
-                      </span>
-                    </td>
-
-                    <td class="fw-semibold">
-                      {{ receipt.customerName }}
-                    </td>
-
-                    <td class="fw-bold">
-                      {{ receipt.amount | currency }}
-                    </td>
-
-                    <td>
-                      <span
-                        class="badge rounded-pill px-3 py-2"
-                        [ngClass]="{
-                          'bg-success-subtle text-success': receipt.status === 'Paid',
-
-                          'bg-warning-subtle text-warning': receipt.status === 'Pending',
-
-                          'bg-danger-subtle text-danger': receipt.status === 'Removed',
-                        }"
-                      >
-                        {{ receipt.status }}
-                      </span>
-                    </td>
-
-                    <td class="text-muted">
-                      {{ receipt.createdDate | date: 'dd MMM yyyy' }}
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
+    <div class="financial-overview-strip bg-white rounded-4 shadow-sm p-3 mb-4">
+      <div class="row align-items-center g-3">
+        <div class="col-12 col-lg-3 border-end-lg">
+          <div class="d-flex align-items-center gap-2">
+            <div
+              class="fin-title-icon rounded-circle d-flex align-items-center justify-content-center"
+            >
+              <i class="bi bi-shield-check text-primary fs-5"></i>
+            </div>
+            <div>
+              <h6 class="fw-bold text-dark m-0">Financial Overview</h6>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- USERS -->
-      <div class="col-12 col-xl-4">
-        <div class="user-card p-4 h-100">
-          <h4 class="fw-bold text-dark mb-4">Live User Sessions</h4>
-
-          <div class="d-flex flex-column gap-3">
-            @for (session of dashboardData()?.userSessions; track session.userId) {
-              <div class="session-item p-3 rounded-4">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="d-flex align-items-center gap-3">
-                    <div
-                      class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
-                      style="
-                        width: 48px;
-                        height: 48px;
-                        background: linear-gradient(135deg, #4f46e5, #06b6d4);
-                      "
-                    >
-                      {{ session.userName.charAt(0) }}
-                    </div>
-
-                    <div>
-                      <h6 class="fw-bold mb-0">
-                        {{ session.userName }}
-                      </h6>
-
-                      <small class="text-muted">
-                        {{ session.deviceType }}
-                        •
-                        {{ session.browser }}
-                      </small>
-                    </div>
+        <div class="col-12 col-lg-9">
+          <div class="row text-center text-lg-start g-3">
+            @for (kpi of kpiCards(); track kpi.title; let last = $last) {
+              <div class="col-12 col-md-4 position-relative">
+                <div class="px-2">
+                  <div
+                    class="d-flex align-items-center gap-2 mb-1 justify-content-center justify-content-lg-start"
+                  >
+                    <i class="bi {{ kpi.icon }} text-primary opacity-75 fs-6"></i>
+                    <span class="text-uppercase fw-semibold text-secondary fs-8 tracking-wide">
+                      {{ kpi.title }}
+                    </span>
                   </div>
 
-                  <span class="badge bg-light text-dark border">
-                    {{ session.sessionDuration }}
-                  </span>
+                  <div
+                    class="d-flex align-items-baseline gap-2 justify-content-center justify-content-lg-start"
+                  >
+                    <span class="fw-extrabold text-dark fs-4 m-0">{{ kpi.value }}</span>
+                    <small class="text-muted fs-8">({{ kpi.subtext }})</small>
+                  </div>
                 </div>
+
+                @if (!last) {
+                  <div class="stat-divider d-none d-md-block"></div>
+                }
               </div>
             }
           </div>
         </div>
       </div>
     </div>
+
+    <div class="row g-4 mb-4">
+      <div class="col-12 col-lg-8">
+        <div class="chart-card p-4 h-100">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold text-dark m-0">Receipt Summary Overview</h4>
+          </div>
+          @if (receiptSummaryBarChart) {
+            <apx-chart
+              [series]="receiptSummaryBarChart.series"
+              [chart]="receiptSummaryBarChart.chart"
+              [xaxis]="receiptSummaryBarChart.xaxis"
+              [yaxis]="receiptSummaryBarChart.yaxis"
+              [colors]="receiptSummaryBarChart.colors"
+              [plotOptions]="receiptSummaryBarChart.plotOptions"
+              [dataLabels]="receiptSummaryBarChart.dataLabels"
+              [legend]="receiptSummaryBarChart.legend"
+              [tooltip]="receiptSummaryBarChart.tooltip"
+            ></apx-chart>
+          }
+        </div>
+      </div>
+      <div class="col-12 col-lg-4">
+        <div class="chart-card p-4 h-100">
+          <h4 class="fw-bold text-dark mb-4">Status Distribution</h4>
+          @if (receiptStatusChart) {
+            <apx-chart
+              [series]="receiptStatusChart.series"
+              [chart]="receiptStatusChart.chart"
+              [labels]="receiptStatusChart.labels"
+              [colors]="receiptStatusChart.colors"
+              [plotOptions]="receiptStatusChart.plotOptions"
+            ></apx-chart>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="table-card p-4 rounded-4 bg-white shadow-sm">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h5 class="fw-bold text-dark m-0">Recent Receipt Activity</h5>
+          <small class="text-muted"
+            >Showing latest {{ recentReceipts().slice(0, 5).length }} transactions</small
+          >
+        </div>
+
+        <div class="d-flex gap-2">
+          <button
+            class="btn btn-outline-primary btn-sm rounded-pill px-3"
+            (click)="openViewAllModal()"
+          >
+            <i class="fa-solid fa-table-columns"></i> View All
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table custom-table align-middle m-0">
+          <thead class="table-light">
+            <tr>
+              <th>Transaction No</th>
+              <th>Ref No</th>
+              <th>Mode</th>
+              <th>Amount</th>
+              <th>Status / Action</th>
+              <th>Date & Time</th>
+              <th>Created By</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (receipt of recentReceipts().slice(0, 5); track receipt.transactionNo) {
+              <tr>
+                <td>
+                  <span class="fw-bold text-primary">{{ receipt.transactionNo }}</span>
+                </td>
+                <td class="fw-semibold text-secondary">{{ receipt.referenceNo }}</td>
+                <td>
+                  <span class="badge bg-light text-dark border fw-normal px-2 py-1">
+                    {{ receipt.paymentMode }}
+                  </span>
+                </td>
+                <td class="fw-bold text-dark">
+                  {{ receipt.currencyCode }} {{ receipt.amount | number: '1.2-2' }}
+                </td>
+                <td>
+                  @if (receipt.availableAction === 'UNDO_PAYMENT') {
+                    <span
+                      class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-3 py-1"
+                      [title]="receipt.actionMessage"
+                    >
+                      <i class="bi bi-arrow-counterclockwise me-1"></i> Undo Available
+                    </span>
+                  } @else if (receipt.postedToCoda) {
+                    <span
+                      class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1"
+                      [title]="receipt.actionMessage"
+                    >
+                      <i class="bi bi-check-circle me-1"></i> Posted to Coda
+                    </span>
+                  } @else if (receipt.status) {
+                    <span
+                      class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-1"
+                    >
+                      Cancelled
+                    </span>
+                  } @else {
+                    <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-1">
+                      Active
+                    </span>
+                  }
+                </td>
+                <td class="text-muted fs-7">
+                  {{ receipt.transactionDate | date: 'dd MMM yyyy, HH:mm' }}
+                </td>
+                <td>
+                  <span class="fw-medium text-dark">{{ receipt.createdUser | titlecase }}</span>
+                </td>
+              </tr>
+            }
+
+            @if (recentReceipts().length === 0) {
+              <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                  No recent receipt transactions found
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
   }
 </div>
+
+<app-dashboard-model
+  [isOpen]="isModalOpen()"
+  [gridData]="gridData"
+  [totalPages]="totalPages"
+  [currentPage]="currentPage"
+  (close)="closeViewAllModal()"
+  (pageChange)="changePage($event)"
+>
+</app-dashboard-model>

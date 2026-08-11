@@ -1,0 +1,33 @@
+@if (isOpen) {
+  <div class="modal-backdrop fade show" (click)="onClose()"></div>
+  <div class="modal d-block fade show" tabindex="-1" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content rounded-4 border-0 shadow-lg">
+        <div class="modal-header border-bottom-0 pb-0">
+          <div>
+            <h5 class="modal-title fw-bold text-dark">All Receipt Records</h5>
+            <p class="text-muted fs-7 mb-0">Detailed list of all receipts and settlement amounts</p>
+          </div>
+          <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
+        </div>
+
+        <div class="receipt-form-card mt-3">
+          <div class="col-12 d-flex justify-content-end">
+            <button class="btn btn-flat-action-primary-fill mb-3" (click)="onDownloadClick()">
+              <i class="bi bi-cloud-arrow-down-fill"></i>
+              Export to Excel
+            </button>
+          </div>
+          <app-data-grid
+            [records]="gridData"
+            [columns]="gridColumns"
+            [serverTotalPages]="totalPages"
+            [serverCurrentPage]="currentPage"
+            (pageChange)="onPageChange($event)"
+          >
+          </app-data-grid>
+        </div>
+      </div>
+    </div>
+  </div>
+}

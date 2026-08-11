@@ -1,0 +1,61 @@
+.modal-backdrop {
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(10px) !important;
+  z-index: 1050;
+}
+
+.modal {
+  z-index: 1055;
+  .modal-content {
+    border: 1px solid #e2e8f0;
+  }
+
+  .fs-7 {
+    font-size: 0.8rem;
+  }
+}
+
+.receipt-form-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.receipt-form-card h6 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #33708f;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+@media (max-width: 992px) {
+  .receipt-form-card {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .receipt-form-card {
+    padding: 12px;
+  }
+}
+
+.btn-flat-action-primary-fill {
+  background: #33708f !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px;
+  padding: 8px 18px !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  box-shadow: 0 2px 5px rgba(51, 112, 143, 0.15);
+  transition: 0.2s;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
