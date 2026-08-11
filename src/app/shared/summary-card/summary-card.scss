@@ -12,6 +12,8 @@
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   gap: 12px;
   margin-top: 16px;
+  height: calc(100vh - 340px) !important;
+  overflow: auto;
 }
 
 .summary-card {
