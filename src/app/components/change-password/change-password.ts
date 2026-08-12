@@ -93,6 +93,10 @@ export class ChangePasswordPage implements OnInit {
 
         this.passwordChanged.emit(payload);
         this.closeModal.emit();
+
+        if (this.isForced) {
+          this.router.navigate(['/main/welcome']);
+        }
       },
       error: (err) => {
         this.loading = false;
