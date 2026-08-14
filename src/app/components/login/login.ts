@@ -34,7 +34,7 @@ export class LoginPage {
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
     private userService: UserService,
-    private moduleService: ModuleService, // Injected ModuleService
+    private moduleService: ModuleService,
   ) {}
 
   ngOnInit() {

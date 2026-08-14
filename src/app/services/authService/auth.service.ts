@@ -91,8 +91,8 @@ export class AuthService {
   setAuthTimer(durationInSeconds: number): void {
     this.clearAuthTimer();
 
-    const maxTimeout = 2147483647;
-    const timeoutMs = Math.min(durationInSeconds * 1000, maxTimeout);
+    const MAX_24_HOURS_MS = 24 * 60 * 60 * 1000;
+    const timeoutMs = Math.min(durationInSeconds * 1000, MAX_24_HOURS_MS);
 
     this.tokenTimer = setTimeout(() => {
       this.handleSessionExpiry();
