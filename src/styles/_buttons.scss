@@ -1,0 +1,125 @@
+// Shared action-button system. Use these classes with Bootstrap's .btn class:
+// btn-flat-action-primary, btn-flat-action-primary-fill,
+// btn-flat-action-secondary, btn-flat-action-danger-outline,
+// btn-flat-action-danger, and btn-flat-action-warning.
+.app-shell {
+  .btn.btn-flat-action-primary,
+  .btn.btn-flat-action-primary-fill,
+  .btn.btn-flat-action-danger,
+  .btn.btn-flat-action-warning {
+    border: 0 !important;
+    border-radius: 8px;
+    padding: 8px 18px !important;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .btn.btn-flat-action-primary {
+    background: #fff !important;
+    color: #33708f !important;
+    box-shadow: 0 2px 5px rgba(51, 112, 143, 0.15);
+  }
+
+  .btn.btn-flat-action-primary-fill {
+    background: #33708f !important;
+    color: #fff !important;
+    box-shadow: 0 2px 5px rgba(51, 112, 143, 0.15);
+  }
+
+  .btn.btn-flat-action-danger {
+    background: #fff !important;
+    color: #dc2626 !important;
+    box-shadow: 0 2px 4px rgba(220, 38, 38, 0.18);
+  }
+
+  .btn.btn-flat-action-warning {
+    background: #f59e0b !important;
+    color: #fff !important;
+    box-shadow: 0 2px 5px rgba(245, 158, 11, 0.2);
+  }
+
+  .btn.btn-flat-action-secondary,
+  .btn.btn-flat-action-danger-outline {
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.76rem;
+    font-weight: 500;
+    letter-spacing: 0.075em;
+    transition: all 0.15s ease;
+  }
+
+  .btn.btn-flat-action-secondary {
+    background: #fff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #475569 !important;
+    gap: 6px;
+    padding: 5px 14px !important;
+  }
+
+  .btn.btn-flat-action-danger-outline {
+    background: #fff !important;
+    border: 1px solid #fee2e2 !important;
+    color: #ef4444 !important;
+    padding: 6px 14px !important;
+  }
+
+  .btn.btn-flat-action-primary:hover:not(:disabled),
+  .btn.btn-flat-action-primary-fill:hover:not(:disabled),
+  .btn.btn-flat-action-danger:hover:not(:disabled),
+  .btn.btn-flat-action-warning:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  .btn.btn-flat-action-primary-fill:hover:not(:disabled) {
+    background: #27566f !important;
+  }
+
+  .btn.btn-flat-action-danger:hover:not(:disabled) {
+    background: #fde5e5 !important;
+    color: #b91c1c !important;
+  }
+
+  .btn.btn-flat-action-warning:hover:not(:disabled) {
+    background: #d97706 !important;
+  }
+
+  .btn.btn-flat-action-secondary:hover:not(:disabled) {
+    background: #f1f5f9 !important;
+    color: #1e293b !important;
+  }
+
+  .btn.btn-flat-action-danger-outline:hover:not(:disabled) {
+    background: #fef2f2 !important;
+    border-color: #fca5a5 !important;
+  }
+
+  .btn.btn-flat-action-secondary.btn-flat-active {
+    background: #e5eef3 !important;
+    border-color: #33708f !important;
+    color: #33708f !important;
+    font-weight: 600;
+  }
+
+  .btn.btn-flat-action-secondary:disabled,
+  .btn.btn-flat-action-secondary.disabled-btn,
+  .btn.disabled-btn {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  .btn.btn-flat-action-primary:focus-visible,
+  .btn.btn-flat-action-primary-fill:focus-visible,
+  .btn.btn-flat-action-secondary:focus-visible,
+  .btn.btn-flat-action-danger-outline:focus-visible,
+  .btn.btn-flat-action-danger:focus-visible,
+  .btn.btn-flat-action-warning:focus-visible {
+    outline: 3px solid rgba(51, 112, 143, 0.35);
+    outline-offset: 2px;
+  }
+}

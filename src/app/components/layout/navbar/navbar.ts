@@ -69,7 +69,6 @@ export class Navbar implements OnInit, OnDestroy {
       }
     });
 
-    this.fetchActiveLocationMenus();
     this.isForcedNavbar = localStorage.getItem('passwordExpired') === 'true';
     if (this.isForcedNavbar) {
       this.showPasswordModal = true;

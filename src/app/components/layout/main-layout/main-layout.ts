@@ -40,23 +40,27 @@ export class MainLayout implements OnInit, OnDestroy {
       this.modalOpen = state;
     });
 
-    const locationListStr = localStorage.getItem('locationList');
-    if (locationListStr) {
-      try {
-        const locationList = JSON.parse(locationListStr);
-        const userLocationId = locationList[0]?.usersLocationId;
-        if (userLocationId) {
-          this.stateService.fetchUserMenus(userLocationId).subscribe();
-        }
-      } catch (e) {
-        console.error('Error reading location info from localStorage', e);
-      }
-    }
+    this.loadMenusForActiveLocation();
   }
 
   ngOnDestroy(): void {
     if (this.sub) {
       this.sub.unsubscribe();
+    }
+  }
+
+  private loadMenusForActiveLocation(): void {
+    try {
+      const defaultLocation = JSON.parse(localStorage.getItem('defaultLocation') || 'null');
+      const locations = JSON.parse(localStorage.getItem('locationList') || '[]');
+      const activeLocation = defaultLocation || locations[0];
+      const userLocationId = activeLocation?.usersLocationId || activeLocation?.locationId;
+
+      if (userLocationId) {
+        this.stateService.fetchUserMenus(String(userLocationId)).subscribe();
+      }
+    } catch (error) {
+      console.error('Error reading the active location from storage', error);
     }
   }
 

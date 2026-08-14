@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, retry } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { AuthService } from '../authService/auth.service';
 import { MenuAccessService } from '../menu-access';
@@ -59,6 +59,7 @@ export class ModuleService {
 
   fetchUserMenus(usersLocationId: string): Observable<ApiMenuItem[]> {
     return this.authService.getAppMenus(usersLocationId).pipe(
+      retry({ count: 1, delay: 500 }),
       tap((apiItems: ApiMenuItem[]) => {
         if (apiItems && apiItems.length > 0) {
           this.menuAccessService.setMenuList(apiItems as any);
@@ -102,11 +103,11 @@ export class ModuleService {
 
     for (const parent of parents) {
       const allowedChildren = children
-        .filter((child) => child.menuParent === parent.menuId && child.canRead === 1)
+        .filter((child) => child.menuParent === parent.menuId && this.canRead(child.canRead))
         .sort((a, b) => a.menuOrder - b.menuOrder);
 
       const hasValidChildren = allowedChildren.length > 0;
-      const isParentReadable = parent.canRead === 1;
+      const isParentReadable = this.canRead(parent.canRead);
 
       if (hasValidChildren) {
         resultMenus.push({
@@ -132,5 +133,9 @@ export class ModuleService {
     }
 
     return resultMenus;
+  }
+
+  private canRead(value: unknown): boolean {
+    return value === true || value === 1 || String(value).trim().toUpperCase() === 'Y' || String(value).trim() === '1';
   }
 }

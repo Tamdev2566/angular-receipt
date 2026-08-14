@@ -1,0 +1,230 @@
+// Shared layout and form system. Component styles should only contain
+// screen-specific layout rules; repeated UI classes are governed here.
+.app-shell.design-system {
+  --app-primary: #33708f;
+  --app-primary-dark: #1e4b63;
+  --app-border: #e2e8f0;
+  --app-input-border: #cbd5e1;
+  --app-muted: #94a3b8;
+  --app-text: #1e293b;
+
+  .user-management-flat-wrapper {
+    height: calc(100vh - 110px) !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    letter-spacing: 0.08em;
+  }
+
+  .main-scrollable-content-fluid {
+    flex: 1;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto !important;
+    padding-bottom: 20px;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 8px;
+    }
+  }
+
+  .page-header-section {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    margin-bottom: 14px;
+    padding: 20px 24px;
+    border-radius: 12px;
+    background: linear-gradient(120deg, var(--app-primary-dark) 0%, var(--app-primary) 100%);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .page-header-section::before {
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 40%;
+    height: 100%;
+    content: '';
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.25), transparent);
+    transform: skewX(-25deg);
+    pointer-events: none;
+  }
+
+  .page-header-section h4,
+  .text-header-title {
+    position: relative;
+    z-index: 1;
+    color: #fff !important;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.075em;
+  }
+
+  .receipt-form-card {
+    margin-bottom: 16px;
+    padding: 18px;
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  .receipt-form-card h6 {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--app-border);
+    color: var(--app-primary);
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .custom-flat-label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--app-primary);
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .custom-flat-input {
+    padding: 7px 12px !important;
+    border: 1px solid var(--app-input-border) !important;
+    border-radius: 4px !important;
+    outline: none;
+    background: #fff !important;
+    color: var(--app-text) !important;
+    font-size: 0.82rem !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .custom-flat-input::placeholder,
+  .search-flat-input::placeholder {
+    color: var(--app-muted);
+  }
+
+  .custom-flat-input:focus {
+    border-color: var(--app-primary) !important;
+    box-shadow: 0 0 0 3px rgba(51, 112, 143, 0.18) !important;
+  }
+
+  .input-readonly-flat {
+    cursor: not-allowed;
+    border-color: var(--app-border) !important;
+    background: #f8fafc !important;
+    color: #475569 !important;
+    font-weight: 600;
+  }
+
+  .custom-flat-checkbox:checked,
+  .form-check-input:checked {
+    border-color: var(--app-primary) !important;
+    background-color: var(--app-primary) !important;
+  }
+
+  .action-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .action-buttons-group,
+  .form-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .search-flat-wrapper {
+    display: flex;
+    width: 100%;
+    max-width: 300px;
+    overflow: hidden;
+    border: 1px solid var(--app-border);
+    border-radius: 9px;
+    background: #f8fafc;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .search-flat-wrapper:focus-within {
+    border-color: var(--app-primary);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(51, 112, 143, 0.12);
+  }
+
+  .search-flat-input {
+    width: 100%;
+    border: 0 !important;
+    outline: 0;
+    padding: 8px 16px;
+    background: transparent;
+    color: #0f172a !important;
+    font-size: 0.8rem;
+    letter-spacing: 0.075em;
+  }
+
+  .btn-search-flat-go {
+    border: 0 !important;
+    padding: 8px 20px;
+    background: #e03545 !important;
+    color: #fff !important;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.075em;
+  }
+
+  .custom-flat-pagination .page-link {
+    border: 1px solid var(--app-input-border) !important;
+    border-radius: 4px;
+    background: #fff !important;
+    color: #475569 !important;
+    font-size: 0.74rem;
+  }
+
+  .custom-flat-pagination .active .page-link {
+    border-color: var(--app-primary) !important;
+    background: var(--app-primary) !important;
+    color: #fff !important;
+    font-weight: 600;
+  }
+
+  .error-text {
+    display: block;
+    margin-top: 4px;
+    color: #dc2626;
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  @media (max-width: 992px) {
+    .page-header-section {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+
+    .page-header-section h4 {
+      text-align: center;
+    }
+
+    .receipt-form-card {
+      padding: 14px;
+    }
+  }
+}
