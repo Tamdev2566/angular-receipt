@@ -173,6 +173,14 @@ export const routes: Routes = [
             (m) => m.UndoChequeReaderReport,
           ),
       },
+      {
+        path: 'account',
+        loadComponent: () => import('./components/masters/account/account').then((m) => m.Account),
+      },
+      {
+        path: 'bank',
+        loadComponent: () => import('./components/masters/bank/bank').then((m) => m.Bank),
+      },
     ],
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },

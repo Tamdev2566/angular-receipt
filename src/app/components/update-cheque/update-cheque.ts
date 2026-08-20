@@ -78,8 +78,17 @@ export class UpdateCheque implements OnInit {
   }
 
   updateCheque(): void {
+    if (!this.receipt.transactionNo) {
+      this.alert.showAlert(
+        'Error',
+        'Please retrieve valid cheque details before updating.',
+        'error',
+      );
+      return;
+    }
+
     if (!this.update.newChequeNo.trim()) {
-      alert('Please enter New Cheque Number');
+      this.alert.showAlert('Error', 'Please enter New Cheque Number', 'error');
       return;
     }
 

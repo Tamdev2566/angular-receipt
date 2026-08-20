@@ -35,10 +35,10 @@ export class UpdatedTtRefReport {
     this.formattedFromToDate = formattedToday;
   }
 
-  reportForm = {
-    fromDate: '',
-    toDate: '',
-  };
+  reportForm = { fromDate: '', toDate: '' };
+
+  isSubmitted: boolean = false;
+  errors: { [key: string]: boolean } = {};
 
   loading = false;
 
@@ -67,11 +67,25 @@ export class UpdatedTtRefReport {
     return `${year}-${month}-${day}`;
   }
 
-  onGenerate(): void {
-    this.generateReport();
+  validateFields(): boolean {
+    const fromDate = this.reportForm.fromDate ? String(this.reportForm.fromDate) : '';
+    const toDate = this.reportForm.toDate ? String(this.reportForm.toDate) : '';
+
+    this.errors['fromDate'] = !fromDate.trim();
+    this.errors['toDate'] = !toDate.trim();
+
+    const hasErrors = Object.values(this.errors).some((error) => error === true);
+    return !hasErrors;
   }
 
-  generateReport(): void {
+  onGenerate(): void {
+    this.isSubmitted = true;
+
+    if (!this.validateFields()) {
+      return;
+    }
+
+    this.isSubmitted = false;
     const fromDateApi = this.formatForApi(this.reportForm.fromDate);
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice.getReport('api/reports/updated-tt/getdata', fromDateApi, toDateApi).subscribe({
@@ -91,8 +105,6 @@ export class UpdatedTtRefReport {
       .downloadReport('api/reports/updated-tt/download', fromDateApi, toDateApi)
       .subscribe({
         next: (res: Blob) => {
-          console.log(res, 'res');
-
           this.apiservice.exportToExcel(res, 'UpdateTTRefReoprt', fromDateApi, toDateApi);
         },
         error: (error: any) => {
@@ -102,6 +114,8 @@ export class UpdatedTtRefReport {
   }
 
   onCancel(): void {
+    this.isSubmitted = false;
+
     this.reportForm = { fromDate: this.formattedFromToDate, toDate: this.formattedFromToDate };
     this.gridData = [];
   }

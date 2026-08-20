@@ -21,6 +21,10 @@ export class PrintReport implements OnInit {
   selectedCurrency: any = null;
   selectedReportFor: any = null;
 
+  paymentModeId: any = null;
+  currencyId: any = null;
+  reportForId: any = null;
+
   formattedDate: string = '';
 
   // Error flags
@@ -92,9 +96,15 @@ export class PrintReport implements OnInit {
 
   onCancel(): void {
     this.setCurrentDate();
+
     this.selectedPaymentMode = null;
     this.selectedCurrency = null;
     this.selectedReportFor = null;
+
+    this.paymentModeId = null;
+    this.currencyId = null;
+    this.reportForId = null;
+
     this.resetErrors();
   }
 

@@ -17,8 +17,10 @@ import { DatepickerComponent } from '../../shared/date-picker/date-picker';
 export class UndoChequeReaderReport {
   formattedFromToDate: string = '';
   reportForm = { fromDate: '', toDate: '' };
-  loading = false;
   gridData: any[] = [];
+
+  isSubmitted: boolean = false;
+  errors: { [key: string]: boolean } = {};
 
   gridColumns: ColumnDef[] = [
     { label: 'Cancelled Cheque No', field: 'cancelledChequeNo', width: '130px' },
@@ -59,7 +61,26 @@ export class UndoChequeReaderReport {
     return `${year}-${month}-${day}`;
   }
 
+  validateFields(): boolean {
+    const fromDate = this.reportForm.fromDate ? String(this.reportForm.fromDate) : '';
+    const toDate = this.reportForm.toDate ? String(this.reportForm.toDate) : '';
+
+    this.errors['fromDate'] = !fromDate.trim();
+    this.errors['toDate'] = !toDate.trim();
+
+    const hasErrors = Object.values(this.errors).some((error) => error === true);
+    return !hasErrors;
+  }
+
   onGenerate(): void {
+    this.isSubmitted = true;
+
+    if (!this.validateFields()) {
+      return;
+    }
+
+    this.isSubmitted = false;
+
     const fromDateApi = this.formatForApi(this.reportForm.fromDate);
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice.getReport('api/reports/undo-cheque/getdata', fromDateApi, toDateApi).subscribe({
@@ -88,6 +109,8 @@ export class UndoChequeReaderReport {
   }
 
   onCancel(): void {
+    this.isSubmitted = false;
+
     this.reportForm = { fromDate: this.formattedFromToDate, toDate: this.formattedFromToDate };
     this.gridData = [];
   }

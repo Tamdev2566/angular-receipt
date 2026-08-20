@@ -55,6 +55,14 @@ export class RemoveInvoiceDetails implements OnInit {
     return this.menuAccessService.currentPermission().fullAccess;
   }
 
+  get hasRetrieveValues(): boolean {
+    return !!(
+      this.retrieve.customerName?.trim() ||
+      this.retrieve.vesselName?.trim() ||
+      this.retrieve.voyageNo?.trim()
+    );
+  }
+
   ngOnInit() {
     this.undogGlobalService.currentRemoveInvoice.subscribe((invoiceData) => {
       if (invoiceData?.['customer_name']) {

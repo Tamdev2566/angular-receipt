@@ -1,11 +1,11 @@
 /* Layout */
 
 .user-management-flat-wrapper {
-  height: calc(100vh - 110px);
+  height: calc(100vh - 110px) !important;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.075em;
 }
 
 .main-scrollable-content-fluid {
@@ -13,7 +13,6 @@
   overflow-y: auto;
   overflow-x: hidden;
   height: 100%;
-  padding-bottom: 20px;
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -25,24 +24,25 @@
 
   &::-webkit-scrollbar-thumb {
     background: #cbd5e1;
-    border-radius: 8px;
-  }
+    border-radius: 10px;
 
-  &::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    &:hover {
+      background: #94a3b8;
+    }
   }
 }
 
-/* Header */
+/* Page Header */
 
 .page-header-section {
   background: linear-gradient(120deg, #1e4b63 0%, #33708f 100%);
   padding: 20px 24px;
   border-radius: 12px;
-  margin-bottom: 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   position: relative;
   overflow: hidden;
 }
@@ -51,16 +51,23 @@
   content: '';
   position: absolute;
   top: 0;
-  left: -120%;
-  width: 40%;
+  left: -150%;
+  width: 50%;
   height: 100%;
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.25), transparent);
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.35),
+    rgba(255, 255, 255, 0)
+  );
   transform: skewX(-25deg);
 }
 
 .page-header-section h4 {
   color: #fff;
+  margin: 0;
   font-weight: 700;
+  position: relative;
   z-index: 2;
 }
 
@@ -115,12 +122,12 @@
   }
 }
 
-/* Readonly */
+/* Readonly Inputs */
 
 .input-readonly-flat {
   background: #f8fafc !important;
-  color: #475569 !important;
   border-color: #e2e8f0 !important;
+  color: #33708f !important;
   font-weight: 600;
   cursor: not-allowed;
 }
@@ -145,26 +152,18 @@
 }
 
 .btn-flat-action-danger-outline {
-  background: #ffffff !important;
-  border: 1px solid #fee2e2 !important;
+  background: #fff !important;
   color: #ef4444 !important;
-  font-size: 0.76rem;
-  font-weight: 500;
-  padding: 6px 14px !important;
-  border-radius: 4px;
-  display: inline-flex;
-  align-items: center;
-  transition: all 0.15s ease;
-  letter-spacing: 0.08em;
+  border: 1px solid #fecaca !important;
+  border-radius: 8px;
+  padding: 8px 18px !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: 0.2s;
 
   &:hover {
     background: #fef2f2 !important;
-    border-color: #fca5a5 !important;
   }
-}
-
-.btn-flat-action-danger-outline:hover {
-  background: #fef2f2 !important;
 }
 
 /* Retrieve Button */
@@ -173,13 +172,29 @@
   min-width: 120px;
 }
 
+/* Data Grid */
+
+:host ::ng-deep app-data-grid {
+  display: block;
+
+  .table-responsive {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+}
+
 /* Responsive */
 
 @media (max-width: 992px) {
+  .receipt-form-card {
+    padding: 14px;
+  }
+
   .page-header-section {
     flex-direction: column;
-    align-items: stretch;
     gap: 12px;
+    align-items: stretch;
   }
 
   .page-header-section h4 {
@@ -195,10 +210,6 @@
 
   .page-header-section .btn {
     width: 100%;
-  }
-
-  .receipt-form-card {
-    padding: 14px;
   }
 
   .receipt-form-card .btn-flat-action-primary {
@@ -235,4 +246,33 @@
   &:hover {
     transform: translateY(-1px);
   }
+}
+
+/* Retrieve Form  */
+.retrieve-field-wrapper {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.retrieve-btn-wrapper {
+  padding-top: 23px;
+}
+
+.retrieve-btn-wrapper .btn {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+/* Absolute positioned error text */
+.error-msg {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
 }

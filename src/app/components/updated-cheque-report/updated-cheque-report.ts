@@ -35,6 +35,8 @@ export class UpdatedChequeReport {
     this.formattedFromToDate = formattedToday;
   }
 
+  isSubmitted: boolean = false;
+
   reportForm = {
     fromDate: '',
     toDate: '',
@@ -51,6 +53,8 @@ export class UpdatedChequeReport {
     { label: 'Reason', field: 'reason', width: '140px' },
   ];
 
+  errors: { [key: string]: boolean } = {};
+
   get isAllowed(): boolean {
     return this.menuAccessService.currentPermission().fullAccess;
   }
@@ -65,16 +69,37 @@ export class UpdatedChequeReport {
     return `${year}-${month}-${day}`;
   }
 
+  validateFields(): boolean {
+    const fromDate = this.reportForm.fromDate ? String(this.reportForm.fromDate) : '';
+    const toDate = this.reportForm.toDate ? String(this.reportForm.toDate) : '';
+
+    this.errors['fromDate'] = !fromDate.trim();
+    this.errors['toDate'] = !toDate.trim();
+
+    const hasErrors = Object.values(this.errors).some((error) => error === true);
+    return !hasErrors;
+  }
+
   onGenerate(): void {
+    this.isSubmitted = true;
+
+    if (!this.validateFields()) {
+      return;
+    }
+
+    this.isSubmitted = false;
+
     const fromDateApi = this.formatForApi(this.reportForm.fromDate);
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice
       .getReport('api/reports/updated-cheque/getdata', fromDateApi, toDateApi)
       .subscribe({
         next: (res: any) => {
+          this.isSubmitted = false;
           this.gridData = res || [];
         },
         error: (err) => {
+          this.isSubmitted = false;
           this.alert.showAlert('Error', err.error.message, 'error');
         },
       });
@@ -96,6 +121,8 @@ export class UpdatedChequeReport {
   }
 
   onCancel(): void {
+    this.isSubmitted = false;
+
     this.reportForm = { fromDate: this.formattedFromToDate, toDate: this.formattedFromToDate };
     this.gridData = [];
   }

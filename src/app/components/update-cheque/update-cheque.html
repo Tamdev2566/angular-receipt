@@ -5,8 +5,10 @@
       <button
         class="btn btn-flat-action-primary"
         (click)="updateCheque()"
-        [disabled]="!isUpdateAllowed"
-        [class.disabled-btn]="!isUpdateAllowed"
+        [disabled]="!isUpdateAllowed || !receipt.transactionNo || !update.newChequeNo.trim()"
+        [class.disabled-btn]="
+          !isUpdateAllowed || !receipt.transactionNo || !update.newChequeNo.trim()
+        "
       >
         <i class="fa-solid fa-floppy-disk me-1"></i>
         Update

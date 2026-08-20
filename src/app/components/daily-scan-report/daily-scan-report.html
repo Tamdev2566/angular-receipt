@@ -86,21 +86,32 @@
         </div>
 
         <!-- From Date -->
-
         <div class="col-md-3">
-          <app-date-picker label="From Date" [(value)]="formData.fromDate"> </app-date-picker>
+          <app-date-picker
+            label="To Date"
+            [(value)]="formData.fromDate"
+            [required]="true"
+            [error]="!formData.fromDate && isSubmitted"
+            helperText="From date is required"
+          >
+          </app-date-picker>
         </div>
 
         <!-- To Date -->
-
         <div class="col-md-3">
-          <app-date-picker label="To Date" [(value)]="formData.toDate"> </app-date-picker>
+          <app-date-picker
+            label="To Date"
+            [(value)]="formData.toDate"
+            [required]="true"
+            [error]="!formData.toDate && isSubmitted"
+            helperText="To date is required"
+          >
+          </app-date-picker>
         </div>
       </div>
     </div>
 
     <!-- table -->
-
     <div class="receipt-form-card mt-3">
       <div class="col-12 d-flex justify-content-end">
         <button

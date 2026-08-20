@@ -1,7 +1,6 @@
 <div class="user-management-flat-wrapper animate-fade-in">
   <!-- Header -->
-
-  <div class="page-header-section mt-3">
+  <div class="page-header-section receipt-header mt-3">
     <h4 class="text-white m-0 fw-bold">Update TT Reference</h4>
 
     <div class="d-flex justify-content-between gap-3">
@@ -23,42 +22,50 @@
   </div>
 
   <!-- Body -->
-
   <div class="main-scrollable-content-fluid p-1">
     <!-- Retrieve By -->
-
     <div class="receipt-form-card">
-      <div class="row g-3">
+      <div class="row g-2">
         <div class="col-12">
           <h6>Retrieve By</h6>
         </div>
 
-        <div class="col-md-4">
-          <label class="form-label custom-flat-label"> TT Ref No : </label>
+        <div class="col-md-6 d-flex align-items-start gap-2 position-relative">
+          <div class="retrieve-field-wrapper flex-grow-1">
+            <label class="form-label custom-flat-label mb-1">
+              TT Ref No<span class="text-danger">* </span>:
+            </label>
+            <input
+              type="text"
+              class="form-control custom-flat-input"
+              [class.is-invalid]="ttRefField.invalid && isSubmitted"
+              [(ngModel)]="retrieve.ttRefNo"
+              #ttRefField="ngModel"
+              name="ttRefNo"
+              placeholder="Enter TT Reference Number"
+              required
+            />
 
-          <input
-            type="text"
-            class="form-control custom-flat-input"
-            placeholder="Enter TT Reference Number"
-            [(ngModel)]="retrieve.ttRefNo"
-          />
-        </div>
+            <div class="error-msg text-danger" *ngIf="ttRefField.invalid && isSubmitted">
+              TT Ref No is required.
+            </div>
+          </div>
 
-        <div class="col-md-2 d-flex align-items-end">
-          <button
-            class="btn btn-flat-action-primary-fill"
-            (click)="retrieveTTReference()"
-            [disabled]="!isUpdateAllowed"
-            [class.disabled-btn]="!isUpdateAllowed"
-          >
-            Retrieve
-          </button>
+          <div class="retrieve-btn-wrapper">
+            <button
+              class="btn btn-flat-action-primary-fill"
+              (click)="retrieveTTReference()"
+              [disabled]="!isUpdateAllowed"
+              [class.disabled-btn]="!isUpdateAllowed"
+            >
+              Retrieve
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Receipt Details -->
-
     <div class="receipt-form-card mt-3">
       <div class="row g-3">
         <div class="col-12">
@@ -67,7 +74,6 @@
 
         <div class="col-md-4">
           <label class="form-label custom-flat-label"> Transaction No : </label>
-
           <input
             readonly
             class="form-control custom-flat-input input-readonly-flat"
@@ -77,7 +83,6 @@
 
         <div class="col-md-4">
           <label class="form-label custom-flat-label"> Customer Name : </label>
-
           <input
             readonly
             class="form-control custom-flat-input input-readonly-flat"
@@ -87,7 +92,6 @@
 
         <div class="col-md-4">
           <label class="form-label custom-flat-label"> Reference No : </label>
-
           <input
             readonly
             class="form-control custom-flat-input input-readonly-flat"
@@ -97,7 +101,6 @@
 
         <div class="col-md-4">
           <label class="form-label custom-flat-label"> Currency : </label>
-
           <input
             readonly
             class="form-control custom-flat-input input-readonly-flat"
@@ -107,7 +110,6 @@
 
         <div class="col-md-4">
           <label class="form-label custom-flat-label"> Amount : </label>
-
           <input
             readonly
             class="form-control custom-flat-input input-readonly-flat"
@@ -117,7 +119,6 @@
 
         <div class="col-md-4">
           <label class="form-label custom-flat-label"> Paid Invoice Total : </label>
-
           <input
             readonly
             class="form-control custom-flat-input input-readonly-flat"
@@ -128,7 +129,6 @@
     </div>
 
     <!-- Update TT Reference -->
-
     <div class="receipt-form-card mt-3">
       <div class="row g-3">
         <div class="col-12">
@@ -137,7 +137,6 @@
 
         <div class="col-md-4">
           <label class="form-label custom-flat-label"> New TT Ref No : </label>
-
           <input
             type="text"
             class="form-control custom-flat-input"
@@ -148,7 +147,6 @@
 
         <div class="col-md-8">
           <label class="form-label custom-flat-label"> Remark : </label>
-
           <input
             type="text"
             class="form-control custom-flat-input"

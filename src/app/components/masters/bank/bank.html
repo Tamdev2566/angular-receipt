@@ -1,0 +1,162 @@
+<div class="user-management-flat-wrapper animate-fade-in">
+  <div class="page-header-section mt-3">
+    <h4 class="text-white m-0 fw-bold">Master Bank</h4>
+
+    <div class="d-flex justify-content-between gap-3">
+      <button
+        class="btn btn-flat-action-primary"
+        (click)="onSave()"
+        [disabled]="!isSaveAllowed"
+        [class.disabled-btn]="!isSaveAllowed"
+      >
+        <i class="fa-solid fa-floppy-disk me-1"></i>
+        Save
+      </button>
+
+      <button class="btn btn-flat-action-danger-outline" (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="main-scrollable-content-fluid">
+    <div class="receipt-form-card">
+      <div class="row g-4">
+        <!-- Bank Code -->
+        <div class="col-md-3">
+          <label class="form-label custom-flat-label">
+            Bank Code <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control custom-flat-input"
+            [class.is-invalid]="errors['bankCode'] && isSubmitted"
+            placeholder="Bank Code"
+            [(ngModel)]="formData.bankCode"
+            (ngModelChange)="validateFields()"
+          />
+          <div
+            *ngIf="errors['bankCode'] && isSubmitted"
+            class="invalid-feedback d-block"
+            style="font-size: 0.72rem; font-weight: 600"
+          >
+            Bank Code is required
+          </div>
+        </div>
+
+        <!-- Bank Name -->
+        <div class="col-md-3">
+          <label class="form-label custom-flat-label">
+            Bank Name <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control custom-flat-input"
+            [class.is-invalid]="errors['bankName'] && isSubmitted"
+            placeholder="Bank Name"
+            [(ngModel)]="formData.bankName"
+            (ngModelChange)="validateFields()"
+          />
+          <div
+            *ngIf="errors['bankName'] && isSubmitted"
+            class="invalid-feedback d-block"
+            style="font-size: 0.72rem; font-weight: 600"
+          >
+            Bank Name is required
+          </div>
+        </div>
+
+        <!-- Bank Description -->
+        <div class="col-md-3">
+          <label class="form-label custom-flat-label">
+            Bank Description <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control custom-flat-input"
+            [class.is-invalid]="errors['bankDescription'] && isSubmitted"
+            placeholder="Bank Description"
+            [(ngModel)]="formData.bankDescription"
+            (ngModelChange)="validateFields()"
+          />
+          <div
+            *ngIf="errors['bankDescription'] && isSubmitted"
+            class="invalid-feedback d-block"
+            style="font-size: 0.72rem; font-weight: 600"
+          >
+            Bank Description is required
+          </div>
+        </div>
+
+        <!-- IsValid Toggle inside Form
+        <div class="col-md-3 d-flex align-items-center mt-4 pt-3">
+          <div class="form-check form-switch custom-switch-size">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="isValidToggle"
+              style="cursor: pointer; transform: scale(1.2)"
+              [checked]="formData.isValid === '1'"
+              (change)="formData.isValid = formData.isValid === '1' ? '0' : '1'"
+            />
+            <label
+              class="form-check-label custom-flat-label ms-2"
+              for="isValidToggle"
+              style="cursor: pointer"
+            >
+              {{ formData.isValid === '1' ? 'Active' : 'Inactive' }}
+            </label>
+          </div>
+        </div> -->
+      </div>
+    </div>
+
+    <!-- Data Grid -->
+    <div class="receipt-form-card mt-3">
+      <app-data-grid
+        [records]="gridData"
+        [columns]="gridColumns"
+        [showAction]="true"
+        [tableHeight]="'calc(100vh - 500px)'"
+        [actionTemplate]="availableAction"
+      >
+      </app-data-grid>
+
+      <ng-template #availableAction let-row>
+        <app-icon-button
+          iconClass="bi bi-pencil-fill"
+          colorClass="color-info"
+          title="View"
+          [customStyle]="{ 'margin-right': '8px' }"
+          (onClick)="viewDetails(row)"
+        >
+        </app-icon-button>
+
+        <app-icon-button
+          [iconClass]="row.isValid === '1' ? 'bi bi-toggle-on' : 'bi bi-toggle-off'"
+          [colorClass]="row.isValid === '1' ? 'text-success' : 'text-danger'"
+          [title]="row.isValid === '1' ? 'Deactivate' : 'Activate'"
+          [customStyle]="{ 'margin-right': '8px' }"
+          (onClick)="toggleStatus(row)"
+        >
+        </app-icon-button>
+
+        <app-icon-button
+          iconClass="bi bi-trash-fill"
+          colorClass="text-danger"
+          title="Delete"
+          (onClick)="deleteBank(row)"
+        >
+        </app-icon-button>
+      </ng-template>
+    </div>
+
+    <!-- Custom Confirm Dialog -->
+    <app-confirm-dialog
+      *ngIf="showConfirmDialog"
+      [title]="confirmTitle"
+      [message]="confirmMessage"
+      (yes)="onConfirmYes()"
+      (no)="onConfirmNo()"
+    >
+    </app-confirm-dialog>
+  </div>
+</div>

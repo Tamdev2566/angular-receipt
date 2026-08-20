@@ -5,7 +5,7 @@
       <button
         class="btn btn-flat-action-primary"
         (click)="removeInvoice()"
-        [disabled]="!isCreateAllowed"
+        [disabled]="!isCreateAllowed || !invoiceGrid.length"
         [class.disabled-btn]="!isCreateAllowed"
       >
         <i class="fa-solid fa-trash-can"></i> Remove Invoice
@@ -27,35 +27,26 @@
         <div class="col-md-3">
           <label class="form-label custom-flat-label"> Customer Name : </label>
 
-          <input
-            class="form-control custom-flat-input input-readonly-flat"
-            [(ngModel)]="retrieve.customerName"
-          />
+          <input class="form-control custom-flat-input" [(ngModel)]="retrieve.customerName" />
         </div>
 
         <div class="col-md-3">
           <label class="form-label custom-flat-label"> Vessel Name : </label>
 
-          <input
-            class="form-control custom-flat-input input-readonly-flat"
-            [(ngModel)]="retrieve.vesselName"
-          />
+          <input class="form-control custom-flat-input" [(ngModel)]="retrieve.vesselName" />
         </div>
 
         <div class="col-md-3">
           <label class="form-label custom-flat-label"> Voyage No : </label>
 
-          <input
-            class="form-control custom-flat-input input-readonly-flat"
-            [(ngModel)]="retrieve.voyageNo"
-          />
+          <input class="form-control custom-flat-input" [(ngModel)]="retrieve.voyageNo" />
         </div>
 
         <div class="col-md-3 d-flex align-items-end">
           <button
             class="btn btn-flat-action-primary-fill"
             (click)="retrieveInvoice()"
-            [disabled]="!isCreateAllowed"
+            [disabled]="!isCreateAllowed || !hasRetrieveValues"
             [class.disabled-btn]="!isCreateAllowed"
           >
             Retrieve

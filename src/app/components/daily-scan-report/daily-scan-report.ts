@@ -18,8 +18,9 @@ import { DatepickerComponent } from '../../shared/date-picker/date-picker';
 export class DailyScanReport {
   formattedFromToDate: string = '';
   formData = { readerType: 'INBOUND', fromDate: '', toDate: '' };
-  loading = false;
   gridData: any[] = [];
+
+  isSubmitted = false;
 
   gridColumns: ColumnDef[] = [
     { label: 'Bound', field: 'bound', width: '130px' },
@@ -30,6 +31,8 @@ export class DailyScanReport {
     { label: 'Created On', field: 'createTime', width: '140px' },
     { label: 'Auto Read', field: 'autoRead', width: '140px' },
   ];
+
+  errors: { [key: string]: boolean } = {};
 
   private apiService = inject(ApiService);
   private menuAccessService = inject(MenuAccessService);
@@ -82,18 +85,33 @@ export class DailyScanReport {
     return { params, bound, fromDateApi, toDateApi };
   }
 
+  validateFields(): boolean {
+    const fromDate = this.formData.fromDate ? String(this.formData.fromDate) : '';
+    const toDate = this.formData.toDate ? String(this.formData.toDate) : '';
+
+    this.errors['fromDate'] = !fromDate.trim();
+    this.errors['toDate'] = !toDate.trim();
+
+    const hasErrors = Object.values(this.errors).some((error) => error === true);
+    return !hasErrors;
+  }
+
   generateReport(): void {
-    this.loading = true;
+    this.isSubmitted = true;
+
+    if (!this.validateFields()) {
+      return;
+    }
+    this.isSubmitted = false;
+
     const { params } = this.buildQueryParams();
 
     this.apiService.get('api/reports/daily-scan/getdata', { params }).subscribe({
       next: (res: any) => {
         this.gridData = res || [];
-        this.loading = false;
       },
       error: (err) => {
         console.error('Error fetching data:', err);
-        this.loading = false;
       },
     });
   }
@@ -130,6 +148,8 @@ export class DailyScanReport {
   }
 
   onCancel(): void {
+    this.isSubmitted = false;
+
     this.formData = {
       readerType: 'OUTBOUND',
       fromDate: this.formattedFromToDate,

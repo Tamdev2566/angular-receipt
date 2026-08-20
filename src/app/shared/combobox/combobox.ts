@@ -36,7 +36,7 @@ export class Combobox implements OnInit, OnChanges, OnDestroy {
   @ViewChild('dropdownList') dropdownListRef?: ElementRef;
 
   @Input() url?: string;
-  @Input() apiMethod: 'GET' | 'POST' = 'GET';
+  @Input() apiMethod: 'GET' | 'POST' | 'SELFGET' = 'GET';
   @Input() requestBody: any = null;
   @Input() responsePath: string = 'content';
 
@@ -50,7 +50,6 @@ export class Combobox implements OnInit, OnChanges, OnDestroy {
 
   @Input() value: any = null;
   @Output() valueChange = new EventEmitter<any>();
-  /** Emits both valueExpr and the complete selected item, including displayExpr fields. */
   @Output() selectionChange = new EventEmitter<ComboboxSelection>();
 
   @Input() extraProp: any = { placeholder: 'Select Option' };
@@ -65,6 +64,7 @@ export class Combobox implements OnInit, OnChanges, OnDestroy {
   @Input() searchFromApi: boolean = true;
   @Input() name = '';
   @Input() reload: boolean = false;
+  @Input() selfUrl: boolean = false;
 
   isTouched = false;
   formData = {};
@@ -230,6 +230,15 @@ export class Combobox implements OnInit, OnChanges, OnDestroy {
 
       this.apiService
         .post(apiUrl, body, {
+          context: new HttpContext().set(SKIP_LOADER, true),
+        })
+        .subscribe({
+          next: success,
+          error,
+        });
+    } else if (this.apiMethod === 'SELFGET') {
+      this.apiService
+        .selfGet(apiUrl, {
           context: new HttpContext().set(SKIP_LOADER, true),
         })
         .subscribe({

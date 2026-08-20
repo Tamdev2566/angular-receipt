@@ -16,8 +16,10 @@ import { AlertService } from '../../services/alertService/alert';
 export class RemovedInvoiceReport {
   formattedFromToDate: string = '';
   reportForm = { fromDate: '', toDate: '' };
-  loading = false;
   gridData: any[] = [];
+
+  isSubmitted: boolean = false;
+  errors: { [key: string]: boolean } = {};
 
   gridColumns: ColumnDef[] = [
     { label: 'Removed Invoice', field: 'removedInvoice', width: '130px' },
@@ -49,7 +51,25 @@ export class RemovedInvoiceReport {
     return `${year}-${month}-${day}`;
   }
 
+  validateFields(): boolean {
+    const fromDate = this.reportForm.fromDate ? String(this.reportForm.fromDate) : '';
+    const toDate = this.reportForm.toDate ? String(this.reportForm.toDate) : '';
+
+    this.errors['fromDate'] = !fromDate.trim();
+    this.errors['toDate'] = !toDate.trim();
+
+    const hasErrors = Object.values(this.errors).some((error) => error === true);
+    return !hasErrors;
+  }
+
   onGenerate(): void {
+    this.isSubmitted = true;
+
+    if (!this.validateFields()) {
+      return;
+    }
+
+    this.isSubmitted = false;
     const fromDateApi = this.formatForApi(this.reportForm.fromDate);
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice

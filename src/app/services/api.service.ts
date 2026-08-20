@@ -15,6 +15,10 @@ export class ApiService {
     return this.http.get<T>(`${this.baseUrl}/${endpoint}`, options) as Observable<T>;
   }
 
+  selfGet<T>(endpoint: string, options?: any): Observable<T> {
+    return this.http.get<T>(endpoint, options) as Observable<T>;
+  }
+
   post(endpoint: string, data: any, options?: any) {
     return this.http.post(`${this.baseUrl}/${endpoint}`, data, options);
   }

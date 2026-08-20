@@ -63,6 +63,10 @@ export class AgingReport {
   }
 
   generateReport(): void {
+    if (!this.formData.agingDays.trim()) {
+      this.alert.showAlert('Error', 'Please Select the Aging Report Days!', 'error');
+      return;
+    }
     this.apiservice.getAgingReport('api/reports/aging/getdata', this.formData.agingDays).subscribe({
       next: (res: any) => {
         this.gridData = res || [];

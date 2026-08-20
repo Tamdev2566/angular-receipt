@@ -37,8 +37,7 @@ export class UpdateTtReference implements OnInit {
 
   update = { newTTRefNo: '', remark: '' };
 
-  loading = false;
-
+  isSubmitted = false;
   private menuAccessService = inject(MenuAccessService);
 
   get isUpdateAllowed(): boolean {
@@ -50,10 +49,13 @@ export class UpdateTtReference implements OnInit {
   }
 
   retrieveTTReference(): void {
-    if (!this.retrieve.ttRefNo.trim()) {
-      this.alert.showAlert('Error', 'Please enter TT/Ref Number', 'error');
+    this.isSubmitted = true;
+
+    if (!this.retrieve.ttRefNo || !this.retrieve.ttRefNo.trim()) {
       return;
     }
+
+    this.isSubmitted = false;
 
     this.ttrefService.searchTT(this.retrieve.ttRefNo.trim()).subscribe({
       next: (res) => {
@@ -64,6 +66,14 @@ export class UpdateTtReference implements OnInit {
   }
 
   updateTTReference(): void {
+    if (!this.receipt.transaction_no) {
+      this.alert.showAlert(
+        'Error',
+        'Please retrieve valid cheque details before updating.',
+        'error',
+      );
+      return;
+    }
     if (!this.update.newTTRefNo.trim()) {
       this.alert.showAlert('Error', 'Please enter New TT Reference Number', 'error');
       return;
@@ -94,6 +104,7 @@ export class UpdateTtReference implements OnInit {
   }
 
   onCancel(): void {
+    this.isSubmitted = false;
     this.retrieve = { ttRefNo: '' };
     this.receipt = {
       transaction_no: '',

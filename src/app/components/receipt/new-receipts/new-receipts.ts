@@ -35,7 +35,7 @@ interface ReceiptInvoicePayload {
 
 interface ReceiptApiPayload {
   paymentMode: string;
-  officeCode: string;
+  // officeCode: string;
   referenceNo: string;
   currencyCode: string;
   amount: number;
@@ -360,14 +360,14 @@ export class NewReceiptComponent implements OnInit {
       return null;
     }
 
-    // if (!this.selectedGridRows || this.selectedGridRows.length === 0) {
-    //   this.alert.showAlert(
-    //     'Validation Error',
-    //     'Please select at least one row from the table.',
-    //     'warning',
-    //   );
-    //   return null;
-    // }
+    if (!this.selectedGridRows || this.selectedGridRows.length === 0) {
+      this.alert.showAlert(
+        'Validation Error',
+        'Please select at least one row from the table.',
+        'error',
+      );
+      return null;
+    }
 
     const mappedInvoices: ReceiptInvoicePayload[] = this.selectedGridRows.map((item) => ({
       selected: true,
@@ -393,7 +393,6 @@ export class NewReceiptComponent implements OnInit {
     return {
       paymentMode:
         this.selectedPayment.name === 'T/T' ? 'T/T' : this.selectedPayment.name.toUpperCase(),
-      officeCode: this.getOfficeCode(),
       referenceNo: this.formData.chequeNo,
       currencyCode: this.formData.currency,
       amount: amount,
@@ -523,15 +522,6 @@ export class NewReceiptComponent implements OnInit {
       this.accounts.find((account) => String(account.id) === String(this.formData.account))?.name ||
       ''
     );
-  }
-
-  private getOfficeCode(): string {
-    try {
-      const location = JSON.parse(localStorage.getItem('defaultLocation') || '{}');
-      return location.officeCode.slice(0, 3) || location.locationName || 'SIN';
-    } catch {
-      return 'SIN';
-    }
   }
 
   changePage(page: number): void {

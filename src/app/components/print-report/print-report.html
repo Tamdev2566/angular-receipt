@@ -52,6 +52,7 @@
             valueExpr="id"
             name="paymentMode"
             [data]="paymentTypes"
+            [(value)]="paymentModeId"
             [class.input-error]="paymentModeErr"
             [onChange]="onPaymentChange.bind(this)"
           >
@@ -71,6 +72,7 @@
             valueExpr="id"
             name="currency"
             [data]="currency"
+            [(value)]="currencyId"
             [class.input-error]="currencyErr"
             [onChange]="onCurrencyChange.bind(this)"
           >
@@ -89,6 +91,7 @@
             displayExpr="userName"
             valueExpr="userId"
             name="reportFor"
+            [(value)]="reportForId"
             [class.input-error]="reportForErr"
             [onChange]="onReportForChange.bind(this)"
             [searchFromApi]="false"
