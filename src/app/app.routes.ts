@@ -71,13 +71,6 @@ export const routes: Routes = [
         },
       },
 
-      // {
-      //   path: 'remove-invoice',
-      //   loadComponent: () =>
-      //     import('./components/remove-invoice/remove-invoice-list/remove-invoice-list').then(
-      //       (m) => m.RemoveInvoiceList,
-      //     ),
-      // },
       {
         path: 'remove-invoice',
         loadComponent: () =>
@@ -92,14 +85,6 @@ export const routes: Routes = [
             (m) => m.UndoPaymentDetails,
           ),
       },
-      // {
-      //   path: 'undo-payment-details',
-      //   loadComponent: () =>
-      //     import('./components/undo-payments/undo-payment-details/undo-payment-details').then(
-      //       (m) => m.UndoPaymentDetails,
-      //     ),
-      // },
-
       {
         path: 'update-cheque',
         loadComponent: () =>

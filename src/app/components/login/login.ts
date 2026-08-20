@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -17,6 +18,7 @@ import { PasswordMgmt } from '../password-mgmt/password-mgmt';
   imports: [CommonModule, FormsModule, RouterModule, PasswordMgmt],
 })
 export class LoginPage {
+  private readonly destroyRef = inject(DestroyRef);
   username = '';
   password = '';
   showPassword = false;
@@ -82,12 +84,12 @@ export class LoginPage {
     this.authService
       .login(payload)
       .pipe(finalize(() => this.cdr.detectChanges()))
-      .subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           localStorage.setItem('receipt_token', res.token);
           localStorage.setItem('receipt_token_expire', res.expire);
 
-          this.authService.getUserInfo().subscribe({
+          this.authService.getUserInfo().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (userInfo: any) => {
               const locationName = userInfo.location?.split('|')[0] || '';
 
@@ -117,7 +119,7 @@ export class LoginPage {
               if (userInfo?.masterLocations[0]?.groups.length) {
                 this.authService
                   .getAppMenus(userInfo.masterLocations[0]?.usersLocationId)
-                  .subscribe({
+                  .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                     next: (menuApiData: any) => {
                       this.moduleService.setMenuItemsFromApi(menuApiData);
                     },
@@ -130,7 +132,7 @@ export class LoginPage {
               // --- ROUTING LOGIC ---
               const userId = userInfo.userId || userInfo.user_id;
               if (userId) {
-                this.authService.checkPasswordStatus(userId).subscribe({
+                this.authService.checkPasswordStatus(userId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                   next: (status: any) => {
                     if (status?.expired) {
                       localStorage.setItem('passwordExpired', 'true');

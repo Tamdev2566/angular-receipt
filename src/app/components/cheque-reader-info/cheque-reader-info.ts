@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/userService/user.service';
@@ -19,6 +20,7 @@ import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dial
   styleUrls: ['./cheque-reader-info.scss'],
 })
 export class ChequeReaderInfo implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   constructor(
     private router: Router,
     private userService: UserService,
@@ -121,7 +123,7 @@ export class ChequeReaderInfo implements OnInit {
   loadData() {
     const payload = {};
 
-    this.apiService.post('api/cheque/list', payload).subscribe({
+    this.apiService.post('api/cheque/list', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.gridData = res.data;
       },
@@ -195,7 +197,7 @@ export class ChequeReaderInfo implements OnInit {
     if (this.editingId) {
       payload.id = this.editingId;
 
-      this.apiService.post('api/cheque/updateCheque', payload).subscribe({
+      this.apiService.post('api/cheque/updateCheque', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           this.alert.showAlert('Success', 'Record updated successfully!', 'success');
           this.onCancel();
@@ -206,7 +208,7 @@ export class ChequeReaderInfo implements OnInit {
         },
       });
     } else {
-      this.apiService.post('api/cheque/save', payload).subscribe({
+      this.apiService.post('api/cheque/save', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           this.alert.showAlert('Success', 'Record saved successfully!', 'success');
           this.onCancel();
@@ -264,7 +266,7 @@ export class ChequeReaderInfo implements OnInit {
         isValid: newIsValid,
       };
 
-      this.apiService.post('api/cheque/updateCheque', payload).subscribe({
+      this.apiService.post('api/cheque/updateCheque', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           this.alert.showAlert('Success', `Record ${actionText}d successfully`, 'success');
           this.loadData();
@@ -286,7 +288,7 @@ export class ChequeReaderInfo implements OnInit {
     this.confirmAction = () => {
       const payload = { id: appId };
 
-      this.apiService.post('api/cheque/updateCheque', payload).subscribe({
+      this.apiService.post('api/cheque/updateCheque', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           this.alert.showAlert('Success', 'Record deleted successfully', 'success');
           this.loadData();

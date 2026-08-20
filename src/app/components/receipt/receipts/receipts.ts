@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -52,6 +53,7 @@ interface ReceiptResponse {
   styleUrls: ['./receipts.scss'],
 })
 export class ReceiptComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   undoReceipt = UndoPaymentDetails;
   removeReceipt = RemoveInvoiceDetails;
 
@@ -95,7 +97,7 @@ export class ReceiptComponent implements OnInit {
           this.cdr.detectChanges();
         }),
       )
-      .subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: Receipt[] | ReceiptResponse) => {
           this.receipts = Array.isArray(res) ? res : (res.data ?? res.content ?? res.items ?? []);
           this.filteredReceipts = [...this.receipts];

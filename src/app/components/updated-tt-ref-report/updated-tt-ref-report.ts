@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertService } from '../../services/alertService/alert';
@@ -15,6 +16,7 @@ import { DatepickerComponent } from '../../shared/date-picker/date-picker';
   styleUrl: './updated-tt-ref-report.scss',
 })
 export class UpdatedTtRefReport {
+  private readonly destroyRef = inject(DestroyRef);
   formattedFromToDate: string = '';
 
   constructor(
@@ -88,7 +90,7 @@ export class UpdatedTtRefReport {
     this.isSubmitted = false;
     const fromDateApi = this.formatForApi(this.reportForm.fromDate);
     const toDateApi = this.formatForApi(this.reportForm.toDate);
-    this.apiservice.getReport('api/reports/updated-tt/getdata', fromDateApi, toDateApi).subscribe({
+    this.apiservice.getReport('api/reports/updated-tt/getdata', fromDateApi, toDateApi).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.gridData = res || [];
       },
@@ -103,7 +105,7 @@ export class UpdatedTtRefReport {
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice
       .downloadReport('api/reports/updated-tt/download', fromDateApi, toDateApi)
-      .subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: Blob) => {
           this.apiservice.exportToExcel(res, 'UpdateTTRefReoprt', fromDateApi, toDateApi);
         },

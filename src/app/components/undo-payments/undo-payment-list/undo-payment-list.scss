@@ -1,10 +1,3 @@
-.user-management-flat-wrapper {
-  height: calc(100vh - 110px) !important;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  letter-spacing: 0.08em;
-}
 
 .main-scrollable-content-fluid {
   flex: 1;
@@ -168,92 +161,12 @@
     color: #1e293b !important;
   }
 
-  &.btn-flat-active {
-    background: #e5eef3 !important;
-    border-color: #33708f !important;
-    color: #33708f !important;
-    font-weight: 600;
-  }
-
   &[disabled] {
     opacity: 0.4;
     cursor: not-allowed;
     background: #f8fafc !important;
     color: #94a3b8 !important;
     border-color: #e2e8f0 !important;
-  }
-}
-
-.custom-flat-pagination {
-  .page-item {
-    .page-link {
-      background: #ffffff !important;
-      border: 1px solid #cbd5e1 !important;
-      color: #475569 !important;
-      border-radius: 4px;
-      padding: 4px 9px;
-      font-size: 0.74rem;
-      &:hover {
-        background: #f1f5f9 !important;
-        color: #0f172a !important;
-      }
-    }
-    &.active .page-link {
-      background: #33708f !important;
-      border-color: #33708f !important;
-      color: #ffffff !important;
-      font-weight: 600;
-    }
-    &.disabled .page-link {
-      background: #f8fafc !important;
-      border-color: #e2e8f0 !important;
-      color: #cbd5e1 !important;
-      opacity: 0.6;
-    }
-  }
-}
-
-.custom-flat-checkbox {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  input[type='checkbox'] {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 16px;
-    width: 16px;
-    z-index: 2;
-
-    & + label {
-      cursor: pointer;
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      background: #ffffff;
-      border: 1px solid #cbd5e1;
-      border-radius: 3px;
-      position: relative;
-    }
-
-    &:checked + label {
-      background: #33708f !important;
-      border-color: #33708f !important;
-
-      &::after {
-        content: '';
-        position: absolute;
-        left: 5px;
-        top: 2px;
-        width: 4px;
-        height: 8px;
-        border: solid #ffffff;
-        border-width: 0 2px 2px 0;
-        transform: rotate(45deg);
-      }
-    }
   }
 }
 

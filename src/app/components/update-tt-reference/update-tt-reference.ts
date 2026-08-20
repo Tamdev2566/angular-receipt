@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../services/alertService/alert';
 import { UserService } from '../../services/userService/user.service';
@@ -15,6 +16,7 @@ import { MenuAccessService } from '../../services/menu-access';
   styleUrls: ['./update-tt-reference.scss'],
 })
 export class UpdateTtReference implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   constructor(
     private alert: AlertService,
     private ttrefService: TtReferene,
@@ -57,7 +59,7 @@ export class UpdateTtReference implements OnInit {
 
     this.isSubmitted = false;
 
-    this.ttrefService.searchTT(this.retrieve.ttRefNo.trim()).subscribe({
+    this.ttrefService.searchTT(this.retrieve.ttRefNo.trim()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.receipt = res;
       },
@@ -92,7 +94,7 @@ export class UpdateTtReference implements OnInit {
       userId: this.user.getUser().name,
     };
 
-    this.ttrefService.updateTT(payload).subscribe({
+    this.ttrefService.updateTT(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ({ message }: any) => {
         this.alert.showAlert('Success', message, 'success');
         this.onCancel();

@@ -1,5 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -19,6 +20,7 @@ import { ApiService } from '../../../services/api.service';
   styleUrl: './bank.scss',
 })
 export class Bank implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   private router = inject(Router);
   private userService = inject(UserService);
   private alert = inject(AlertService);
@@ -66,7 +68,7 @@ export class Bank implements OnInit {
   }
 
   loadData(): void {
-    this.apiservice.get(`api/master-banks/list`).subscribe({
+    this.apiservice.get(`api/master-banks/list`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         const response = res.data.map((r: any) => ({
           ...r,
@@ -113,7 +115,7 @@ export class Bank implements OnInit {
     if (this.editingId) {
       payload.bankId = this.editingId;
 
-      this.apiservice.put(`api/master-banks/update/${this.editingId}`, payload).subscribe({
+      this.apiservice.put(`api/master-banks/update/${this.editingId}`, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           if (res.status === 'SUCCESS' || res.message) {
             this.alert.showAlert('Success', 'Bank updated successfully!', 'success');
@@ -126,7 +128,7 @@ export class Bank implements OnInit {
         },
       });
     } else {
-      this.apiservice.post(`api/master-banks/add`, payload).subscribe({
+      this.apiservice.post(`api/master-banks/add`, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
           this.alert.showAlert('Success', 'Bank added successfully!', 'success');
           this.onCancel();
@@ -183,7 +185,7 @@ export class Bank implements OnInit {
 
       const rowId = row.bankId;
 
-      this.apiservice.put(`api/master-banks/update/${rowId}`, payload).subscribe({
+      this.apiservice.put(`api/master-banks/update/${rowId}`, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
           this.alert.showAlert('Success', `Bank ${actionText}d successfully`, 'success');
           this.loadData();
@@ -206,7 +208,7 @@ export class Bank implements OnInit {
       const currentUser = user?.name;
       const rowId = row.bankId;
 
-      this.apiservice.delete(`api/master-banks/delete/${rowId}?userId=${currentUser}`).subscribe({
+      this.apiservice.delete(`api/master-banks/delete/${rowId}?userId=${currentUser}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           this.alert.showAlert('Success', 'Bank deleted successfully', 'success');
           this.loadData();

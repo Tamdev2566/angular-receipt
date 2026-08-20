@@ -6,18 +6,6 @@
   font-weight: 600;
 }
 
-.receipt-form-card {
-  margin-bottom: 16px;
-}
-
-.user-management-flat-wrapper {
-  height: calc(100vh - 110px) !important;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  letter-spacing: 0.08em;
-}
-
 .main-scrollable-content-fluid {
   flex: 1;
   overflow-y: auto !important;
@@ -184,9 +172,6 @@
 }
 
 @media (max-width: 992px) {
-  .receipt-form-card {
-    padding: 14px;
-  }
 
   .btn-flat-action-primary,
   .btn-flat-action-warning,

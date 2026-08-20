@@ -1,5 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { forkJoin } from 'rxjs';
 import { DashboardService } from './service/dashboard-service';
@@ -14,6 +15,7 @@ import { ModuleService } from '../../services/module-service/module-service';
   styleUrls: ['./dashboard.scss'],
 })
 export class DashboardComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   private dashboardService = inject(DashboardService);
   private stateService = inject(ModuleService);
 
@@ -116,7 +118,7 @@ export class DashboardComponent implements OnInit {
       summary: this.dashboardService.getReceiptSummary(),
       kpis: this.dashboardService.getKPIs(),
       receipts: this.dashboardService.getRecentReceipts(),
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         if (res.summary?.success) {
           this.summaryData.set(res.summary);

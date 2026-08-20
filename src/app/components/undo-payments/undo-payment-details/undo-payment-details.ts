@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, input } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertService } from '../../../services/alertService/alert';
@@ -18,6 +19,7 @@ import { UndoPaymentService } from '../undopayment-service';
   styleUrl: './undo-payment-details.scss',
 })
 export class UndoPaymentDetails implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   paginatedRecords: any[] = [];
   selectedRecord: any = null;
   selectedRecords: any[] = [];
@@ -114,7 +116,7 @@ export class UndoPaymentDetails implements OnInit {
         this.retrieve.blNo,
         this.retrieve.chequeNo,
       )
-      .subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           if (res) {
             this.details = {
@@ -166,7 +168,7 @@ export class UndoPaymentDetails implements OnInit {
 
     const payload: string[] = this.selectedRecords.map((record) => record.transactionNo || '');
 
-    this.undoService.processUndo(payload).subscribe({
+    this.undoService.processUndo(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.alert.showAlert(
           'Success',

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, input } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertService } from '../../../services/alertService/alert';
@@ -16,6 +17,7 @@ import { RemoveInvoiceService } from '../service/remove-invoice-service';
   styleUrl: './remove-invoice-details.scss',
 })
 export class RemoveInvoiceDetails implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   paginatedRecords: any[] = [];
   selectedRecord: any = null;
 
@@ -64,7 +66,7 @@ export class RemoveInvoiceDetails implements OnInit {
   }
 
   ngOnInit() {
-    this.undogGlobalService.currentRemoveInvoice.subscribe((invoiceData) => {
+    this.undogGlobalService.currentRemoveInvoice.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((invoiceData) => {
       if (invoiceData?.['customer_name']) {
         this.retrieve.customerName = invoiceData['customer_name'];
         this.retrieve.vesselName = invoiceData['vessel_name'];
@@ -76,7 +78,7 @@ export class RemoveInvoiceDetails implements OnInit {
             this.retrieve.vesselName,
             this.retrieve.voyageNo,
           )
-          .subscribe((res) => {
+          .pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
             this.invoiceGrid = res;
           });
       }
@@ -88,7 +90,7 @@ export class RemoveInvoiceDetails implements OnInit {
   retrieveInvoice() {
     this.invoiceService
       .searchInvoices(this.retrieve.customerName, this.retrieve.vesselName, this.retrieve.voyageNo)
-      .subscribe((res) => {
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
         this.invoiceGrid = res;
       });
   }
@@ -109,7 +111,7 @@ export class RemoveInvoiceDetails implements OnInit {
     const referenceNos = selectedRecords.map((row) => row.reference_no);
     const user = this.userService.getUser();
 
-    this.invoiceService.removeInvoices(referenceNos, user.name, this.remark).subscribe({
+    this.invoiceService.removeInvoices(referenceNos, user.name, this.remark).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.alertService.showAlert('Success', res.message, 'success');
         this.retrieveInvoice();

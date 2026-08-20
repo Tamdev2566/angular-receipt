@@ -4,18 +4,6 @@
   font-weight: 600;
 }
 
-.receipt-form-card {
-  margin-bottom: 16px;
-}
-
-.user-management-flat-wrapper {
-  height: calc(100vh - 110px) !important;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  letter-spacing: 0.08em;
-}
-
 .main-scrollable-content-fluid {
   flex: 1;
   overflow-y: auto !important;
@@ -39,10 +27,6 @@
     }
   }
 }
-
-/*==========================================================
- Header
-==========================================================*/
 
 .page-header-section {
   background: linear-gradient(120deg, #1e4b63 0%, #33708f 100%);
@@ -75,10 +59,6 @@
   pointer-events: none;
 }
 
-/*==========================================================
- Cards
-==========================================================*/
-
 .receipt-form-card {
   background: #fff;
   border: 1px solid #e2e8f0;
@@ -96,10 +76,6 @@
   }
 }
 
-/*==========================================================
- Labels
-==========================================================*/
-
 .custom-flat-label {
   display: block;
   font-size: 0.78rem;
@@ -107,10 +83,6 @@
   color: #33708f;
   margin-bottom: 6px;
 }
-
-/*==========================================================
- Inputs
-==========================================================*/
 
 .custom-flat-input {
   background: #fff !important;
@@ -130,10 +102,6 @@
     outline: none;
   }
 }
-
-/*==========================================================
- Buttons
-==========================================================*/
 
 .btn-flat-action-primary {
   background: #fff !important;
@@ -165,10 +133,6 @@
   }
 }
 
-/*==========================================================
- Browse Button
-==========================================================*/
-
 .input-group .btn {
   border-color: #cbd5e1;
   background: #fff;
@@ -180,30 +144,12 @@
   border-color: #33708f;
 }
 
-/*==========================================================
- Combobox
-==========================================================*/
-
 :host ::ng-deep app-combobox {
   display: block;
   width: 100%;
 }
 
-/*==========================================================
- Responsive
-==========================================================*/
-
 @media (max-width: 992px) {
-  .page-header-section {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .page-header-section h4 {
-    text-align: center;
-  }
-
   .page-header-section > div {
     width: 100%;
     display: flex;
@@ -213,10 +159,6 @@
 
   .page-header-section .btn {
     width: 100%;
-  }
-
-  .receipt-form-card {
-    padding: 14px;
   }
 
   .receipt-form-card .btn {

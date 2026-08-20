@@ -192,15 +192,6 @@
 /* Responsive */
 
 @media (max-width: 992px) {
-  .page-header-section {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .page-header-section h4 {
-    text-align: center;
-  }
 
   .page-header-section > div {
     display: flex;
@@ -211,10 +202,6 @@
 
   .page-header-section .btn {
     width: 100%;
-  }
-
-  .receipt-form-card {
-    padding: 14px;
   }
 
   .form-check {

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
 import { DatepickerComponent } from '../../shared/date-picker/date-picker';
 import { ReportService } from '../../services/reportService/report-service';
@@ -11,6 +12,7 @@ import { AlertService } from '../../services/alertService/alert';
   styleUrl: './edi-to-coda.scss',
 })
 export class EdiToCoda implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   fromDate: string | null = null;
   toDate: string | null = null;
 
@@ -72,7 +74,7 @@ export class EdiToCoda implements OnInit {
     const fromDateApi = this.formatForApi(this.fromDate);
     const toDateApi = this.formatForApi(this.toDate);
 
-    this.apiservice.postEdiToCoda('api/ediCoda/export', fromDateApi, toDateApi).subscribe({
+    this.apiservice.postEdiToCoda('api/ediCoda/export', fromDateApi, toDateApi).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         if (res.status.match(/SUCCESS/)) {
           this.alert.showAlert('Success', res.message, 'success');
@@ -105,7 +107,7 @@ export class EdiToCoda implements OnInit {
     const fromDateApi = this.formatForApi(this.fromDate);
     const toDateApi = this.formatForApi(this.toDate);
 
-    this.apiservice.getReport('api/ediCoda/retrieve', fromDateApi, toDateApi).subscribe({
+    this.apiservice.getReport('api/ediCoda/retrieve', fromDateApi, toDateApi).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         if (res.length) {
           this.gridData = res || [];

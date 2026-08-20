@@ -198,15 +198,6 @@
 
 /* Responsive */
 @media (max-width: 992px) {
-  .page-header-section {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .page-header-section h4 {
-    text-align: center;
-  }
 
   .page-header-section > div {
     width: 100%;

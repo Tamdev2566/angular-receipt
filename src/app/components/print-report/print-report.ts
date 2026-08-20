@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { ReceiptItem, reportPrint } from '../../report-template/reportPrint';
 import { ApiService } from '../../services/api.service';
@@ -16,6 +17,7 @@ import { HtmlViewer } from '../../shared/html-viewer/html-viewer';
   styleUrl: './print-report.scss',
 })
 export class PrintReport implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   transactionDate: string | null = null;
   selectedPaymentMode: any = null;
   selectedCurrency: any = null;
@@ -136,7 +138,7 @@ export class PrintReport implements OnInit {
       reportFor: this.selectedReportFor,
     };
 
-    this.apiService.post('api/receipts/getReports', payload).subscribe({
+    this.apiService.post('api/receipts/getReports', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         if (res && (Array.isArray(res) ? res.length > 0 : true)) {
           const rawList = Array.isArray(res) ? res : res?.details || [];

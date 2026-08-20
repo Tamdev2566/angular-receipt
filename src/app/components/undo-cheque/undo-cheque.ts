@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Combobox, ComboboxSelection } from '../../shared/combobox/combobox';
@@ -27,6 +28,7 @@ export interface ChequeDetails {
   styleUrls: ['./undo-cheque.scss'],
 })
 export class UndoCheque implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   private router = inject(Router);
   private loginUser = inject(UserService);
   private chequeService = inject(ChequeService);
@@ -64,7 +66,7 @@ export class UndoCheque implements OnInit {
 
     this.chequeService
       .searchCheque(String(this.retrieve.chequeNo), String(this.retrieve.fullCheque))
-      .subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           this.chequeDetails = res ?? { bound: '', bank_name: '', scan_user_id: '' };
         },
@@ -89,7 +91,7 @@ export class UndoCheque implements OnInit {
       userId: String(this.loginUser.getUser()?.name || ''),
     };
 
-    this.chequeService.undoCheque(payload).subscribe({
+    this.chequeService.undoCheque(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.alert.showAlert('Success', res?.message || 'Cheque undone successfully', 'success');
         this.onCancel(undoForm);

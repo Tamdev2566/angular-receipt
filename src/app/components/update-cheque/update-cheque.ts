@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../services/alertService/alert';
 import { UserService } from '../../services/userService/user.service';
@@ -15,6 +16,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./update-cheque.scss'],
 })
 export class UpdateCheque implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   loading = false;
 
   retrieve = {
@@ -59,7 +61,7 @@ export class UpdateCheque implements OnInit {
 
     this.isSubmitted = false;
 
-    this.updateChequeService.searchCheque(this.retrieve.chequeNo.trim()).subscribe({
+    this.updateChequeService.searchCheque(this.retrieve.chequeNo.trim()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.receipt = {
           transactionNo: res.transaction_no || '',
@@ -100,7 +102,7 @@ export class UpdateCheque implements OnInit {
       userId: this.user.getUser().name,
     };
 
-    this.updateChequeService.updateCheque(payload).subscribe({
+    this.updateChequeService.updateCheque(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.alert.showAlert('Success', 'Cheque Number Updated Successfully', 'success');
         this.onCancel();

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertService } from '../../services/alertService/alert';
@@ -16,6 +17,7 @@ import { ColumnDef, DataGrid } from '../../shared/data-grid/data-grid';
   styleUrls: ['./aging-report.scss'],
 })
 export class AgingReport {
+  private readonly destroyRef = inject(DestroyRef);
   constructor(
     private router: Router,
     private apiservice: ReportService,
@@ -67,7 +69,7 @@ export class AgingReport {
       this.alert.showAlert('Error', 'Please Select the Aging Report Days!', 'error');
       return;
     }
-    this.apiservice.getAgingReport('api/reports/aging/getdata', this.formData.agingDays).subscribe({
+    this.apiservice.getAgingReport('api/reports/aging/getdata', this.formData.agingDays).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.gridData = res || [];
       },
@@ -80,7 +82,7 @@ export class AgingReport {
   onDownloadClick() {
     this.apiservice
       .downloadAgingReport('api/reports/aging/download', this.formData.agingDays)
-      .subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: Blob) => {
           this.apiservice.exportToExcelAging(
             res,

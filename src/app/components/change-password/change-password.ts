@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -14,6 +15,7 @@ import { UserService } from '../../services/userService/user.service';
   styleUrl: './change-password.scss',
 })
 export class ChangePasswordPage implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   oldPassword = '';
   newPassword = '';
   confirmPassword = '';
@@ -80,7 +82,7 @@ export class ChangePasswordPage implements OnInit {
       username: this.userService.getUser()?.name || this.userId,
     };
 
-    this.api.post(`UserManagements/users/${this.userId}/change-password`, payload).subscribe({
+    this.api.post(`UserManagements/users/${this.userId}/change-password`, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.loading = false;
         if (res?.status === 400 || res?.status === 404) {

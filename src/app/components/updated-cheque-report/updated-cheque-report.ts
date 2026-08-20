@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertService } from '../../services/alertService/alert';
@@ -16,6 +17,7 @@ import { DatepickerComponent } from '../../shared/date-picker/date-picker';
   styleUrls: ['./updated-cheque-report.scss'],
 })
 export class UpdatedChequeReport {
+  private readonly destroyRef = inject(DestroyRef);
   formattedFromToDate: string = '';
   constructor(
     private alert: AlertService,
@@ -93,7 +95,7 @@ export class UpdatedChequeReport {
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice
       .getReport('api/reports/updated-cheque/getdata', fromDateApi, toDateApi)
-      .subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           this.isSubmitted = false;
           this.gridData = res || [];
@@ -110,7 +112,7 @@ export class UpdatedChequeReport {
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice
       .downloadReport('api/reports/updated-cheque/download', fromDateApi, toDateApi)
-      .subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: Blob) => {
           this.apiservice.exportToExcel(res, 'UpdatedChequeReport', fromDateApi, toDateApi);
         },

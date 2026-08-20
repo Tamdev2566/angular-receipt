@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { DatepickerComponent } from '../../shared/date-picker/date-picker';
 import { CommonModule } from '@angular/common';
@@ -14,6 +15,7 @@ import { AlertService } from '../../services/alertService/alert';
   styleUrl: './removed-invoice-report.scss',
 })
 export class RemovedInvoiceReport {
+  private readonly destroyRef = inject(DestroyRef);
   formattedFromToDate: string = '';
   reportForm = { fromDate: '', toDate: '' };
   gridData: any[] = [];
@@ -74,12 +76,12 @@ export class RemovedInvoiceReport {
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice
       .getReport('api/reports/removed-invoice/getdata', fromDateApi, toDateApi)
-      .subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           this.gridData = res || [];
         },
         error: (err) => {
-          console.log('err', err);
+          console.error('Failed to load removed invoice report:', err);
           this.alert.showAlert('Error', err.error.message, 'error');
         },
       });
@@ -90,12 +92,12 @@ export class RemovedInvoiceReport {
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice
       .downloadReport('api/reports/removed-invoice/download', fromDateApi, toDateApi)
-      .subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: Blob) => {
           this.apiservice.exportToExcel(res, 'RemovedInvoiceReport', fromDateApi, toDateApi);
         },
         error: (err) => {
-          console.log('err', err);
+          console.error('Failed to download removed invoice report:', err);
           this.alert.showAlert('Error', 'Something went wrong!', 'error');
         },
       });

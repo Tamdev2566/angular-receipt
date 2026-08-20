@@ -1,5 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -9,17 +10,17 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
 import { UserService } from '../../../services/userService/user.service';
 import { AlertService } from '../../../services/alertService/alert';
 import { MenuAccessService } from '../../../services/menu-access';
-import { Combobox } from '../../../shared/combobox/combobox';
 import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-account',
   standalone: true,
-  imports: [CommonModule, FormsModule, DataGrid, IconButton, ConfirmDialogComponent, Combobox],
+  imports: [CommonModule, FormsModule, DataGrid, IconButton, ConfirmDialogComponent],
   templateUrl: './account.html',
   styleUrl: './account.scss',
 })
 export class Account implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   private router = inject(Router);
   private userService = inject(UserService);
   private alert = inject(AlertService);
@@ -68,14 +69,17 @@ export class Account implements OnInit {
   }
 
   loadData(): void {
-    this.apiservice.get(`api/master-accounts/list`).subscribe({
-      next: (res: any) => {
-        this.gridData = res.data || [];
-      },
-      error: (err) => {
-        this.alert.showAlert('Error', err.error?.message || 'Failed to load data', 'error');
-      },
-    });
+    this.apiservice
+      .get(`api/master-accounts/list`)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.gridData = res.data || [];
+        },
+        error: (err) => {
+          this.alert.showAlert('Error', err.error?.message || 'Failed to load data', 'error');
+        },
+      });
   }
 
   validateFields(): boolean {
@@ -116,31 +120,41 @@ export class Account implements OnInit {
     };
 
     if (this.editingId) {
-      this.apiservice.put(`api/master-accounts/update/${this.editingId}`, payload).subscribe({
-        next: (res: any) => {
-          if (res.status === 'SUCCESS') {
-            this.alert.showAlert('Success', res.message, 'success');
-          } else {
-            this.alert.showAlert('Error', res.message, 'error');
-          }
-          this.onCancel();
-          this.loadData();
-        },
-        error: (err) => {
-          this.alert.showAlert('Error', err.error?.message || 'Update failed', 'error');
-        },
-      });
+      this.apiservice
+        .put(`api/master-accounts/update/${this.editingId}`, payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (res: any) => {
+            if (res.status === 'SUCCESS') {
+              this.alert.showAlert('Success', res.message, 'success');
+            } else {
+              this.alert.showAlert('Error', res.message, 'error');
+            }
+            this.onCancel();
+            this.loadData();
+          },
+          error: (err) => {
+            this.alert.showAlert('Error', err.error?.message || 'Update failed', 'error');
+          },
+        });
     } else {
-      this.apiservice.post(`api/master-accounts/add`, payload).subscribe({
-        next: (res: any) => {
-          this.alert.showAlert('Success', res?.message || 'Account added successfully!', 'success');
-          this.onCancel();
-          this.loadData();
-        },
-        error: (err) => {
-          this.alert.showAlert('Error', err.error?.message || 'Save failed', 'error');
-        },
-      });
+      this.apiservice
+        .post(`api/master-accounts/add`, payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (res: any) => {
+            this.alert.showAlert(
+              'Success',
+              res?.message || 'Account added successfully!',
+              'success',
+            );
+            this.onCancel();
+            this.loadData();
+          },
+          error: (err) => {
+            this.alert.showAlert('Error', err.error?.message || 'Save failed', 'error');
+          },
+        });
     }
   }
 
@@ -190,15 +204,18 @@ export class Account implements OnInit {
         accountId: row.accountId,
       };
 
-      this.apiservice.put(`api/master-accounts/update/${row.accountId}`, payload).subscribe({
-        next: () => {
-          this.alert.showAlert('Success', `Account ${actionText}d successfully`, 'success');
-          this.loadData();
-        },
-        error: (err) => {
-          this.alert.showAlert('Error', err.error?.message || 'Failed to update status', 'error');
-        },
-      });
+      this.apiservice
+        .put(`api/master-accounts/update/${row.accountId}`, payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.alert.showAlert('Success', `Account ${actionText}d successfully`, 'success');
+            this.loadData();
+          },
+          error: (err) => {
+            this.alert.showAlert('Error', err.error?.message || 'Failed to update status', 'error');
+          },
+        });
     };
 
     this.showConfirmDialog = true;
@@ -215,6 +232,7 @@ export class Account implements OnInit {
 
       this.apiservice
         .delete(`api/master-accounts/delete/${rowId}?userId=${currentUser}`)
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (res: any) => {
             if (res.status === 'SUCCESS') {

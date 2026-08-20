@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertService } from '../../../services/alertService/alert';
@@ -69,6 +70,7 @@ interface AccountOption {
   styleUrls: ['./new-receipts.scss'],
 })
 export class NewReceiptComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   @Output() cancelReceipt = new EventEmitter<void>();
 
   docInward = true;
@@ -243,7 +245,7 @@ export class NewReceiptComponent implements OnInit {
       customerNames: [this.searchModel.customerName || ''],
     };
 
-    this.apiService.post('api/receiptCheckOutstanding', payload).subscribe({
+    this.apiService.post('api/receiptCheckOutstanding', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.outstandingRecords = res || [];
         this.isOutstandingModalOpen = true;
@@ -292,7 +294,7 @@ export class NewReceiptComponent implements OnInit {
       customerName: customer,
     };
 
-    this.apiService.post('api/receiptRetrieve', payload).subscribe({
+    this.apiService.post('api/receiptRetrieve', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         if (res?.success) {
           this.handleApiResponse(res);
@@ -411,7 +413,7 @@ export class NewReceiptComponent implements OnInit {
     const payload = this.buildReceiptPayload();
     if (!payload) return;
 
-    this.apiService.post('api/receipts/confirm-payment', payload).subscribe({
+    this.apiService.post('api/receipts/confirm-payment', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.alert.showAlert('Success', 'Receipt confirmed successfully.', 'success');
         this.router.navigate(['/main/receipts']);
@@ -439,7 +441,7 @@ export class NewReceiptComponent implements OnInit {
 
   onConfirmRequest() {
     const payload = this.buildReceiptPayload();
-    this.apiService.post('api/receipts/over-payment', payload).subscribe({
+    this.apiService.post('api/receipts/over-payment', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.alert.showAlert('Success', 'Overpayment processed successfully.', 'success');
         this.router.navigate(['/main/receipts']);

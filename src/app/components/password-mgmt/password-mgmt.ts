@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AlertService } from '../../services/alertService/alert';
@@ -16,6 +17,7 @@ type Step = 'enter-email' | 'enter-token' | 'change-password';
   styleUrls: ['./password-mgmt.scss'],
 })
 export class PasswordMgmt implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   @Input() mode: 'forgot' | 'change' = 'forgot';
   @Output() close = new EventEmitter<void>();
 
@@ -62,7 +64,7 @@ export class PasswordMgmt implements OnInit {
       return;
     }
 
-    this.auth.forgotPassword(this.email).subscribe({
+    this.auth.forgotPassword(this.email).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.isLoading = false;
         this.formSubmitted = false;
@@ -124,7 +126,7 @@ export class PasswordMgmt implements OnInit {
         newPassword: this.newPassword,
         username: this.userService.getUser()?.name || this.userId,
       };
-      this.api.post(`UserManagements/users/${this.userId}/change-password`, payload).subscribe({
+      this.api.post(`UserManagements/users/${this.userId}/change-password`, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           this.isLoading = false;
           if (res?.status === 400 || res?.status === 404) {
@@ -145,7 +147,7 @@ export class PasswordMgmt implements OnInit {
         },
       });
     } else {
-      this.auth.resetPassword(this.email, this.token, this.newPassword).subscribe({
+      this.auth.resetPassword(this.email, this.token, this.newPassword).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           this.isLoading = false;
           if (res?.status !== 200) {

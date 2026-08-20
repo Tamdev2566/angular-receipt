@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -16,6 +17,7 @@ import { DatepickerComponent } from '../../shared/date-picker/date-picker';
   styleUrl: './daily-scan-report.scss',
 })
 export class DailyScanReport {
+  private readonly destroyRef = inject(DestroyRef);
   formattedFromToDate: string = '';
   formData = { readerType: 'INBOUND', fromDate: '', toDate: '' };
   gridData: any[] = [];
@@ -106,7 +108,7 @@ export class DailyScanReport {
 
     const { params } = this.buildQueryParams();
 
-    this.apiService.get('api/reports/daily-scan/getdata', { params }).subscribe({
+    this.apiService.get('api/reports/daily-scan/getdata', { params }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.gridData = res || [];
       },
@@ -124,7 +126,7 @@ export class DailyScanReport {
         params,
         responseType: 'blob' as 'json',
       })
-      .subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res: any) => {
           const blob = new Blob([res], { type: 'text/csv' });
           const url = window.URL.createObjectURL(blob);
