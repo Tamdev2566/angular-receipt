@@ -16,8 +16,7 @@
   height: calc(100vh - 340px) !important;
   overflow: auto;
   padding-top: 5px;
-  // Keep the final page's cards at their content height instead of stretching
-  // each grid row to fill the available scroll area.
+
   grid-auto-rows: max-content;
   align-content: start;
   align-items: start;
@@ -31,8 +30,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  // A grid container with a fixed scroll height may otherwise stretch the
-  // last row. Keep every card as tall as its actual contents only.
+
   height: fit-content;
   min-height: 0;
   align-self: start;
