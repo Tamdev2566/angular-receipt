@@ -83,6 +83,9 @@ export class ReceiptComponent implements OnInit {
 
   ngOnInit() {
     this.menuAccessService.checkPermissionForUrl(this.router.url);
+    this.undoService.receiptActionCompleted
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.closeModalAndReload());
     this.loadReceipts();
   }
 
@@ -206,6 +209,11 @@ export class ReceiptComponent implements OnInit {
     this.stateService.setModalState(false);
     this.undoService.clearInvoice();
     this.undoService.clearRemoveInvoice();
+  }
+
+  private closeModalAndReload(): void {
+    this.closeModal();
+    this.loadReceipts();
   }
 
   triggerToast(msg: string) {

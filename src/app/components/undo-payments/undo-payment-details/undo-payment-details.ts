@@ -176,8 +176,8 @@ export class UndoPaymentDetails implements OnInit {
           'success',
         );
         this.selectedRecords = [];
-        // this.retrieveReceipt();
         this.onCancel();
+        this.undogGlobalService.notifyReceiptActionCompleted();
       },
       error: (error) => {
         this.alert.showAlert(

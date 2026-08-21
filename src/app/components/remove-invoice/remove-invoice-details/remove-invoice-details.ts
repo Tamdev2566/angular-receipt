@@ -114,9 +114,9 @@ export class RemoveInvoiceDetails implements OnInit {
     this.invoiceService.removeInvoices(referenceNos, user.name, this.remark).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.alertService.showAlert('Success', res.message, 'success');
-        this.retrieveInvoice();
         this.onCancel();
         this.remark = '';
+        this.undogGlobalService.notifyReceiptActionCompleted();
       },
       error: (err) => {
         this.alertService.showAlert('Error', err.error.message, 'error');

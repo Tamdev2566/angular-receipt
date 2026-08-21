@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { ApiService } from '../api.service';
 
 @Injectable({
@@ -8,9 +8,11 @@ import { ApiService } from '../api.service';
 export class UndoService {
   private invoiceSource = new BehaviorSubject<Record<string, any> | null>(null);
   private invoiceRemoveSource = new BehaviorSubject<Record<string, any> | null>(null);
+  private receiptActionCompletedSource = new Subject<void>();
 
   currentInvoice = this.invoiceSource.asObservable();
   currentRemoveInvoice = this.invoiceRemoveSource.asObservable();
+  receiptActionCompleted = this.receiptActionCompletedSource.asObservable();
   apiService = inject(ApiService);
 
   setInvoice(data: Record<string, any>): void {
@@ -50,5 +52,9 @@ export class UndoService {
 
   clearRemoveInvoice(): void {
     this.invoiceRemoveSource.next(null);
+  }
+
+  notifyReceiptActionCompleted(): void {
+    this.receiptActionCompletedSource.next();
   }
 }

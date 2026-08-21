@@ -9,7 +9,8 @@
 
 .summary-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
+  grid-template-rows: max-content;
   gap: 12px;
   margin-top: 16px;
   height: calc(100vh - 340px) !important;
@@ -30,7 +31,11 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  height: max-content;
+  // A grid container with a fixed scroll height may otherwise stretch the
+  // last row. Keep every card as tall as its actual contents only.
+  height: fit-content;
+  min-height: 0;
+  align-self: start;
   transition: 0.3s;
   letter-spacing: 0.075em;
 }
