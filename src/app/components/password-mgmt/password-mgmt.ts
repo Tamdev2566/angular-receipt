@@ -64,25 +64,28 @@ export class PasswordMgmt implements OnInit {
       return;
     }
 
-    this.auth.forgotPassword(this.email).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.formSubmitted = false;
-        this.currentStep = 'enter-token';
-        this.alertService.showAlert(
-          'Token Sent',
-          'A 6-digit token has been sent to your email. It expires in 15 minutes.',
-          'success',
-        );
-      },
-      error: (err) => {
-        this.alertService.showAlert(
-          'Error',
-          err?.error?.message || 'Failed to send token.',
-          'error',
-        );
-      },
-    });
+    this.auth
+      .forgotPassword(this.email)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.formSubmitted = false;
+          this.currentStep = 'enter-token';
+          this.alertService.showAlert(
+            'Token Sent',
+            'A 6-digit token has been sent to your email. It expires in 15 minutes.',
+            'success',
+          );
+        },
+        error: (err) => {
+          this.alertService.showAlert(
+            'Error',
+            err?.error?.message || 'Failed to send token.',
+            'error',
+          );
+        },
+      });
   }
 
   onSubmitPassword(form: NgForm) {
@@ -126,50 +129,56 @@ export class PasswordMgmt implements OnInit {
         newPassword: this.newPassword,
         username: this.userService.getUser()?.name || this.userId,
       };
-      this.api.post(`UserManagements/users/${this.userId}/change-password`, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (res: any) => {
-          this.isLoading = false;
-          if (res?.status === 400 || res?.status === 404) {
-            this.alertService.showAlert('Error', res.message, 'error');
-            return;
-          }
-          localStorage.removeItem('passwordExpired');
-          this.alertService.showAlert('Success', 'Password has been changed.', 'success');
-          this.closeModal();
-        },
-        error: (err: any) => {
-          this.isLoading = false;
-          this.alertService.showAlert(
-            'Error',
-            err?.error?.message || 'Failed to update password.',
-            'error',
-          );
-        },
-      });
+      this.api
+        .post(`UserManagements/users/${this.userId}/change-password`, payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (res: any) => {
+            this.isLoading = false;
+            if (res?.status === 400 || res?.status === 404) {
+              this.alertService.showAlert('Error', res.message, 'error');
+              return;
+            }
+            localStorage.removeItem('passwordExpired');
+            this.alertService.showAlert('Success', 'Password has been changed.', 'success');
+            this.closeModal();
+          },
+          error: (err: any) => {
+            this.isLoading = false;
+            this.alertService.showAlert(
+              'Error',
+              err?.error?.message || 'Failed to update password.',
+              'error',
+            );
+          },
+        });
     } else {
-      this.auth.resetPassword(this.email, this.token, this.newPassword).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (res: any) => {
-          this.isLoading = false;
-          if (res?.status !== 200) {
-            this.alertService.showAlert('Error', res?.message || 'Reset failed.', 'error');
-            return;
-          }
-          this.alertService.showAlert(
-            'Success',
-            'Password reset successfully. You can now log in.',
-            'success',
-          );
-          this.closeModal();
-        },
-        error: (err: any) => {
-          this.isLoading = false;
-          this.alertService.showAlert(
-            'Error',
-            err?.error?.message || 'Failed to reset password.',
-            'error',
-          );
-        },
-      });
+      this.auth
+        .resetPassword(this.email, this.token, this.newPassword)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (res: any) => {
+            this.isLoading = false;
+            if (res?.status !== 200) {
+              this.alertService.showAlert('Error', res?.message || 'Reset failed.', 'error');
+              return;
+            }
+            this.alertService.showAlert(
+              'Success',
+              'Password reset successfully. You can now log in.',
+              'success',
+            );
+            this.closeModal();
+          },
+          error: (err: any) => {
+            this.isLoading = false;
+            this.alertService.showAlert(
+              'Error',
+              err?.error?.message || 'Failed to reset password.',
+              'error',
+            );
+          },
+        });
     }
   }
 

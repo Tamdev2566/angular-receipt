@@ -100,7 +100,8 @@ export class ReceiptComponent implements OnInit {
           this.cdr.detectChanges();
         }),
       )
-      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: (res: Receipt[] | ReceiptResponse) => {
           this.receipts = Array.isArray(res) ? res : (res.data ?? res.content ?? res.items ?? []);
           this.filteredReceipts = [...this.receipts];

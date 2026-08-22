@@ -90,14 +90,17 @@ export class UpdatedTtRefReport {
     this.isSubmitted = false;
     const fromDateApi = this.formatForApi(this.reportForm.fromDate);
     const toDateApi = this.formatForApi(this.reportForm.toDate);
-    this.apiservice.getReport('api/reports/updated-tt/getdata', fromDateApi, toDateApi).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        this.gridData = res || [];
-      },
-      error: (err: any) => {
-        this.alert.showAlert('Error', err.error.message, 'error');
-      },
-    });
+    this.apiservice
+      .getReport('api/reports/updated-tt/getdata', fromDateApi, toDateApi)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.gridData = res || [];
+        },
+        error: (err: any) => {
+          this.alert.showAlert('Error', err.error.message, 'error');
+        },
+      });
   }
 
   onDownloadClick() {
@@ -105,7 +108,8 @@ export class UpdatedTtRefReport {
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice
       .downloadReport('api/reports/updated-tt/download', fromDateApi, toDateApi)
-      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: (res: Blob) => {
           this.apiservice.exportToExcel(res, 'UpdateTTRefReoprt', fromDateApi, toDateApi);
         },

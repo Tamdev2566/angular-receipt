@@ -66,23 +66,26 @@ export class RemoveInvoiceDetails implements OnInit {
   }
 
   ngOnInit() {
-    this.undogGlobalService.currentRemoveInvoice.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((invoiceData) => {
-      if (invoiceData?.['customer_name']) {
-        this.retrieve.customerName = invoiceData['customer_name'];
-        this.retrieve.vesselName = invoiceData['vessel_name'];
-        this.retrieve.voyageNo = invoiceData['voyage_no'];
+    this.undogGlobalService.currentRemoveInvoice
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((invoiceData) => {
+        if (invoiceData?.['customer_name']) {
+          this.retrieve.customerName = invoiceData['customer_name'];
+          this.retrieve.vesselName = invoiceData['vessel_name'];
+          this.retrieve.voyageNo = invoiceData['voyage_no'];
 
-        this.invoiceService
-          .searchInvoices(
-            this.retrieve.customerName,
-            this.retrieve.vesselName,
-            this.retrieve.voyageNo,
-          )
-          .pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
-            this.invoiceGrid = res;
-          });
-      }
-    });
+          this.invoiceService
+            .searchInvoices(
+              this.retrieve.customerName,
+              this.retrieve.vesselName,
+              this.retrieve.voyageNo,
+            )
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((res) => {
+              this.invoiceGrid = res;
+            });
+        }
+      });
 
     this.menuAccessService.checkPermissionForUrl(this.router.url);
   }
@@ -90,7 +93,8 @@ export class RemoveInvoiceDetails implements OnInit {
   retrieveInvoice() {
     this.invoiceService
       .searchInvoices(this.retrieve.customerName, this.retrieve.vesselName, this.retrieve.voyageNo)
-      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
         this.invoiceGrid = res;
       });
   }
@@ -111,17 +115,21 @@ export class RemoveInvoiceDetails implements OnInit {
     const referenceNos = selectedRecords.map((row) => row.reference_no);
     const user = this.userService.getUser();
 
-    this.invoiceService.removeInvoices(referenceNos, user.name, this.remark).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        this.alertService.showAlert('Success', res.message, 'success');
-        this.onCancel();
-        this.remark = '';
-        this.undogGlobalService.notifyReceiptActionCompleted();
-      },
-      error: (err) => {
-        this.alertService.showAlert('Error', err.error.message, 'error');
-      },
-    });
+    this.invoiceService
+      .removeInvoices(referenceNos, user.name, this.remark)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.alertService.showAlert('Success', res.message, 'success');
+          this.onCancel();
+          this.remark = '';
+          this.retrieveInvoice();
+          this.undogGlobalService.notifyReceiptActionCompleted();
+        },
+        error: (err) => {
+          this.alertService.showAlert('Error', err.error.message, 'error');
+        },
+      });
   }
   onCancel() {
     // history.back();

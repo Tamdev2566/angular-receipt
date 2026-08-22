@@ -26,7 +26,6 @@ export class Account implements OnInit {
   private alert = inject(AlertService);
   private menuAccessService = inject(MenuAccessService);
   private apiservice = inject(ApiService);
-  private http = inject(HttpClient);
 
   datePipe = new DatePipe('en-US');
 
@@ -44,14 +43,14 @@ export class Account implements OnInit {
   gridData: any[] = [];
 
   gridColumns: ColumnDef[] = [
-    { label: 'Office Code', field: 'officeCode', width: '120px' },
-    { label: 'Acc Code', field: 'accountCode', width: '140px' },
-    { label: 'Acc Display Name', field: 'accountDisplayName', width: '200px' },
-    { label: 'Currency', field: 'accountCurrency', width: '100px' },
-    { label: 'Payment Mode', field: 'accountPaymentMode', width: '130px' },
-    { label: 'Status', field: 'isValid', width: '100px' },
-    { label: 'Created By', field: 'userCreated', width: '100px' },
-    { label: 'Created Date', field: 'dateCreated', width: '100px' },
+    { label: 'Acc Code', field: 'accountCode', width: '100px' },
+    { label: 'Acc Display Name', field: 'accountDisplayName', width: '150px', align: 'center' },
+    { label: 'Currency', field: 'accountCurrency', width: '100px', align: 'center' },
+    { label: 'Payment Mode', field: 'accountPaymentMode', width: '130px', align: 'center' },
+    { label: 'Status', field: 'isValid', width: '80px', align: 'center' },
+    { label: 'Office Code', field: 'officeCode', width: '120px', align: 'center' },
+    { label: 'Created By', field: 'userCreated', width: '140px', align: 'center' },
+    { label: 'Created Date', field: 'dateCreated', width: '140px', align: 'center' },
   ];
 
   showConfirmDialog: boolean = false;
@@ -74,7 +73,12 @@ export class Account implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res: any) => {
-          this.gridData = res.data || [];
+          const response = res.data.map((r: any) => ({
+            ...r,
+            isValid: r.isValid === '1' ? 'Active' : 'Inactive',
+          }));
+
+          this.gridData = response || [];
         },
         error: (err) => {
           this.alert.showAlert('Error', err.error?.message || 'Failed to load data', 'error');
@@ -107,7 +111,7 @@ export class Account implements OnInit {
     }
 
     const user = this.userService.getUser();
-    const currentUser = user?.name || 'prabhu';
+    const currentUser = user?.name;
 
     const payload: any = {
       accountCurrency: this.formData.currency,
@@ -187,7 +191,7 @@ export class Account implements OnInit {
   }
 
   toggleStatus(row: any): void {
-    const newIsValid = row.isValid === '1' ? '0' : '1';
+    const newIsValid = row.isValid === 'Active' ? '0' : '1';
     const actionText = newIsValid === '1' ? 'Activate' : 'Deactivate';
 
     this.confirmTitle = 'Confirm Action';

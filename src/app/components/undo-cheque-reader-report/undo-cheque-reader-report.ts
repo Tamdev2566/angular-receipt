@@ -85,14 +85,17 @@ export class UndoChequeReaderReport {
 
     const fromDateApi = this.formatForApi(this.reportForm.fromDate);
     const toDateApi = this.formatForApi(this.reportForm.toDate);
-    this.apiservice.getReport('api/reports/undo-cheque/getdata', fromDateApi, toDateApi).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        this.gridData = res || [];
-      },
-      error: (err) => {
-        this.alert.showAlert('Error', err.error.message, 'error');
-      },
-    });
+    this.apiservice
+      .getReport('api/reports/undo-cheque/getdata', fromDateApi, toDateApi)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.gridData = res || [];
+        },
+        error: (err) => {
+          this.alert.showAlert('Error', err.error.message, 'error');
+        },
+      });
   }
 
   onDownloadClick() {
@@ -100,7 +103,8 @@ export class UndoChequeReaderReport {
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice
       .downloadReport('api/reports/undo-cheque/download', fromDateApi, toDateApi)
-      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: (res: Blob) => {
           this.apiservice.exportToExcel(res, 'UndoChequeReaderReport', fromDateApi, toDateApi);
         },

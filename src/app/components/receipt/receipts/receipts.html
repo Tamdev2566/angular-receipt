@@ -17,10 +17,6 @@
         <button class="btn btn-flat-action-secondary" (click)="onPrintClick()">
           <i class="bi bi-file-earmark-arrow-down-fill"></i> Export to Excel
         </button>
-
-        <!-- <button class="btn btn-flat-action-secondary" (click)="onClickHistory()">
-          <i class="fa-solid fa-history small"></i> History
-        </button> -->
       </div>
 
       <div class="search-flat-wrapper">
@@ -34,7 +30,7 @@
         <button type="button" class="btn-search-flat-go" (click)="onSearch()">Go</button>
       </div>
     </div>
-    <!-- Summary Card here-->
+
     <div class="main-container">
       <p *ngIf="loading" class="text-muted text-center py-4 mb-0">Loading receipts…</p>
       <p *ngIf="!loading && !filteredReceipts.length" class="text-muted text-center py-4 mb-0">

@@ -131,9 +131,9 @@
         </app-icon-button>
 
         <app-icon-button
-          [iconClass]="row.isValid === '1' ? 'bi bi-toggle-on' : 'bi bi-toggle-off'"
-          [colorClass]="row.isValid === '1' ? 'text-success' : 'text-danger'"
-          [title]="row.isValid === '1' ? 'Deactivate' : 'Activate'"
+          [iconClass]="row.isValid === 'Active' ? 'bi bi-toggle-on' : 'bi bi-toggle-off'"
+          [colorClass]="row.isValid === 'Active' ? 'text-success' : 'text-danger'"
+          [title]="row.isValid === 'Active' ? 'Deactivate' : 'Activate'"
           [customStyle]="{ 'margin-right': '8px' }"
           (onClick)="toggleStatus(row)"
         >

@@ -76,7 +76,8 @@ export class RemovedInvoiceReport {
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice
       .getReport('api/reports/removed-invoice/getdata', fromDateApi, toDateApi)
-      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: (res: any) => {
           this.gridData = res || [];
         },
@@ -92,7 +93,8 @@ export class RemovedInvoiceReport {
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice
       .downloadReport('api/reports/removed-invoice/download', fromDateApi, toDateApi)
-      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: (res: Blob) => {
           this.apiservice.exportToExcel(res, 'RemovedInvoiceReport', fromDateApi, toDateApi);
         },

@@ -59,12 +59,15 @@ export class UpdateTtReference implements OnInit {
 
     this.isSubmitted = false;
 
-    this.ttrefService.searchTT(this.retrieve.ttRefNo.trim()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        this.receipt = res;
-      },
-      error: (err) => {},
-    });
+    this.ttrefService
+      .searchTT(this.retrieve.ttRefNo.trim())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.receipt = res;
+        },
+        error: (err) => {},
+      });
   }
 
   updateTTReference(): void {
@@ -94,15 +97,18 @@ export class UpdateTtReference implements OnInit {
       userId: this.user.getUser().name,
     };
 
-    this.ttrefService.updateTT(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: ({ message }: any) => {
-        this.alert.showAlert('Success', message, 'success');
-        this.onCancel();
-      },
-      error: (err) => {
-        this.alert.showAlert('Error', err.error?.message || 'Something went wrong!', 'error');
-      },
-    });
+    this.ttrefService
+      .updateTT(payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ message }: any) => {
+          this.alert.showAlert('Success', message, 'success');
+          this.onCancel();
+        },
+        error: (err) => {
+          this.alert.showAlert('Error', err.error?.message || 'Something went wrong!', 'error');
+        },
+      });
   }
 
   onCancel(): void {

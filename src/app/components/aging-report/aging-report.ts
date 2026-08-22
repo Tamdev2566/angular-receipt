@@ -69,20 +69,24 @@ export class AgingReport {
       this.alert.showAlert('Error', 'Please Select the Aging Report Days!', 'error');
       return;
     }
-    this.apiservice.getAgingReport('api/reports/aging/getdata', this.formData.agingDays).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        this.gridData = res || [];
-      },
-      error: (err) => {
-        this.alert.showAlert('Error', err.error.message, 'error');
-      },
-    });
+    this.apiservice
+      .getAgingReport('api/reports/aging/getdata', this.formData.agingDays)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.gridData = res || [];
+        },
+        error: (err) => {
+          this.alert.showAlert('Error', err.error.message, 'error');
+        },
+      });
   }
 
   onDownloadClick() {
     this.apiservice
       .downloadAgingReport('api/reports/aging/download', this.formData.agingDays)
-      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: (res: Blob) => {
           this.apiservice.exportToExcelAging(
             res,

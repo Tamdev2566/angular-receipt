@@ -45,13 +45,13 @@ export class ChequeReaderInfo implements OnInit {
   gridData: any[] = [];
 
   gridColumns: ColumnDef[] = [
-    { label: 'Id', field: 'id', width: '50px' },
+    { label: 'Id', field: 'id', width: '50px', align: 'center' },
     { label: 'Bank Name', field: 'bankName', width: '140px', align: 'center' },
-    { label: 'Cheque No', field: 'chequeNo', width: '160px' },
+    { label: 'Cheque No', field: 'chequeNo', width: '100px' },
     { label: 'Full Cheque No', field: 'fullChequeNo', width: '160px' },
-    { label: 'Bound Type', field: 'bound', width: '160px', align: 'center' },
-    { label: 'Created User', field: 'scanUserId', width: '120px' },
-    { label: 'Created Date', field: 'createTime', width: '120px' },
+    { label: 'Bound Type', field: 'bound', width: '100px', align: 'center' },
+    { label: 'Created User', field: 'scanUserId', width: '140px', align: 'center' },
+    { label: 'Created Date', field: 'createTime', width: '140px', align: 'center' },
   ];
 
   showConfirmDialog: boolean = false;
@@ -123,14 +123,20 @@ export class ChequeReaderInfo implements OnInit {
   loadData() {
     const payload = {};
 
-    this.apiService.post('api/cheque/list', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        this.gridData = res.data;
-      },
-      error: (err) => {
-        this.alert.showAlert('Error', err.error.message, 'error');
-      },
-    });
+    this.apiService
+      .post('api/cheque/list', payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.gridData = res.data.map((r: any) => ({
+            ...r,
+            bound: r.bound === 'I' ? 'Inbound' : r.bound === 'O' ? 'Outbound' : 'Both',
+          }));
+        },
+        error: (err) => {
+          this.alert.showAlert('Error', err.error.message, 'error');
+        },
+      });
   }
 
   validateFullCheque(): void {
@@ -197,27 +203,33 @@ export class ChequeReaderInfo implements OnInit {
     if (this.editingId) {
       payload.id = this.editingId;
 
-      this.apiService.post('api/cheque/updateCheque', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (res: any) => {
-          this.alert.showAlert('Success', 'Record updated successfully!', 'success');
-          this.onCancel();
-          this.loadData();
-        },
-        error: (err) => {
-          this.alert.showAlert('Error', err.error?.message || 'Update failed', 'error');
-        },
-      });
+      this.apiService
+        .post('api/cheque/updateCheque', payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (res: any) => {
+            this.alert.showAlert('Success', 'Record updated successfully!', 'success');
+            this.onCancel();
+            this.loadData();
+          },
+          error: (err) => {
+            this.alert.showAlert('Error', err.error?.message || 'Update failed', 'error');
+          },
+        });
     } else {
-      this.apiService.post('api/cheque/save', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (res: any) => {
-          this.alert.showAlert('Success', 'Record saved successfully!', 'success');
-          this.onCancel();
-          this.loadData();
-        },
-        error: (err) => {
-          this.alert.showAlert('Error', err.error?.message || 'Save failed', 'error');
-        },
-      });
+      this.apiService
+        .post('api/cheque/save', payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (res: any) => {
+            this.alert.showAlert('Success', 'Record saved successfully!', 'success');
+            this.onCancel();
+            this.loadData();
+          },
+          error: (err) => {
+            this.alert.showAlert('Error', err.error?.message || 'Save failed', 'error');
+          },
+        });
     }
   }
 
@@ -266,15 +278,18 @@ export class ChequeReaderInfo implements OnInit {
         isValid: newIsValid,
       };
 
-      this.apiService.post('api/cheque/updateCheque', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (res: any) => {
-          this.alert.showAlert('Success', `Record ${actionText}d successfully`, 'success');
-          this.loadData();
-        },
-        error: (err) => {
-          this.alert.showAlert('Error', err.error?.message || 'Failed to update status', 'error');
-        },
-      });
+      this.apiService
+        .post('api/cheque/updateCheque', payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (res: any) => {
+            this.alert.showAlert('Success', `Record ${actionText}d successfully`, 'success');
+            this.loadData();
+          },
+          error: (err) => {
+            this.alert.showAlert('Error', err.error?.message || 'Failed to update status', 'error');
+          },
+        });
     };
 
     this.showConfirmDialog = true;
@@ -288,15 +303,18 @@ export class ChequeReaderInfo implements OnInit {
     this.confirmAction = () => {
       const payload = { id: appId };
 
-      this.apiService.post('api/cheque/updateCheque', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (res: any) => {
-          this.alert.showAlert('Success', 'Record deleted successfully', 'success');
-          this.loadData();
-        },
-        error: (err) => {
-          this.alert.showAlert('Error', err.error?.message || 'Failed to delete record', 'error');
-        },
-      });
+      this.apiService
+        .post('api/cheque/updateCheque', payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (res: any) => {
+            this.alert.showAlert('Success', 'Record deleted successfully', 'success');
+            this.loadData();
+          },
+          error: (err) => {
+            this.alert.showAlert('Error', err.error?.message || 'Failed to delete record', 'error');
+          },
+        });
     };
 
     this.showConfirmDialog = true;

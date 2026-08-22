@@ -3,6 +3,7 @@ import { HttpClient, HttpContext } from '@angular/common/http';
 import {
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   HostListener,
@@ -13,7 +14,9 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
+  inject,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -83,6 +86,7 @@ export class Combobox implements OnInit, OnChanges, OnDestroy {
   private suppressSearch = false;
   private searchSubject = new Subject<string>();
   private searchSubscription?: Subscription;
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private http: HttpClient,
@@ -232,6 +236,7 @@ export class Combobox implements OnInit, OnChanges, OnDestroy {
         .post(apiUrl, body, {
           context: new HttpContext().set(SKIP_LOADER, true),
         })
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: success,
           error,
@@ -241,6 +246,7 @@ export class Combobox implements OnInit, OnChanges, OnDestroy {
         .selfGet(apiUrl, {
           context: new HttpContext().set(SKIP_LOADER, true),
         })
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: success,
           error,
@@ -250,6 +256,7 @@ export class Combobox implements OnInit, OnChanges, OnDestroy {
         .get(apiUrl, {
           context: new HttpContext().set(SKIP_LOADER, true),
         })
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: success,
           error,

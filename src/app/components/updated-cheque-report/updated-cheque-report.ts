@@ -95,7 +95,8 @@ export class UpdatedChequeReport {
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice
       .getReport('api/reports/updated-cheque/getdata', fromDateApi, toDateApi)
-      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: (res: any) => {
           this.isSubmitted = false;
           this.gridData = res || [];
@@ -112,7 +113,8 @@ export class UpdatedChequeReport {
     const toDateApi = this.formatForApi(this.reportForm.toDate);
     this.apiservice
       .downloadReport('api/reports/updated-cheque/download', fromDateApi, toDateApi)
-      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: (res: Blob) => {
           this.apiservice.exportToExcel(res, 'UpdatedChequeReport', fromDateApi, toDateApi);
         },

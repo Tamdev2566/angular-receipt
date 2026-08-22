@@ -61,22 +61,25 @@ export class UpdateCheque implements OnInit {
 
     this.isSubmitted = false;
 
-    this.updateChequeService.searchCheque(this.retrieve.chequeNo.trim()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        this.receipt = {
-          transactionNo: res.transaction_no || '',
-          customerName: res.customer_name || '',
-          referenceNo: res.reference_no || '',
-          currency: res.currency_code || '',
-          amount: res.amount !== undefined ? res.amount.toString() : '',
-          paidInvoiceTotal:
-            res.paid_invoice_total !== undefined ? res.paid_invoice_total.toString() : '',
-        };
-      },
-      error: (err: any) => {
-        this.alert.showAlert('Error', err.error?.message || 'Something went wrong!', 'error');
-      },
-    });
+    this.updateChequeService
+      .searchCheque(this.retrieve.chequeNo.trim())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.receipt = {
+            transactionNo: res.transaction_no || '',
+            customerName: res.customer_name || '',
+            referenceNo: res.reference_no || '',
+            currency: res.currency_code || '',
+            amount: res.amount !== undefined ? res.amount.toString() : '',
+            paidInvoiceTotal:
+              res.paid_invoice_total !== undefined ? res.paid_invoice_total.toString() : '',
+          };
+        },
+        error: (err: any) => {
+          this.alert.showAlert('Error', err.error?.message || 'Something went wrong!', 'error');
+        },
+      });
   }
 
   updateCheque(): void {
@@ -102,15 +105,18 @@ export class UpdateCheque implements OnInit {
       userId: this.user.getUser().name,
     };
 
-    this.updateChequeService.updateCheque(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        this.alert.showAlert('Success', 'Cheque Number Updated Successfully', 'success');
-        this.onCancel();
-      },
-      error: (err) => {
-        this.alert.showAlert('Error', err.error?.message || 'Something went wrong!', 'error');
-      },
-    });
+    this.updateChequeService
+      .updateCheque(payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.alert.showAlert('Success', 'Cheque Number Updated Successfully', 'success');
+          this.onCancel();
+        },
+        error: (err) => {
+          this.alert.showAlert('Error', err.error?.message || 'Something went wrong!', 'error');
+        },
+      });
   }
 
   onCancel(): void {

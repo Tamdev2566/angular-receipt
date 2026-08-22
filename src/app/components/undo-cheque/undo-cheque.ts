@@ -66,7 +66,8 @@ export class UndoCheque implements OnInit {
 
     this.chequeService
       .searchCheque(String(this.retrieve.chequeNo), String(this.retrieve.fullCheque))
-      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: (res: any) => {
           this.chequeDetails = res ?? { bound: '', bank_name: '', scan_user_id: '' };
         },
@@ -91,16 +92,19 @@ export class UndoCheque implements OnInit {
       userId: String(this.loginUser.getUser()?.name || ''),
     };
 
-    this.chequeService.undoCheque(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        this.alert.showAlert('Success', res?.message || 'Cheque undone successfully', 'success');
-        this.onCancel(undoForm);
-      },
-      error: (err: any) => {
-        console.error('Failed to undo cheque', err);
-        this.alert.showAlert('Error', err?.error.message || 'Failed to undo cheque', 'error');
-      },
-    });
+    this.chequeService
+      .undoCheque(payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.alert.showAlert('Success', res?.message || 'Cheque undone successfully', 'success');
+          this.onCancel(undoForm);
+        },
+        error: (err: any) => {
+          console.error('Failed to undo cheque', err);
+          this.alert.showAlert('Error', err?.error.message || 'Failed to undo cheque', 'error');
+        },
+      });
   }
 
   onCancel(undoForm?: NgForm): void {

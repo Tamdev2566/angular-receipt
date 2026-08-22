@@ -74,20 +74,24 @@ export class EdiToCoda implements OnInit {
     const fromDateApi = this.formatForApi(this.fromDate);
     const toDateApi = this.formatForApi(this.toDate);
 
-    this.apiservice.postEdiToCoda('api/ediCoda/export', fromDateApi, toDateApi).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        if (res.status.match(/SUCCESS/)) {
-          this.alert.showAlert('Success', res.message, 'success');
-          this.gridData = [];
-        } else {
-          this.alert.showAlert('Error', res.message, 'error');
-        }
-      },
-      error: (err) => {
-        const errorMessage = err?.error?.message || 'Something went wrong while fetching reports.';
-        this.alert.showAlert('Error', errorMessage, 'error');
-      },
-    });
+    this.apiservice
+      .postEdiToCoda('api/ediCoda/export', fromDateApi, toDateApi)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          if (res.status.match(/SUCCESS/)) {
+            this.alert.showAlert('Success', res.message, 'success');
+            this.gridData = [];
+          } else {
+            this.alert.showAlert('Error', res.message, 'error');
+          }
+        },
+        error: (err) => {
+          const errorMessage =
+            err?.error?.message || 'Something went wrong while fetching reports.';
+          this.alert.showAlert('Error', errorMessage, 'error');
+        },
+      });
   }
 
   onCancel() {
@@ -107,17 +111,21 @@ export class EdiToCoda implements OnInit {
     const fromDateApi = this.formatForApi(this.fromDate);
     const toDateApi = this.formatForApi(this.toDate);
 
-    this.apiservice.getReport('api/ediCoda/retrieve', fromDateApi, toDateApi).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        if (res.length) {
-          this.gridData = res || [];
-        }
-      },
-      error: (err) => {
-        const errorMessage = err?.error?.message || 'Something went wrong while fetching reports.';
-        this.alert.showAlert('Error', errorMessage, 'error');
-      },
-    });
+    this.apiservice
+      .getReport('api/ediCoda/retrieve', fromDateApi, toDateApi)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          if (res.length) {
+            this.gridData = res || [];
+          }
+        },
+        error: (err) => {
+          const errorMessage =
+            err?.error?.message || 'Something went wrong while fetching reports.';
+          this.alert.showAlert('Error', errorMessage, 'error');
+        },
+      });
   }
 
   onDownloadClick() {

@@ -118,24 +118,26 @@ export class DashboardComponent implements OnInit {
       summary: this.dashboardService.getReceiptSummary(),
       kpis: this.dashboardService.getKPIs(),
       receipts: this.dashboardService.getRecentReceipts(),
-    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        if (res.summary?.success) {
-          this.summaryData.set(res.summary);
-          this.updateBarChart(res.summary);
-          this.updateDonutChart(res.summary);
-        }
+    })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          if (res.summary?.success) {
+            this.summaryData.set(res.summary);
+            this.updateBarChart(res.summary);
+            this.updateDonutChart(res.summary);
+          }
 
-        this.kpiData.set(res.kpis);
-        this.recentReceipts.set(res.receipts);
-        this.gridData = res.receipts;
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Error fetching dashboard data', err);
-        this.isLoading.set(false);
-      },
-    });
+          this.kpiData.set(res.kpis);
+          this.recentReceipts.set(res.receipts);
+          this.gridData = res.receipts;
+          this.isLoading.set(false);
+        },
+        error: (err) => {
+          console.error('Error fetching dashboard data', err);
+          this.isLoading.set(false);
+        },
+      });
   }
 
   // setFilter(filter: 'today' | 'monthly' | 'yearly') {

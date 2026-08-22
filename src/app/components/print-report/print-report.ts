@@ -138,60 +138,63 @@ export class PrintReport implements OnInit {
       reportFor: this.selectedReportFor,
     };
 
-    this.apiService.post('api/receipts/getReports', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        if (res && (Array.isArray(res) ? res.length > 0 : true)) {
-          const rawList = Array.isArray(res) ? res : res?.details || [];
+    this.apiService
+      .post('api/receipts/getReports', payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          if (res && (Array.isArray(res) ? res.length > 0 : true)) {
+            const rawList = Array.isArray(res) ? res : res?.details || [];
 
-          const parseAmount = (val: any): number => {
-            if (val === null || val === undefined) return 0;
-            const num = typeof val === 'string' ? parseFloat(val.replace(/,/g, '')) : Number(val);
-            return isNaN(num) ? 0 : num;
-          };
+            const parseAmount = (val: any): number => {
+              if (val === null || val === undefined) return 0;
+              const num = typeof val === 'string' ? parseFloat(val.replace(/,/g, '')) : Number(val);
+              return isNaN(num) ? 0 : num;
+            };
 
-          const mappedDetails: ReceiptItem[] = rawList.map((item: any, index: number) => ({
-            seqNo: index + 1,
-            transactionNo: item.transactionNo || 'N/A',
-            customerName: item.customer || 'N/A',
-            description: `Ref: ${item.referenceNo || 'N/A'} | Bank: ${item.bank || 'N/A'}`,
-            currency: item.currencyCode || this.selectedCurrency || 'SGD',
-            amount: parseAmount(item.amount).toLocaleString('en-US', {
+            const mappedDetails: ReceiptItem[] = rawList.map((item: any, index: number) => ({
+              seqNo: index + 1,
+              transactionNo: item.transactionNo || 'N/A',
+              customerName: item.customer || 'N/A',
+              description: `Ref: ${item.referenceNo || 'N/A'} | Bank: ${item.bank || 'N/A'}`,
+              currency: item.currencyCode || this.selectedCurrency || 'SGD',
+              amount: parseAmount(item.amount).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }),
+            }));
+
+            const totalAmount = rawList.reduce((acc: number, item: any) => {
+              return acc + parseAmount(item.amount);
+            }, 0);
+
+            const formattedTotal = totalAmount.toLocaleString('en-US', {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
-            }),
-          }));
+            });
 
-          const totalAmount = rawList.reduce((acc: number, item: any) => {
-            return acc + parseAmount(item.amount);
-          }, 0);
+            const firstItem = rawList[0] || {};
 
-          const formattedTotal = totalAmount.toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          });
+            this.htmlTemplate = reportPrint({
+              receiptNo: firstItem.transactionNo || '',
+              txtTitle: 'OFFICIAL PAYMENT RECEIPT',
+              receiptDate: this.transactionDate || firstItem.receiptDate || '',
+              paymentMethod: firstItem.paymentMode,
+              customerName: firstItem.customer || '',
+              customerAddress: res?.customerAddress || '',
+              txtUserID: firstItem.createdUser || this.selectedReportFor,
+              txtTotal: formattedTotal,
+              details: mappedDetails,
+            });
 
-          const firstItem = rawList[0] || {};
-
-          this.htmlTemplate = reportPrint({
-            receiptNo: firstItem.transactionNo || '',
-            txtTitle: 'OFFICIAL PAYMENT RECEIPT',
-            receiptDate: this.transactionDate || firstItem.receiptDate || '',
-            paymentMethod: firstItem.paymentMode,
-            customerName: firstItem.customer || '',
-            customerAddress: res?.customerAddress || '',
-            txtUserID: firstItem.createdUser || this.selectedReportFor,
-            txtTotal: formattedTotal,
-            details: mappedDetails,
-          });
-
-          this.isModalOpen = true;
-        } else {
-          console.warn('No records returned from API');
-        }
-      },
-      error: (err) => {
-        console.error('Failed to retrieve report:', err);
-      },
-    });
+            this.isModalOpen = true;
+          } else {
+            console.warn('No records returned from API');
+          }
+        },
+        error: (err) => {
+          console.error('Failed to retrieve report:', err);
+        },
+      });
   }
 }

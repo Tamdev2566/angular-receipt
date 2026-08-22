@@ -104,7 +104,7 @@
           </div>
 
           <div class="col-12 col-sm-6 col-md-2">
-            <label class="form-label fw-bold custom-flat-label mb-2"> Currency: </label>
+            <label class="form-label fw-bold custom-flat-label mb-1.5"> Currency: </label>
 
             <div class="d-flex bg-white border rounded-3 p-1 shadow-sm">
               <div class="w-50">
@@ -126,7 +126,7 @@
                   "
                   [ngStyle]="
                     formData.currency === 'SGD'
-                      ? { 'background-color': '#ffc107', color: '#212529' }
+                      ? { 'background-color': 'var(--app-primary)', color: '#ffffff' }
                       : { 'background-color': 'transparent', color: '#6c757d' }
                   "
                   for="sgd"
@@ -154,7 +154,7 @@
                   "
                   [ngStyle]="
                     formData.currency === 'USD'
-                      ? { 'background-color': '#dc3545', color: '#ffffff' }
+                      ? { 'background-color': 'var(--app-primary-dark)', color: '#ffffff' }
                       : { 'background-color': 'transparent', color: '#6c757d' }
                   "
                   for="usd"

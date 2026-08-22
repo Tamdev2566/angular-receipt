@@ -3,7 +3,6 @@ import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { ColumnDef, DataGrid } from '../../../shared/data-grid/data-grid';
 import { IconButton } from '../../../shared/icon-button/icon-button';
 import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-dialog';
@@ -26,7 +25,6 @@ export class Bank implements OnInit {
   private alert = inject(AlertService);
   private menuAccessService = inject(MenuAccessService);
   private apiservice = inject(ApiService);
-  private http = inject(HttpClient);
 
   datePipe = new DatePipe('en-US');
 
@@ -42,15 +40,14 @@ export class Bank implements OnInit {
   editingId: string | null = null;
   gridData: any[] = [];
 
-  // Updated Grid Columns
   gridColumns: ColumnDef[] = [
-    { label: 'Office Code', field: 'officeCode', width: '120px' },
-    { label: 'Bank Code', field: 'bankCode', width: '140px' },
-    { label: 'Bank Name', field: 'bankName', width: '200px' },
+    { label: 'Bank Code', field: 'bankCode', width: '90px' },
+    { label: 'Bank Name', field: 'bankName', width: '100px' },
     { label: 'Description', field: 'bankDescription', width: '250px' },
-    { label: 'Status', field: 'isValid', width: '100px' },
-    { label: 'Created By', field: 'userCreated', width: '120px' },
-    { label: 'Created Date', field: 'dateCreated', width: '120px' },
+    { label: 'Status', field: 'isValid', width: '90px', align: 'center' },
+    { label: 'Office Code', field: 'officeCode', width: '90px', align: 'center' },
+    { label: 'Created By', field: 'userCreated', width: '160px', align: 'center' },
+    { label: 'Created Date', field: 'dateCreated', width: '160px', align: 'center' },
   ];
 
   showConfirmDialog: boolean = false;
@@ -68,18 +65,21 @@ export class Bank implements OnInit {
   }
 
   loadData(): void {
-    this.apiservice.get(`api/master-banks/list`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        const response = res.data.map((r: any) => ({
-          ...r,
-          dateCreated: this.datePipe.transform(r.dateCreated, 'dd-MM-yyyy'),
-        }));
-        this.gridData = response || [];
-      },
-      error: (err) => {
-        this.alert.showAlert('Error', err.error?.message || 'Failed to load data', 'error');
-      },
-    });
+    this.apiservice
+      .get(`api/master-banks/list`)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          const response = res.data.map((r: any) => ({
+            ...r,
+            isValid: r.isValid === '1' ? 'Active' : 'Inactive',
+          }));
+          this.gridData = response || [];
+        },
+        error: (err) => {
+          this.alert.showAlert('Error', err.error?.message || 'Failed to load data', 'error');
+        },
+      });
   }
 
   validateFields(): void {
@@ -102,7 +102,7 @@ export class Bank implements OnInit {
     }
 
     const user = this.userService.getUser();
-    const currentUser = user?.name || 'prabhu';
+    const currentUser = user?.name;
 
     const payload: any = {
       bankCode: this.formData.bankCode,
@@ -115,29 +115,35 @@ export class Bank implements OnInit {
     if (this.editingId) {
       payload.bankId = this.editingId;
 
-      this.apiservice.put(`api/master-banks/update/${this.editingId}`, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (res: any) => {
-          if (res.status === 'SUCCESS' || res.message) {
-            this.alert.showAlert('Success', 'Bank updated successfully!', 'success');
-          }
-          this.onCancel();
-          this.loadData();
-        },
-        error: (err) => {
-          this.alert.showAlert('Error', err.error?.message || 'Update failed', 'error');
-        },
-      });
+      this.apiservice
+        .put(`api/master-banks/update/${this.editingId}`, payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (res: any) => {
+            if (res.status === 'SUCCESS' || res.message) {
+              this.alert.showAlert('Success', 'Bank updated successfully!', 'success');
+            }
+            this.onCancel();
+            this.loadData();
+          },
+          error: (err) => {
+            this.alert.showAlert('Error', err.error?.message || 'Update failed', 'error');
+          },
+        });
     } else {
-      this.apiservice.post(`api/master-banks/add`, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: () => {
-          this.alert.showAlert('Success', 'Bank added successfully!', 'success');
-          this.onCancel();
-          this.loadData();
-        },
-        error: (err) => {
-          this.alert.showAlert('Error', err.error?.message || 'Save failed', 'error');
-        },
-      });
+      this.apiservice
+        .post(`api/master-banks/add`, payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.alert.showAlert('Success', 'Bank added successfully!', 'success');
+            this.onCancel();
+            this.loadData();
+          },
+          error: (err) => {
+            this.alert.showAlert('Error', err.error?.message || 'Save failed', 'error');
+          },
+        });
     }
   }
 
@@ -168,7 +174,7 @@ export class Bank implements OnInit {
   }
 
   toggleStatus(row: any): void {
-    const newIsValid = row.isValid === '1' ? '0' : '1';
+    const newIsValid = row.isValid === 'Active' ? '0' : '1';
     const actionText = newIsValid === '1' ? 'Activate' : 'Deactivate';
 
     this.confirmTitle = 'Confirm Action';
@@ -185,15 +191,18 @@ export class Bank implements OnInit {
 
       const rowId = row.bankId;
 
-      this.apiservice.put(`api/master-banks/update/${rowId}`, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: () => {
-          this.alert.showAlert('Success', `Bank ${actionText}d successfully`, 'success');
-          this.loadData();
-        },
-        error: (err) => {
-          this.alert.showAlert('Error', err.error?.message || 'Failed to update status', 'error');
-        },
-      });
+      this.apiservice
+        .put(`api/master-banks/update/${rowId}`, payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.alert.showAlert('Success', `Bank ${actionText}d successfully`, 'success');
+            this.loadData();
+          },
+          error: (err) => {
+            this.alert.showAlert('Error', err.error?.message || 'Failed to update status', 'error');
+          },
+        });
     };
 
     this.showConfirmDialog = true;
@@ -208,15 +217,18 @@ export class Bank implements OnInit {
       const currentUser = user?.name;
       const rowId = row.bankId;
 
-      this.apiservice.delete(`api/master-banks/delete/${rowId}?userId=${currentUser}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (res: any) => {
-          this.alert.showAlert('Success', 'Bank deleted successfully', 'success');
-          this.loadData();
-        },
-        error: (err) => {
-          this.alert.showAlert('Error', err.error?.message || 'Failed to delete record', 'error');
-        },
-      });
+      this.apiservice
+        .delete(`api/master-banks/delete/${rowId}?userId=${currentUser}`)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (res: any) => {
+            this.alert.showAlert('Success', 'Bank deleted successfully', 'success');
+            this.loadData();
+          },
+          error: (err) => {
+            this.alert.showAlert('Error', err.error?.message || 'Failed to delete record', 'error');
+          },
+        });
     };
 
     this.showConfirmDialog = true;

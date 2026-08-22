@@ -108,14 +108,17 @@ export class DailyScanReport {
 
     const { params } = this.buildQueryParams();
 
-    this.apiService.get('api/reports/daily-scan/getdata', { params }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        this.gridData = res || [];
-      },
-      error: (err) => {
-        console.error('Error fetching data:', err);
-      },
-    });
+    this.apiService
+      .get('api/reports/daily-scan/getdata', { params })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.gridData = res || [];
+        },
+        error: (err) => {
+          console.error('Error fetching data:', err);
+        },
+      });
   }
 
   onDownloadClick() {
@@ -126,7 +129,8 @@ export class DailyScanReport {
         params,
         responseType: 'blob' as 'json',
       })
-      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: (res: any) => {
           const blob = new Blob([res], { type: 'text/csv' });
           const url = window.URL.createObjectURL(blob);

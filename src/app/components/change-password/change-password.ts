@@ -82,29 +82,36 @@ export class ChangePasswordPage implements OnInit {
       username: this.userService.getUser()?.name || this.userId,
     };
 
-    this.api.post(`UserManagements/users/${this.userId}/change-password`, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        this.loading = false;
-        if (res?.status === 400 || res?.status === 404) {
-          this.alert.showAlert('Error', res.message, 'error');
-          return;
-        }
+    this.api
+      .post(`UserManagements/users/${this.userId}/change-password`, payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.loading = false;
+          if (res?.status === 400 || res?.status === 404) {
+            this.alert.showAlert('Error', res.message, 'error');
+            return;
+          }
 
-        localStorage.removeItem('passwordExpired');
-        this.alert.showAlert('Success', 'Password changed successfully.', 'success');
+          localStorage.removeItem('passwordExpired');
+          this.alert.showAlert('Success', 'Password changed successfully.', 'success');
 
-        this.passwordChanged.emit(payload);
-        this.closeModal.emit();
+          this.passwordChanged.emit(payload);
+          this.closeModal.emit();
 
-        if (this.isForced) {
-          this.router.navigate(['/main/welcome']);
-        }
-      },
-      error: (err) => {
-        this.loading = false;
-        this.alert.showAlert('Error', err?.error?.message || 'Failed to change password.', 'error');
-      },
-    });
+          if (this.isForced) {
+            this.router.navigate(['/main/welcome']);
+          }
+        },
+        error: (err) => {
+          this.loading = false;
+          this.alert.showAlert(
+            'Error',
+            err?.error?.message || 'Failed to change password.',
+            'error',
+          );
+        },
+      });
   }
 
   onSkip(): void {

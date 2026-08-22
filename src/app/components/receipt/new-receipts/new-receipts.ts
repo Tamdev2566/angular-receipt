@@ -227,6 +227,7 @@ export class NewReceiptComponent implements OnInit {
   onVesselChange(selection: ComboboxSelection): void {
     this.searchModel.vesselId = selection.value;
     this.vesselValue = { vessel: selection.item?.vesselName || '' };
+    this.searchModel.voyageId = null;
   }
 
   onVoyageChange(selection: ComboboxSelection): void {
@@ -245,21 +246,24 @@ export class NewReceiptComponent implements OnInit {
       customerNames: [this.searchModel.customerName || ''],
     };
 
-    this.apiService.post('api/receiptCheckOutstanding', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        this.outstandingRecords = res || [];
-        this.isOutstandingModalOpen = true;
-        this.stateService.setModalState(true);
-      },
+    this.apiService
+      .post('api/receiptCheckOutstanding', payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.outstandingRecords = res || [];
+          this.isOutstandingModalOpen = true;
+          this.stateService.setModalState(true);
+        },
 
-      error: (error) => {
-        this.alert.showAlert(
-          'Error',
-          error?.error?.message || 'Unable to retrieve outstanding items.',
-          'error',
-        );
-      },
-    });
+        error: (error) => {
+          this.alert.showAlert(
+            'Error',
+            error?.error?.message || 'Unable to retrieve outstanding items.',
+            'error',
+          );
+        },
+      });
   }
 
   onSearchClick(): void {
@@ -294,24 +298,27 @@ export class NewReceiptComponent implements OnInit {
       customerName: customer,
     };
 
-    this.apiService.post('api/receiptRetrieve', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        if (res?.success) {
-          this.handleApiResponse(res);
-        } else {
-          this.alert.showAlert('Information', res?.message || 'No records found.', 'info');
-          this.gridData = [];
-          this.showReferenceType = false;
-        }
-      },
-      error: (error) => {
-        this.alert.showAlert(
-          'Error',
-          error?.error?.message || 'Unable to retrieve records.',
-          'error',
-        );
-      },
-    });
+    this.apiService
+      .post('api/receiptRetrieve', payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          if (res?.success) {
+            this.handleApiResponse(res);
+          } else {
+            this.alert.showAlert('Information', res?.message || 'No records found.', 'info');
+            this.gridData = [];
+            this.showReferenceType = false;
+          }
+        },
+        error: (error) => {
+          this.alert.showAlert(
+            'Error',
+            error?.error?.message || 'Unable to retrieve records.',
+            'error',
+          );
+        },
+      });
   }
 
   onClearClick(): void {
@@ -413,19 +420,22 @@ export class NewReceiptComponent implements OnInit {
     const payload = this.buildReceiptPayload();
     if (!payload) return;
 
-    this.apiService.post('api/receipts/confirm-payment', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => {
-        this.alert.showAlert('Success', 'Receipt confirmed successfully.', 'success');
-        this.router.navigate(['/main/receipts']);
-      },
-      error: (error) => {
-        this.alert.showAlert(
-          'Error',
-          error?.error?.message || 'Unable to confirm receipt.',
-          'error',
-        );
-      },
-    });
+    this.apiService
+      .post('api/receipts/confirm-payment', payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.alert.showAlert('Success', 'Receipt confirmed successfully.', 'success');
+          this.router.navigate(['/main/receipts']);
+        },
+        error: (error) => {
+          this.alert.showAlert(
+            'Error',
+            error?.error?.message || 'Unable to confirm receipt.',
+            'error',
+          );
+        },
+      });
   }
 
   onOverPayment(): void {
@@ -441,19 +451,22 @@ export class NewReceiptComponent implements OnInit {
 
   onConfirmRequest() {
     const payload = this.buildReceiptPayload();
-    this.apiService.post('api/receipts/over-payment', payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        this.alert.showAlert('Success', 'Overpayment processed successfully.', 'success');
-        this.router.navigate(['/main/receipts']);
-      },
-      error: (error) => {
-        this.alert.showAlert(
-          'Error',
-          error?.error?.message || 'Unable to process overpayment.',
-          'error',
-        );
-      },
-    });
+    this.apiService
+      .post('api/receipts/over-payment', payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.alert.showAlert('Success', 'Overpayment processed successfully.', 'success');
+          this.router.navigate(['/main/receipts']);
+        },
+        error: (error) => {
+          this.alert.showAlert(
+            'Error',
+            error?.error?.message || 'Unable to process overpayment.',
+            'error',
+          );
+        },
+      });
   }
 
   onCancelRequest() {

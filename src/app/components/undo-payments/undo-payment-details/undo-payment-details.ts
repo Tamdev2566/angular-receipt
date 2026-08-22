@@ -116,7 +116,8 @@ export class UndoPaymentDetails implements OnInit {
         this.retrieve.blNo,
         this.retrieve.chequeNo,
       )
-      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: (res: any) => {
           if (res) {
             this.details = {
@@ -168,25 +169,29 @@ export class UndoPaymentDetails implements OnInit {
 
     const payload: string[] = this.selectedRecords.map((record) => record.transactionNo || '');
 
-    this.undoService.processUndo(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
-        this.alert.showAlert(
-          'Success',
-          res.message || 'Undo Payment Processed Successfully',
-          'success',
-        );
-        this.selectedRecords = [];
-        this.onCancel();
-        this.undogGlobalService.notifyReceiptActionCompleted();
-      },
-      error: (error) => {
-        this.alert.showAlert(
-          'Error',
-          error?.error?.message || 'Unable to Undo the Selected Receipts.',
-          'error',
-        );
-      },
-    });
+    this.undoService
+      .processUndo(payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.alert.showAlert(
+            'Success',
+            res.message || 'Undo Payment Processed Successfully',
+            'success',
+          );
+          this.selectedRecords = [];
+          this.retrieveReceipt();
+          this.undogGlobalService.notifyReceiptActionCompleted();
+          this.onCancel();
+        },
+        error: (error) => {
+          this.alert.showAlert(
+            'Error',
+            error?.error?.message || 'Unable to Undo the Selected Receipts.',
+            'error',
+          );
+        },
+      });
   }
 
   onCancel(): void {
