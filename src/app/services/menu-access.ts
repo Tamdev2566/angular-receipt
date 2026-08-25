@@ -108,6 +108,46 @@ export class MenuAccessService {
     }
   }
 
+  hasScreenAccess(screenUrl: string, requireFullAccess = false, menuNames: string[] = []): boolean {
+    const screen = this.findMenu(screenUrl, menuNames);
+
+    if (!screen) return false;
+
+    return requireFullAccess
+      ? this.parseBooleanValue(screen.fullAccess)
+      : this.parseBooleanValue(screen.canRead) || this.parseBooleanValue(screen.fullAccess);
+  }
+
+  hasMenu(screenUrl: string, menuNames: string[] = []): boolean {
+    return !!this.findMenu(screenUrl, menuNames);
+  }
+
+  private findMenu(screenUrl: string, menuNames: string[]): MenuItem | undefined {
+    const flatList = this.getAllMenusRecursive(this.menuList());
+    let normalizedScreenUrl = screenUrl.split('?')[0].split('#')[0].toLowerCase().trim();
+    if (!normalizedScreenUrl.startsWith('/')) {
+      normalizedScreenUrl = '/' + normalizedScreenUrl;
+    }
+    normalizedScreenUrl = normalizedScreenUrl.replace(/\/+$/, '');
+    const normalizedNames = menuNames.map((name) => name.toLowerCase().trim());
+
+    return flatList.find((item) => {
+      let menuLink = (item.menuLink || '').toLowerCase().trim();
+      if (!menuLink.startsWith('/')) {
+        menuLink = '/' + menuLink;
+      }
+      menuLink = menuLink.replace(/\/+$/, '');
+      const menuName = (item.menuName || '').toLowerCase().trim();
+
+      return (
+        menuLink === normalizedScreenUrl ||
+        normalizedScreenUrl.endsWith(menuLink) ||
+        normalizedNames.includes(menuName)
+      );
+    });
+
+  }
+
   private getAllMenusRecursive(items: any[]): MenuItem[] {
     let menus: MenuItem[] = [];
     if (!Array.isArray(items)) return menus;

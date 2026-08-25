@@ -1,7 +1,8 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { fromEvent, merge, Observable, Subscription } from 'rxjs';
+import { throttleTime } from 'rxjs/operators';
 import { environment } from '../../../environment/environment';
 import { AlertService } from '../alertService/alert';
 import { ApiMenuItem } from '../module-service/module-service';
@@ -38,6 +39,7 @@ export class AuthService {
 
   private tokenTimer?: ReturnType<typeof setTimeout>;
   private inactivityTimer?: ReturnType<typeof setTimeout>;
+  private activitySubscription?: Subscription;
 
   private readonly INACTIVITY_TIMEOUT_MS = 20 * 60 * 1000;
 
@@ -51,14 +53,14 @@ export class AuthService {
   startInactivityTimer(): void {
     if (!this.isLoggedIn()) return;
 
+    this.startActivityMonitoring();
+    this.scheduleInactivityTimer();
+  }
+
+  private scheduleInactivityTimer(): void {
     this.stopInactivityTimer();
     this.inactivityTimer = setTimeout(() => {
       this.handleInactivityExpiry();
-      this.alert.showAlert(
-        'Session Timeout',
-        'You were inactive for too long. Please login again to continue.',
-        'warning',
-      );
     }, this.INACTIVITY_TIMEOUT_MS);
   }
 
@@ -71,8 +73,27 @@ export class AuthService {
 
   resetInactivityTimer(): void {
     if (this.isLoggedIn()) {
-      this.startInactivityTimer();
+      this.scheduleInactivityTimer();
     }
+  }
+
+  private startActivityMonitoring(): void {
+    if (this.activitySubscription) return;
+
+    this.activitySubscription = merge(
+      fromEvent(window, 'click'),
+      fromEvent(window, 'keydown'),
+      fromEvent(window, 'scroll'),
+      fromEvent(window, 'touchstart'),
+      fromEvent(window, 'mousemove'),
+    )
+      .pipe(throttleTime(1000, undefined, { leading: true, trailing: true }))
+      .subscribe(() => this.resetInactivityTimer());
+  }
+
+  private stopActivityMonitoring(): void {
+    this.activitySubscription?.unsubscribe();
+    this.activitySubscription = undefined;
   }
 
   private handleInactivityExpiry(): void {
@@ -154,6 +175,7 @@ export class AuthService {
   logout(showAlert = true): void {
     this.clearAuthTimer();
     this.stopInactivityTimer();
+    this.stopActivityMonitoring();
 
     if (showAlert) {
       this.alert.showAlert('Info', 'Logged out successfully', 'info');
@@ -183,6 +205,7 @@ export class AuthService {
   private handleSessionExpiry(): void {
     this.clearAuthTimer();
     this.stopInactivityTimer();
+    this.stopActivityMonitoring();
     this.alert.showAlert('Error', 'Your Session is Expired!', 'error');
 
     Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key));

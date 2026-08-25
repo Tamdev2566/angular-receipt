@@ -15,7 +15,7 @@ import { OutstandingModal } from '../modals/outstanding-modal/outstanding-modal'
 
 interface ReceiptInvoicePayload {
   selected: boolean;
-  source: string;
+  // source: string;
   blNo: string;
   vesselCode: string;
   vesselName: string;
@@ -283,12 +283,12 @@ export class NewReceiptComponent implements OnInit {
       return;
     }
 
-    let source = 'Combine';
-    if (this.docInward && !this.docOutward) {
-      source = 'DocSys';
-    } else if (!this.docInward && this.docOutward) {
-      source = 'Glossys';
-    }
+    // let source = 'Combine';
+    // if (this.docInward && !this.docOutward) {
+    //   source = 'DocSys';
+    // } else if (!this.docInward && this.docOutward) {
+    //   source = 'Glossys';
+    // }
 
     const payload = {
       invoiceNo: invNo,
@@ -380,7 +380,6 @@ export class NewReceiptComponent implements OnInit {
 
     const mappedInvoices: ReceiptInvoicePayload[] = this.selectedGridRows.map((item) => ({
       selected: true,
-      source: item.source || (this.docInward ? 'DocSys' : 'Doc4All'),
       blNo: item.bl_no || this.searchModel.blNo || '',
       vesselCode: item.vessel_code || '',
       vesselName: item.vessel_name || '',

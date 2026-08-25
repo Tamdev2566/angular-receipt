@@ -1,5 +1,7 @@
-<div class="summary-card-grid">
+<div #cardGrid class="summary-card-grid">
   <div *ngFor="let item of pagedItems" class="summary-card premium-shadow">
+    <!-- Header -->
+
     <div class="summary-header">
       <div class="summary-user">
         <div class="summary-avatar">{{ item.transactionNo }}</div>
@@ -17,6 +19,8 @@
         </div>
       </div>
     </div>
+
+    <!-- Details -->
 
     <div class="summary-details">
       <div class="detail-row">
@@ -36,11 +40,22 @@
         <span class="detail-value"> {{ item.paymentMode }} </span>
       </div>
 
+      <!-- <div class="detail-row">
+        <span class="detail-label"> Bank </span>
+        <span class="detail-value"> {{ item.bank }} </span>
+      </div> -->
+
+      <!-- <div class="detail-row">
+        <span class="detail-label"> Cheque / TT No </span>
+        <span class="detail-value"> {{ item.chequeTtNo || '-' }} </span>
+      </div> -->
       <div class="detail-row">
-        <span class="detail-label"> Action Message</span>
+        <span class="detail-label"> Action</span>
         <span class="detail-value"> {{ item.actionMessage || '-' }} </span>
       </div>
     </div>
+
+    <!-- Amount -->
 
     <div class="summary-amount">
       <div>
@@ -57,6 +72,7 @@
         <strong> {{ item.availableAction }} </strong>
       </div>
     </div>
+    <!-- Footer -->
 
     <div class="summary-actions">
       @if (item.availableAction === 'UNDO_PAYMENT') {

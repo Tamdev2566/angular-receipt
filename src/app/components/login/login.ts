@@ -89,6 +89,7 @@ export class LoginPage {
         next: (res: any) => {
           localStorage.setItem('receipt_token', res.token);
           localStorage.setItem('receipt_token_expire', res.expire);
+          this.authService.autoAuthUser();
 
           this.authService
             .getUserInfo()
@@ -134,6 +135,7 @@ export class LoginPage {
                     });
                 }
 
+                // --- ROUTING LOGIC ---
                 const userId = userInfo.userId || userInfo.user_id;
                 if (userId) {
                   this.authService

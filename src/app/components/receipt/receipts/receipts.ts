@@ -212,16 +212,16 @@ export class ReceiptComponent implements OnInit {
     this.undoService.clearRemoveInvoice();
   }
 
-  private closeModalAndReload(): void {
-    this.closeModal();
-    this.loadReceipts();
-  }
-
   triggerToast(msg: string) {
     this.toastMessage = msg;
 
     setTimeout(() => {
       this.toastMessage = null;
     }, 4000);
+  }
+
+  private closeModalAndReload(): void {
+    this.closeModal();
+    this.loadReceipts();
   }
 }

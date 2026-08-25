@@ -49,13 +49,16 @@
 
           <div class="action-buttons">
             <button
+              *ngIf="canCreateReceipt"
               class="btn"
               style="background-color: #33708f !important ; color: white"
               (click)="onCreateReceipt()"
             >
               Create Receipt
             </button>
-            <button class="btn btn-outline" (click)="onViewReports()">Overview</button>
+            <button *ngIf="canViewOverview" class="btn btn-outline" (click)="onViewReports()">
+              Overview
+            </button>
           </div>
         </div>
 
